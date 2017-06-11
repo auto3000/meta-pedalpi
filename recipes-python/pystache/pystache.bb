@@ -7,5 +7,5 @@ SRC_URI = "git://github.com/defunkt/pystache.git"
 
 S = "${WORKDIR}/git"
 
-inherit setuptools
+inherit setuptools3
 
