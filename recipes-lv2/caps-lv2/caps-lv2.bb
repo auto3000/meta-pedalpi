@@ -1,4 +1,4 @@
-UMMARY = "LV2 port for the CAPS Audio Plugin Suit."
+SUMMARY = "LV2 port for the CAPS Audio Plugin Suit."
 SECTION = "multimedia"
 
 LICENSE = "GPLv3"
