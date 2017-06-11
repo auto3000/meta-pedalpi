@@ -1,0 +1,42 @@
+From 3dcf0ca114f169a6dc3a0c2ffa70801838d61e99 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 11 Jun 2017 11:06:11 +0200
+Subject: [PATCH] build: CFLAGS and LDFLAGS are made optional
+
+---
+ Makefile.mk | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile.mk b/Makefile.mk
+index a6b54c3..933d2d6 100644
+--- a/Makefile.mk
++++ b/Makefile.mk
+@@ -3,12 +3,10 @@
+ CC ?= gcc
+ 
+ # flags
+-CFLAGS += -O3 -funroll-loops -ffast-math -fomit-frame-pointer -fstrength-reduce -Wall -Werror -fPIC -DPIC -I../utils
+-LDFLAGS += -shared -Wl,-O1 -Wl,--as-needed -Wl,--no-undefined -Wl,--strip-all -lm -lrt
+-
+-ifneq ($(NOOPT),true)
+-CFLAGS += -mtune=generic -msse -msse2 -mfpmath=sse
+-endif
++CFLAGS ?= -O3 -funroll-loops -ffast-math -fomit-frame-pointer -fstrength-reduce -Wall -Werror -fPIC -DPIC -I../utils
++CFLAGS += -fPIC -ffast-math -DPIC -I../utils
++LDFLAGS ?= -shared -Wl,-O1 -Wl,--as-needed -Wl,--no-undefined -Wl,--strip-all -lm -lrt
++LDFLAGS += -shared -Wl,--as-needed -Wl,--no-undefined -lm -lrt
+ 
+ # remove command
+ RM = rm -f
+@@ -33,7 +31,7 @@ SRC = $(wildcard *.c)
+ all: $(PLUGIN_SO)
+ 
+ $(PLUGIN_SO): $(SRC) $(wildcard *.h) ../utils/tap_utils.h
+-	$(CC) $(SRC) $(CFLAGS) $(LDFLAGS) -o $(PLUGIN_SO)
++	$(CC) $(SRC) $(LDFLAGS) $(CFLAGS) -o $(PLUGIN_SO)
+ 
+ clean:
+ 	$(RM) *.so *.o *~
+-- 
+1.9.1
+
