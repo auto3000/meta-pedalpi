@@ -1,0 +1,32 @@
+From 89600d44bb2b3e04bd3d86b55a10dc883bab7280 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 11 Jun 2017 11:21:29 +0200
+Subject: [PATCH] build: disable optimization flags
+
+Makefile.mk contains a mechanism to enable some platform-dependent
+build flags. This modification disable these flags on detection of
+NO_CUSTOM_OPTS variable.
+---
+ Makefile.mk | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Makefile.mk b/Makefile.mk
+index 214c8be..53a16f8 100644
+--- a/Makefile.mk
++++ b/Makefile.mk
+@@ -68,6 +68,12 @@ BASE_FLAGS += -DNDEBUG $(BASE_OPTS) -fvisibility=hidden
+ CXXFLAGS   += -fvisibility-inlines-hidden
+ endif
+ 
++
++ifeq ($(NO_CUSTOM_OPTS),true)
++BASE_FLAGS = -ffast-math -fPIC -DPIC
++LINK_OPTS =
++endif
++
+ BUILD_C_FLAGS   = $(BASE_FLAGS) -std=c99 -std=gnu99 $(CFLAGS)
+ BUILD_CXX_FLAGS = $(BASE_FLAGS) -std=c++0x -std=gnu++0x $(CXXFLAGS) $(CPPFLAGS)
+ LINK_FLAGS      = $(LINK_OPTS) -Wl,--no-undefined $(LDFLAGS)
+-- 
+1.9.1
+
