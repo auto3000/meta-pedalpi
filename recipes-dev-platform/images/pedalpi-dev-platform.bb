@@ -1,8 +1,9 @@
-SUMMARY = "PedalpII complete image."
+SUMMARY = "pedalpi complete image."
 
 IMAGE_INSTALL = "packagegroup-core-boot \
 	${ROOTFS_PKGMANAGE_BOOTSTRAP} \
-	${CORE_IMAGE_EXTRA_INSTALL}"
+	${CORE_IMAGE_EXTRA_INSTALL} \
+	packagegroup-pedalpii"
 
 IMAGE_LINGUAS = " "
 
@@ -18,8 +19,6 @@ inherit extrausers
 ROOTPASSWORD = "root"
 ROOTUSERNAME = "root"
 EXTRA_USERS_PARAMS ?= "usermod -P ${ROOTPASSWORD} ${ROOTUSERNAME};"
-
-IMAGE_FEATURES += " package-management"
 
 PV ?= "snapshot+${DATE}"
 
