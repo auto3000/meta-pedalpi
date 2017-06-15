@@ -9,7 +9,7 @@ SRC_URI = "git://github.com/moddevices/mod-lv2-data.git"
 
 S = "${WORKDIR}/git"
 
-FILES_${PN} = "/root ${libdir}/lv2"
+FILES_${PN} = "/home/root ${libdir}/lv2"
 
 inherit allarch
 
@@ -17,8 +17,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/root/.pedalboards
-	cp -R ${S}/pedalboards/* ${D}/root/.pedalboards/
+	install -d ${D}/home/root/.pedalboards
+	cp -R ${S}/pedalboards/* ${D}/home/root/.pedalboards/
 	install -d ${D}${libdir}/lv2
 	cp -R ${S}/plugins/* ${D}/${libdir}/lv2/
 	cp -R ${S}/plugins-fixed/* ${D}/${libdir}/lv2/
