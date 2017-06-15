@@ -1,0 +1,29 @@
+From 3bc93de3dcd81723f91e89f5e9e656ba7cf4e0d1 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Thu, 15 Jun 2017 22:48:56 +0200
+Subject: [PATCH] build: disable object stripping
+
+---
+ utils/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/utils/Makefile b/utils/Makefile
+index 14a3794..ea1cebb 100644
+--- a/utils/Makefile
++++ b/utils/Makefile
+@@ -1,10 +1,10 @@
+ 
+ CXX ?= g++
+ 
+-CXXFLAGS += -Wall -Wextra -Wshadow -std=gnu++0x -fPIC -O3 -Wno-deprecated-declarations
++CXXFLAGS += -Wall -Wextra -Wshadow -std=gnu++0x -fPIC -Wno-deprecated-declarations
+ 
+ ifneq ($(shell uname -s),Darwin)
+-LDFLAGS += -Wl,-O1 -Wl,--no-undefined -Wl,--strip-all
++LDFLAGS += -Wl,-O1 -Wl,--no-undefined 
+ endif
+ 
+ ifeq ($(shell pkg-config --atleast-version=0.22.0 lilv-0 && echo true), true)
+-- 
+1.9.1
+
