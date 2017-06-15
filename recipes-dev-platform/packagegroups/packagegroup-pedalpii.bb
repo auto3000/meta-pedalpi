@@ -9,5 +9,29 @@ PACKAGES = "\
     "
 
 RDEPENDS_${PN} += "\
+	pedalpii \
 	jack-server \
+	mod-lilvlib  \
+	mod-sdk \
+	mod-utilities \
+	serd \
+	sord \
+	sratom \
+	mod-ui \
+	mod-host \
+	caps-lv2 \
+	fat1-lv2 \
+	guitarix \
+	gxslowgear \
+	gxswitchlesswah \
+	gxvfm \
+	gxvoxtb \
+	kxstudio-lv2-extensions \
+	lv2 \
+	mda-lv2 \
+	mod-factory-user-data \
+	openav-artyfx \
+	shiro-plugins \
+	tap-lv2 \
 	"
+
