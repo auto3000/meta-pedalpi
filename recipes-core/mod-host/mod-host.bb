@@ -7,7 +7,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 DEPENDS = "jack lilv readline"
 
 SRCREV = "f84cd25f31bab67128696f32ced7f37f137ab280"
-SRC_URI = "git://github.com/moddevices/mod-host.git"
+SRC_URI = "git://github.com/moddevices/mod-host.git \
+	file://0001-build-remove-object-stripping-and-O3-optimization.patch"
 
 FILES_${PN} = " /usr/bin/mod-host /usr/lib/jack/ "
 
