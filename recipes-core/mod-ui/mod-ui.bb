@@ -4,7 +4,8 @@ SECTION = "multimedia"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=b5abed640d912caca185601d2312815e"
 
-DEPENDS = "python3-pyserial pystache pillow python3-tornado lilv jack alsa-lib"
+RDEPENDS_${PN} = "python3-textutils python3-json python3-setuptools python3-pyserial pystache pillow python3-tornado"
+DEPENDS = "lilv jack alsa-lib"
 
 SRCREV = "46eae5a2591870b3e2fdf86eb3cf0b3023cd70dd"
 SRC_URI = "git://github.com/auto3000/mod-ui.git;branch=hmi_socket"
