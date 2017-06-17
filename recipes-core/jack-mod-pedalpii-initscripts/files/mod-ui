@@ -1,0 +1,105 @@
+#!/bin/sh
+#
+# mod-ui init script
+#
+### BEGIN INIT INFO
+# Provides:          $mod-ui 
+# Required-Start:    $mod-ui
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start MOD UI service
+# Description:       Starts mod-ui with the proper config needed for pedalpi
+### END INIT INFO
+
+# Defaults
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/mod-ui
+OPTIONS=""
+START_DAEMON=yes
+export MOD_DATA_DIR=/root/data
+export MOD_APP=1
+export MOD_LIVE_ISO=1
+export MOD_DEV_ENVIRONMENT=0
+PIDFILE="/var/run/mod-ui.pid"
+test -f /etc/default/mod-ui && . /etc/default/mod-ui
+
+
+if [ ! "x$START_DAEMON" = "xyes" -a ! "$1" = "stop" ]; then
+        echo "Edit /etc/default/mod-ui to start mod-ui"
+        exit 0
+fi
+
+test -f $DAEMON || exit 0
+
+. /etc/init.d/functions
+
+case "$1" in
+        start)
+                echo "Starting mod-ui server:" "mod-ui"
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        stop)
+                echo "Stopping mod-ui server:" "mod-ui"
+                if start-stop-daemon -K -o -p $PIDFILE -x $DAEMON; then
+                        rm -f $PIDFILE
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        force-reload|restart)
+                echo "Restarting mod-ui service:" "mod-ui"
+                if ! start-stop-daemon -K -o -p $PIDFILE -x $DAEMON; then
+                        failure
+                        exit 1
+                fi
+                sleep $DELAY_AFTER_START
+                rm -f $PIDFILE || true
+                if start-stop-daemon -b -S -o -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                        sleep $DELAY_AFTER_START
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        try-restart)
+                if test -e $PIDFILE ; then
+                        pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1`
+                        PIDDIR=/proc/$pid
+                        if [ -d ${PIDDIR} -a  "$(readlink -f ${PIDDIR}/exe)" = "${DAEMON}" ]; then
+                                $0 restart
+                                exit 0
+                        fi
+                fi
+                test -f /etc/rc`/sbin/runlevel | cut -d' ' -f2`.d/S*mod-ui* && $0 start
+                ;;
+        awaken)
+                echo "Awakening mod-ui service:" "mod-ui"
+                if [ -s $PIDFILE ]; then
+                        start-stop-daemon -K -s 10 -p $PIDFILE -x $DAEMON
+                        success
+                        exit 0
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        *)
+                echo "Usage: /etc/init.d/mod-ui {start|stop|restart|force-reload|awaken|debug-run}"
+                echo "  start - starts system-wide service"
+                echo "  stop  - stops system-wide service"
+                echo "  restart, force-reload - a new system-wide service"
+                echo "  awaken - tell system-wide service to start a poll cycle immediately"
+                exit 1
+                ;;
+esac
+
+exit 0
