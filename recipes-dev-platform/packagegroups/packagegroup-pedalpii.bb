@@ -11,6 +11,7 @@ PACKAGES = "\
 RDEPENDS_${PN} += "\
 	jack-mod-pedalpii-initscripts-jackd \
 	jack-mod-pedalpii-initscripts-mod-host \
+	jack-mod-pedalpii-initscripts-mod-ui \
 	pedalpii \
 	jack-server \
 	mod-lilvlib  \
