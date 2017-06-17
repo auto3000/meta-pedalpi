@@ -1,0 +1,107 @@
+#!/bin/sh
+#
+# Jackd init script
+#
+### BEGIN INIT INFO
+# Provides:          jackd
+# Required-Start:    $local_fs
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start JACK service
+# Description:       Starts jackd with the proper config needed for pedalpi
+### END INIT INFO
+
+# Defaults
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/jackd
+OPTIONS=" -P70 -p256 -t2000 -d alsa -dhw:0,0 -p 256 -n 3 -r 48000 -s "
+START_DAEMON=yes
+OPTIONS="$OPTIONS"
+PIDFILE="/var/run/jackd.pid"
+DELAY_AFTER_START=1
+test -f /etc/default/jackd && . /etc/default/jackd
+
+
+if [ ! "x$START_DAEMON" = "xyes" -a ! "$1" = "stop" ]; then
+        echo "Edit /etc/default/jackd to start jackd"
+        exit 0
+fi
+
+test -f $DAEMON || exit 0
+
+. /etc/init.d/functions
+
+case "$1" in
+        start)
+                echo "Starting jackd audio server:" "jackd"
+                /bin/mount -o remount,size=128M /dev/shm > /dev/null 2>&1
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                        sleep $DELAY_AFTER_START
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        stop)
+                echo "Stopping jackd audio server:" "jackd"
+                if start-stop-daemon -K -o -p $PIDFILE -x $DAEMON; then
+                        rm -f $PIDFILE
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        force-reload|restart)
+                echo "Restarting jackd audio server:" "jackd"
+                if ! start-stop-daemon -K -o -p $PIDFILE -x $DAEMON; then
+                        failure
+                        exit 1
+                fi
+                sleep $DELAY_AFTER_START
+                rm -f $PIDFILE || true
+                if start-stop-daemon -b -S -o -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                        sleep $DELAY_AFTER_START
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        try-restart)
+                if test -e $PIDFILE ; then
+                        pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1`
+                        PIDDIR=/proc/$pid
+                        if [ -d ${PIDDIR} -a  "$(readlink -f ${PIDDIR}/exe)" = "${DAEMON}" ]; then
+                                $0 restart
+                                exit 0
+                        fi
+                fi
+                test -f /etc/rc`/sbin/runlevel | cut -d' ' -f2`.d/S*jackd* && $0 start
+                ;;
+        awaken)
+                echo "Awakening jackd audio server:" "jackd"
+                if [ -s $PIDFILE ]; then
+                        start-stop-daemon -K -s 10 -p $PIDFILE -x $DAEMON
+                        success
+                        exit 0
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        *)
+                echo "Usage: /etc/init.d/jackd {start|stop|restart|force-reload|awaken|debug-run}"
+                echo "  start - starts system-wide jackd service"
+                echo "  stop  - stops system-wide jackd service"
+                echo "  restart, force-reload - starts a new system-wide jackd service"
+                echo "  awaken - tell system-wide jackd to start a poll cycle immediately"
+                echo "  debug-run [strace [strace options...]] - start a debug run of the"
+                echo "    system-wide jackd service, optionally running it under strace"
+                exit 1
+                ;;
+esac
+
+exit 0
