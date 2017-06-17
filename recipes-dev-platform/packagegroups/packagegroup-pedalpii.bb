@@ -9,6 +9,7 @@ PACKAGES = "\
     "
 
 RDEPENDS_${PN} += "\
+	jack-mod-pedalpii-initscripts-jackd \
 	pedalpii \
 	jack-server \
 	mod-lilvlib  \
