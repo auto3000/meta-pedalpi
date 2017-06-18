@@ -42,7 +42,7 @@ case "$1" in
                 ;;
         stop)
                 echo "Stopping mod-host server:" "mod-host"
-                if start-stop-daemon -K -o -p $PIDFILE -x $DAEMON; then
+                if start-stop-daemon -K -o -p $PIDFILE ; then
                         rm -f $PIDFILE
                         success
                 else
@@ -52,7 +52,7 @@ case "$1" in
                 ;;
         force-reload|restart)
                 echo "Restarting mod-host service:" "mod-host"
-                if ! start-stop-daemon -K -o -p $PIDFILE -x $DAEMON; then
+                if ! start-stop-daemon -K -o -p $PIDFILE ; then
                         failure
                         exit 1
                 fi
@@ -80,7 +80,7 @@ case "$1" in
         awaken)
                 echo "Awakening mod-host service:" "mod-host"
                 if [ -s $PIDFILE ]; then
-                        start-stop-daemon -K -s 10 -p $PIDFILE -x $DAEMON
+                        start-stop-daemon -K -s 10 -p $PIDFILE 
                         success
                         exit 0
                 else
