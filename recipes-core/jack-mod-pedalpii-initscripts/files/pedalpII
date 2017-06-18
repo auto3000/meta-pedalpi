@@ -1,0 +1,102 @@
+#!/bin/sh
+#
+# pedalpII init script
+#
+### BEGIN INIT INFO
+# Provides:          $pedalpII
+# Required-Start:    $mod-ui
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start pedalpII service
+# Description:       Starts pedalpII
+### END INIT INFO
+
+# Defaults
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/pedalpII
+OPTIONS=""
+START_DAEMON=yes
+PIDFILE="/var/run/pedalpII.pid"
+test -f /etc/default/pedalpII && . /etc/default/pedalpII
+
+
+if [ ! "x$START_DAEMON" = "xyes" -a ! "$1" = "stop" ]; then
+        echo "Edit /etc/default/pedalpII to start pedalpII"
+        exit 0
+fi
+
+test -f $DAEMON || exit 0
+
+. /etc/init.d/functions
+
+case "$1" in
+        start)
+                echo "Starting pedalpII server:" "pedalpII"
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        stop)
+                echo "Stopping pedalpII server:" "pedalpII"
+                if start-stop-daemon -K -o -p $PIDFILE ; then
+                        rm -f $PIDFILE
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        force-reload|restart)
+                echo "Restarting pedalpII service:" "pedalpII"
+                if ! start-stop-daemon -K -o -p $PIDFILE ; then
+                        failure
+                        exit 1
+                fi
+                sleep $DELAY_AFTER_START
+                rm -f $PIDFILE || true
+                if start-stop-daemon -b -S -o -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                        sleep $DELAY_AFTER_START
+                        success
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        try-restart)
+                if test -e $PIDFILE ; then
+                        pid=`cat $PIDFILE | sed -e 's/\s.*//'|head -n1`
+                        PIDDIR=/proc/$pid
+                        if [ -d ${PIDDIR} -a  "$(readlink -f ${PIDDIR}/exe)" = "${DAEMON}" ]; then
+                                $0 restart
+                                exit 0
+                        fi
+                fi
+                test -f /etc/rc`/sbin/runlevel | cut -d' ' -f2`.d/S*pedalpII* && $0 start
+                ;;
+        awaken)
+                echo "Awakening pedalpII service:" "pedalpII"
+                if [ -s $PIDFILE ]; then
+                        start-stop-daemon -K -s 10 -p $PIDFILE
+                        success
+                        exit 0
+                else
+                        failure
+                        exit 1
+                fi
+                ;;
+        *)
+                echo "Usage: /etc/init.d/pedalpII {start|stop|restart|force-reload|awaken|debug-run}"
+                echo "  start - starts system-wide service"
+                echo "  stop  - stops system-wide service"
+                echo "  restart, force-reload - a new system-wide service"
+                echo "  awaken - tell system-wide service to start a poll cycle immediately"
+                exit 1
+                ;;
+esac
+
+exit 0
+
