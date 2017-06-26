@@ -1,5 +1,5 @@
 DESCRIPTION = "The friendly PIL fork (Python Imaging Library)."
-LICENSE = "PIL"
+LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=ed22148166c9fd21895d7794dc16f6a5"
 
 DEPENDS += "python3 python3-setuptools libjpeg-turbo zlib tiff freetype libpng jpeg"
