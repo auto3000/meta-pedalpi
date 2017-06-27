@@ -1,0 +1,23 @@
+From 1ea72332f60bd9ac426c4d9a51b5830f38c3adce Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Tue, 27 Jun 2017 22:23:53 +0200
+Subject: [PATCH] ssl: change https to http in Gemfile to remove SSL connection
+ issue
+
+---
+ Gemfile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Gemfile b/Gemfile
+index a7f2684..f6a0601 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,4 +1,4 @@
+-source "https://rubygems.org"
++source "http://rubygems.org"
+ 
+ gem 'rdf'
+ gem 'linkeddata'
+-- 
+1.9.1
+
