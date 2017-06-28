@@ -21,6 +21,8 @@ export MOD_DATA_DIR=/home/root/data
 export MOD_APP=1
 export MOD_LIVE_ISO=1
 export MOD_DEV_ENVIRONMENT=0
+export MOD_LOG=1
+export MOD_DEVICE_WEBSERVER_PORT=80
 PIDFILE="/var/run/mod-ui.pid"
 test -f /etc/default/mod-ui && . /etc/default/mod-ui
 
