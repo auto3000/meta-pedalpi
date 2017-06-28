@@ -1,0 +1,38 @@
+From f0c39374c677b62944b0154e00e9e35c7b01c6bf Mon Sep 17 00:00:00 2001
+From: Jean-Francois Deverge <jean-francoisx.deverge@intel.com>
+Date: Wed, 28 Jun 2017 11:48:14 +0200
+Subject: [PATCH] build: LDFLAGS and CFLAGS inherits from the calling context
+
+---
+ Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libpd/Makefile b/libpd/Makefile
+index 7775b5c..f65471f 100644
+--- a/libpd/Makefile
++++ b/libpd/Makefile
+@@ -37,7 +37,7 @@ else
+     PLATFORM_CFLAGS = -DHAVE_LIBDL -Wno-int-to-pointer-cast \
+       -Wno-pointer-to-int-cast -fPIC -I"$(JAVA_HOME)/include" \
+       -I"$(JAVA_HOME)/include/linux"
+-    LDFLAGS = -shared -ldl -Wl,-Bsymbolic
++    LDFLAGS += -shared -ldl -Wl,-Bsymbolic
+     CSHARP_LDFLAGS = $(LDFLAGS)
+     CPP_LDFLAGS = $(LDFLAGS)
+     JAVA_LDFLAGS = $(LDFLAGS)
+@@ -146,10 +146,10 @@ PDJAVA_DIR = $(PDJAVA_BUILD)/org/puredata/core/natives/$(PDNATIVE_PLATFORM)/$(PD
+ PDJAVA_NATIVE = $(PDJAVA_DIR)/$(SOLIB_PREFIX)pdnative.$(PDNATIVE_SOLIB_EXT)
+ PDJAVA_JAR = libs/libpd.jar
+ 
+-CFLAGS = -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -I./pure-data/src -I./libpd_wrapper \
++CFLAGS += -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -I./pure-data/src -I./libpd_wrapper \
+          -I./libpd_wrapper/util $(PLATFORM_CFLAGS) $(OPT_CFLAGS) $(EXTRA_CFLAGS) $(LOCALE_CFLAGS)
+ 
+-CXXFLAGS = $(CFLAGS) $(CPP_FLAGS)
++CXXFLAGS += $(CFLAGS) $(CPP_FLAGS)
+ 
+ .PHONY: libpd csharplib cpplib javalib install uninstall clean clobber
+ 
+-- 
+2.7.4
+

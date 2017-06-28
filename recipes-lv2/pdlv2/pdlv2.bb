@@ -8,7 +8,9 @@ DEPENDS = "lv2 ruby-native bundler-native"
 
 SRCREV = "f8b8de956f649e481424b28cec9ca78174b21631"
 SRC_URI = "gitsm://github.com/moddevices/pdlv2.git \
-	file://0001-ssl-change-https-to-http-in-Gemfile-to-remove-SSL-co.patch"
+	file://0001-ssl-change-https-to-http-in-Gemfile-to-remove-SSL-co.patch \
+	file://0001-build-LDFLAGS-and-CFLAGS-inherits-from-the-calling-c.patch \
+	file://0001-build-clean-LDFLAGS-variable.patch"
 
 S = "${WORKDIR}/git"
 
