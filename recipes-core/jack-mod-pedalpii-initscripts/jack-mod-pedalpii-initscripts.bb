@@ -17,7 +17,7 @@ INITSCRIPT_PARAMS_${PN}-mod-host = "defaults 31 69"
 INITSCRIPT_NAME_${PN}-mod-ui = "mod-ui"
 INITSCRIPT_PARAMS_${PN}-mod-ui = "defaults 32 68"
 INITSCRIPT_NAME_${PN}-pedalpii = "pedalpII"
-INITSCRIPT_PARAMS_${PN}-pedalpii = "defaults 33 67"
+INITSCRIPT_PARAMS_${PN}-pedalpii = "defaults 29 71"
 
 FILES_${PN}-jackd = "${sysconfdir}/init.d/jackd"
 FILES_${PN}-mod-host = "${sysconfdir}/init.d/mod-host"
