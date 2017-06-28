@@ -4,7 +4,7 @@
 #
 ### BEGIN INIT INFO
 # Provides:          $pedalpII
-# Required-Start:    $mod-ui
+# Required-Start:    $local_fs
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
