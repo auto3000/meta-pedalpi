@@ -37,5 +37,6 @@ RDEPENDS_${PN} += "\
 	openav-artyfx \
 	shiro-plugins \
 	tap-lv2 \
+	pdlv2 \
 	"
 
