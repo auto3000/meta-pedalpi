@@ -26,6 +26,7 @@ RDEPENDS_${PN} += "\
 	caps-lv2 \
 	fat1-lv2 \
 	guitarix \
+	mod-distortion \
 	gxslowgear \
 	gxswitchlesswah \
 	gxvfm \
