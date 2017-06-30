@@ -33,6 +33,7 @@ RDEPENDS_${PN} += "\
 	kxstudio-lv2-extensions \
 	lv2 \
 	mda-lv2 \
+	sooperlooper-lv2-plugin \
 	mod-factory-user-data \
 	openav-artyfx \
 	shiro-plugins \
