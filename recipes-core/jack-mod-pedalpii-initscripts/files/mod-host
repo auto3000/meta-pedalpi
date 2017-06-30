@@ -18,6 +18,8 @@ DAEMON=/usr/bin/mod-host
 OPTIONS=""
 START_DAEMON=yes
 PIDFILE="/var/run/mod-host.pid"
+export HOME=/home/root
+DELAY_BEFORE_START=1
 test -f /etc/default/mod-host && . /etc/default/mod-host
 
 
@@ -33,6 +35,7 @@ test -f $DAEMON || exit 0
 case "$1" in
         start)
                 echo "Starting mod-host server:" "mod-host"
+                sleep $DELAY_BEFORE_START
                 if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
                         success
                 else
@@ -56,10 +59,9 @@ case "$1" in
                         failure
                         exit 1
                 fi
-                sleep $DELAY_AFTER_START
+                sleep $DELAY_BEFORE_START
                 rm -f $PIDFILE || true
                 if start-stop-daemon -b -S -o -p $PIDFILE -x $DAEMON -- $OPTIONS; then
-                        sleep $DELAY_AFTER_START
                         success
                 else
                         failure
