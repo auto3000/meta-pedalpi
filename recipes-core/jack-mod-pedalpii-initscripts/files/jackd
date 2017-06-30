@@ -19,7 +19,7 @@ OPTIONS=" -P70 -p256 -t2000 -d alsa -dhw:0,0 -p 256 -n 3 -r 48000 -s "
 START_DAEMON=yes
 OPTIONS="$OPTIONS"
 PIDFILE="/var/run/jackd.pid"
-DELAY_AFTER_START=1
+DELAY_BEFORE_START=0
 test -f /etc/default/jackd && . /etc/default/jackd
 
 
@@ -36,8 +36,8 @@ case "$1" in
         start)
                 echo "Starting jackd audio server:" "jackd"
                 /bin/mount -o remount,size=128M /dev/shm > /dev/null 2>&1
+                sleep $DELAY_BEFORE_START
                 if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
-                        sleep $DELAY_AFTER_START
                         success
                 else
                         failure
@@ -60,10 +60,9 @@ case "$1" in
                         failure
                         exit 1
                 fi
-                sleep $DELAY_AFTER_START
+                sleep $DELAY_BEFORE_START
                 rm -f $PIDFILE || true
                 if start-stop-daemon -b -S -o -p $PIDFILE -x $DAEMON -- $OPTIONS; then
-                        sleep $DELAY_AFTER_START
                         success
                 else
                         failure
