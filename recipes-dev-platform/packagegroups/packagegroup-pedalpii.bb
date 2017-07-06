@@ -33,6 +33,8 @@ RDEPENDS_${PN} += "\
 	gxvoxtb \
 	fomp \
 	kxstudio-lv2-extensions \
+	invada-studio-plugins-lv2 \
+	mod-lv2-data \
 	lv2 \
 	mda-lv2 \
 	sooperlooper-lv2-plugin \
