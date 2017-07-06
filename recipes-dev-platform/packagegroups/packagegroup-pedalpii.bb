@@ -31,6 +31,7 @@ RDEPENDS_${PN} += "\
 	gxswitchlesswah \
 	gxvfm \
 	gxvoxtb \
+	fomp \
 	kxstudio-lv2-extensions \
 	lv2 \
 	mda-lv2 \
