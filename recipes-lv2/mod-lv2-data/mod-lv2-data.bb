@@ -9,7 +9,7 @@ SRC_URI = "git://github.com/moddevices/mod-lv2-data.git"
 
 S = "${WORKDIR}/git"
 
-FILES_${PN} = "/home/root ${libdir}/lv2"
+FILES_${PN} = " ${libdir}/lv2 "
 
 inherit allarch
 
@@ -17,11 +17,7 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/home/root/.pedalboards
-	cp -R ${S}/pedalboards/* ${D}/home/root/.pedalboards/
-	install -d ${D}${libdir}/lv2
-	cp -R ${S}/plugins/* ${D}/${libdir}/lv2/
-	cp -R ${S}/plugins-fixed/* ${D}/${libdir}/lv2/
-	cp -R ${S}/presets/* ${D}/${libdir}/lv2/
+	install -d ${D}${libdir}/lv2/invada.lv2/modgui
+	cp -R ${S}/plugins-fixed/invada.lv2/modgui ${D}/${libdir}/lv2/invada.lv2/
 }
 
