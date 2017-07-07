@@ -1,0 +1,54 @@
+From a08eb2fe8a4a5dd13188df855ae5c42bd49ba034 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 8 Jul 2017 00:11:27 +0200
+Subject: [PATCH] build: remove strip flags and gen rule
+
+---
+ Makefile    |  2 +-
+ Makefile.mk | 10 ++--------
+ 2 files changed, 3 insertions(+), 9 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 4c0b01c..fa56401 100644
+--- a/Makefile
++++ b/Makefile
+@@ -6,7 +6,7 @@
+ 
+ include Makefile.mk
+ 
+-all: libs plugins gen
++all: libs plugins
+ 
+ # --------------------------------------------------------------
+ 
+diff --git a/Makefile.mk b/Makefile.mk
+index 36d7939..271a6b8 100644
+--- a/Makefile.mk
++++ b/Makefile.mk
+@@ -23,7 +23,7 @@ endif
+ # Set build and link flags
+ 
+ BASE_FLAGS = -Wall -Wextra -pipe
+-BASE_OPTS  = -O2 -ffast-math -mtune=generic -msse -msse2 -fdata-sections -ffunction-sections
++BASE_OPTS  = -ffast-math $(CFLAGS)
+ 
+ ifneq ($(MACOS_OLD),true)
+ # Old MacOS doesn't support this
+@@ -35,13 +35,7 @@ ifeq ($(MACOS),true)
+ LINK_OPTS  = -fdata-sections -ffunction-sections -Wl,-dead_strip -Wl,-dead_strip_dylibs
+ else
+ # Common linker flags
+-LINK_OPTS  = -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,-O1 -Wl,--as-needed -Wl,--strip-all
+-endif
+-
+-ifeq ($(RASPPI),true)
+-# Raspberry-Pi optimization flags
+-BASE_OPTS  = -O2 -ffast-math -march=armv6 -mfpu=vfp -mfloat-abi=hard
+-LINK_OPTS  = -Wl,-O1 -Wl,--as-needed -Wl,--strip-all
++LINK_OPTS  = $(LDFLAGS) 
+ endif
+ 
+ ifeq ($(NOOPT),true)
+-- 
+1.9.1
+
