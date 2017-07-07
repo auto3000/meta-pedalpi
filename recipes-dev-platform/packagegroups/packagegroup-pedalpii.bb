@@ -32,6 +32,7 @@ RDEPENDS_${PN} += "\
 	gxvfm \
 	gxvoxtb \
 	fomp \
+	dpf-plugins \
 	kxstudio-lv2-extensions \
 	invada-studio-plugins-lv2 \
 	mod-lv2-data \
