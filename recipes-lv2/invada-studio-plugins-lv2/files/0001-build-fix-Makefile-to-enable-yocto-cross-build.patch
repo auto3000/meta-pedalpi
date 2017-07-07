@@ -1,0 +1,92 @@
+From 06c8f09a3f446d8faf21f17b26c42694ebf5496a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jean-Fran=C3=A7ois=20Deverge?=
+ <jean-francois.deverge@nxp.com>
+Date: Fri, 7 Jul 2017 09:13:40 +0200
+Subject: [PATCH] build: fix Makefile to enable yocto cross build
+
+---
+ Makefile                |  6 +-----
+ plugin/Makefile         | 10 ++++------
+ plugin/library/Makefile |  6 ++----
+ 3 files changed, 7 insertions(+), 15 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index fbb1c16..d5654a7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -33,7 +33,7 @@ INSTALL_BUNDLE_DIR		=	invada.lv2
+ 
+ # GENERAL
+ 
+-SUBDIRS		=	plugin/library plugin plugingui/widgets plugingui
++SUBDIRS		=	plugin/library plugin
+ GLADEDIRS	=	plugingui/gtk 
+ DESTDIR		=	""
+ 
+@@ -69,12 +69,8 @@ install-sys:
+ 	@echo "Installing into $(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)"; 
+ 	@echo "=================================="; 
+ 	-mkdir -p		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+-	-mkdir -p		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)/gtk
+ 	cp plugin/*.so 		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+-	cp plugingui/*.so	$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+ 	cp rdf/*.ttl 		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+-	cp plugingui/gtk/*.png	$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)/gtk
+-	cp plugingui/gtk/*.xml	$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)/gtk
+ 	@echo ""
+ 
+ install-user: 
+diff --git a/plugin/Makefile b/plugin/Makefile
+index 47b98bd..9d5dc3e 100644
+--- a/plugin/Makefile
++++ b/plugin/Makefile
+@@ -19,10 +19,8 @@
+ 
+ # GENERAL
+ 
+-CC		=	gcc
+-LD		=	gcc
+-CFLAGS		=	-I. -O3 -Wall -fomit-frame-pointer -fstrength-reduce -funroll-loops -ffast-math -c -fPIC -DPIC
+-LDFLAGS		=	-shared -Llibrary -lc -lm  -linv_common -fPIC -DPIC
++CFLAGS		+=	-I. -Wall -ffast-math -c -fPIC -DPIC
++LDFLAGS		+=	-shared -Llibrary -lc -lm  -linv_common -fPIC -DPIC
+ 
+ PLUGINS		=	inv_compressor.so \
+                         inv_delay.so \
+@@ -63,10 +61,10 @@ clean:
+ 
+ %.o: %.c
+ 	@echo "Compiling $<"
+-	@$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@ 
++	@$(CC) -c $(CFLAGS) $< -o $@ 
+ 
+ %.so: %.o
+ 	@echo "Creating  $@"
+-	@$(LD) -o $@ $< $(LDFLAGS)
++	@$(CC) -o $@ $< $(LDFLAGS)
+ 
+ 
+diff --git a/plugin/library/Makefile b/plugin/library/Makefile
+index 0ac1220..7c877a8 100644
+--- a/plugin/library/Makefile
++++ b/plugin/library/Makefile
+@@ -18,9 +18,7 @@
+ 
+ # GENERAL
+ 
+-CC		=	gcc
+-LD		=	ld
+-CFLAGS		=	-I. -O3 -Wall -fomit-frame-pointer -fstrength-reduce -funroll-loops -ffast-math -c -fPIC -DPIC
++CFLAGS		+=	-I. -Wall -ffast-math -c -fPIC -DPIC
+ 
+ 
+ 
+@@ -47,4 +45,4 @@ clean:
+ 
+ %.o: %.c
+ 			@echo "Compiling $<"
+-			@$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@ 
++			@$(CC) -c $(CFLAGS) $< -o $@ 
+-- 
+2.7.4
+
