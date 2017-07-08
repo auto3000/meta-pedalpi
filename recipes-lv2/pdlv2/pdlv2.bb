@@ -19,7 +19,7 @@ FILES_${PN} = " ${libdir}/lv2 "
 EXTRA_OEMAKE = " INSTALL_DIR=${D}${libdir}/lv2 LV2_INCLUDE_DIR=${STAGING_INCDIR}/lv2 INSTALL_DIR=${D}${libdir}/lv2 LIBPD_FLAGS="install prefix=${STAGING_DIR_HOST}/usr" "
 
 do_configure_prepend() {
-	bundle config build.nokogiri --use-system-libraries
+	bundle config build.nokogiri 
 	bundle install
 }
 
