@@ -27,6 +27,7 @@ RDEPENDS_${PN} += "\
 	fat1-lv2 \
 	swh-lv2 \
 	guitarix \
+	mclk-lv2 \
 	mod-distortion \
 	gxslowgear \
 	gxswitchlesswah \
