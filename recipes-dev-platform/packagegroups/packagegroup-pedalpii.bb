@@ -33,6 +33,7 @@ RDEPENDS_${PN} += "\
 	gxswitchlesswah \
 	gxvfm \
 	gxvoxtb \
+	xfade-lv2 \
 	fomp \
 	dpf-plugins \
 	kxstudio-lv2-extensions \
