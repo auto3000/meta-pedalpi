@@ -25,6 +25,7 @@ RDEPENDS_${PN} += "\
 	mod-host \
 	caps-lv2 \
 	fat1-lv2 \
+	swh-lv2 \
 	guitarix \
 	mod-distortion \
 	gxslowgear \
