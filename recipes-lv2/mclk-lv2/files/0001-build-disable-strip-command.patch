@@ -1,0 +1,50 @@
+From ca377608b9f5336906813150db9101f8cbd7b797 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 15 Jul 2017 14:50:18 +0200
+Subject: [PATCH] build: disable strip command
+
+---
+ Makefile | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index af29515..64436da 100644
+--- a/Makefile
++++ b/Makefile
+@@ -9,9 +9,6 @@ PREFIX ?= /usr/local
+ CFLAGS ?= $(OPTIMIZATIONS) -Wall
+ LIBDIR ?= lib
+ 
+-STRIP?=strip
+-STRIPFLAGS?=-s
+-
+ mclk_VERSION?=$(shell git describe --tags HEAD 2>/dev/null | sed 's/-g.*$$//;s/^v//' || echo "LV2")
+ ###############################################################################
+ LIB_EXT=.so
+@@ -28,7 +25,6 @@ ifeq ($(UNAME),Darwin)
+   LV2LDFLAGS=-dynamiclib
+   LIB_EXT=.dylib
+   EXTENDED_RE=-E
+-  STRIPFLAGS=-u -r -arch all -s lv2syms
+   targets+=lv2syms
+ else
+   LV2LDFLAGS=-Wl,-Bstatic -Wl,-Bdynamic
+@@ -38,7 +34,6 @@ endif
+ 
+ ifneq ($(XWIN),)
+   CC=$(XWIN)-gcc
+-  STRIP=$(XWIN)-strip
+   LV2LDFLAGS=-Wl,-Bstatic -Wl,-Bdynamic -Wl,--as-needed
+   LIB_EXT=.dll
+   override LDFLAGS += -static-libgcc -static-libstdc++
+@@ -100,7 +95,6 @@ $(BUILDDIR)$(LV2NAME)$(LIB_EXT): src/$(LV2NAME).c
+ 	$(CC) $(CPPFLAGS) $(CFLAGS) \
+ 	  -o $(BUILDDIR)$(LV2NAME)$(LIB_EXT) src/$(LV2NAME).c \
+ 	  -shared $(LV2LDFLAGS) $(LDFLAGS) $(LOADLIBES)
+-	$(STRIP) $(STRIPFLAGS) $(BUILDDIR)$(LV2NAME)$(LIB_EXT)
+ 
+ $(BUILDDIR)modgui: modgui/
+ 	@mkdir -p $(BUILDDIR)/modgui
+-- 
+1.9.1
+
