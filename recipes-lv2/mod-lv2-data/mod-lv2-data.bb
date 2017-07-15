@@ -7,6 +7,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293
 SRCREV = "45dc0960d7b2b9ad9f6ca2835f1fcf06a2e165ed"
 SRC_URI = "git://github.com/moddevices/mod-lv2-data.git"
 
+DEPENDS = " guitarix "
+
 S = "${WORKDIR}/git"
 
 FILES_${PN} = " ${libdir}/lv2 "
@@ -47,5 +49,32 @@ do_install() {
         cp ${S}/plugins/3BandEQ.lv2/manifest.ttl ${S}/plugins/3BandEQ.lv2/3BandEQ_dsp.ttl ${S}/plugins/3BandEQ.lv2/default-preset.ttl ${S}/plugins/3BandEQ.lv2/presets.ttl ${D}/${libdir}/lv2/3BandEQ.lv2
         cp ${S}/plugins/MaFreeverb.lv2/manifest.ttl ${S}/plugins/MaFreeverb.lv2/MaFreeverb_dsp.ttl ${S}/plugins/MaFreeverb.lv2/default-preset.ttl ${D}/${libdir}/lv2/MaFreeverb.lv2
 
+	install -d ${D}${libdir}/lv2/Larynx.lv2
+	install -d ${D}${libdir}/lv2/xfade.lv2
+	install -d ${D}${libdir}/lv2/Modulay.lv2
+	install -d ${D}${libdir}/lv2/Pitchotto.lv2
+	install -d ${D}${libdir}/lv2/Harmless.lv2
+	install -d ${D}${libdir}/lv2/gx_mole.lv2
+	install -d ${D}${libdir}/lv2/gx_gcb_95.lv2
+	install -d ${D}${libdir}/lv2/artyfx.lv2
+	install -d ${D}${libdir}/lv2/gx_muff.lv2
+	install -d ${D}${libdir}/lv2/fomp.lv2
+	install -d ${D}${libdir}/lv2/Shiroverb.lv2
+	cp -R ${S}/plugins-fixed/Larynx.lv2/modgui ${S}/plugins-fixed/Larynx.lv2/modgui.ttl ${D}/${libdir}/lv2/Larynx.lv2/
+	cp -R ${S}/plugins-fixed/xfade.lv2/modgui ${S}/plugins-fixed/xfade.lv2/modgui.ttl ${D}/${libdir}/lv2/xfade.lv2/
+	cp -R ${S}/plugins-fixed/Modulay.lv2/modgui ${S}/plugins-fixed/Modulay.lv2/modgui.ttl ${D}/${libdir}/lv2/Modulay.lv2/
+	cp -R ${S}/plugins-fixed/Pitchotto.lv2/modgui ${S}/plugins-fixed/Pitchotto.lv2/modgui.ttl ${D}/${libdir}/lv2/Pitchotto.lv2/
+	cp -R ${S}/plugins-fixed/Harmless.lv2/modgui ${S}/plugins-fixed/Harmless.lv2/modgui.ttl ${D}/${libdir}/lv2/Harmless.lv2/
+	cp -R ${S}/plugins-fixed/gx_mole.lv2/modgui ${S}/plugins-fixed/gx_mole.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_mole.lv2/
+	cp -R ${S}/plugins-fixed/gx_gcb_95.lv2/modgui ${S}/plugins-fixed/gx_gcb_95.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_gcb_95.lv2/
+	cp -R ${S}/plugins-fixed/artyfx.lv2/modgui ${S}/plugins-fixed/artyfx.lv2/modguis.ttl ${D}/${libdir}/lv2/artyfx.lv2/
+	cp -R ${S}/plugins-fixed/gx_muff.lv2/modgui ${S}/plugins-fixed/gx_muff.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_muff.lv2/
+	cp -R ${S}/plugins-fixed/fomp.lv2/modgui ${S}/plugins-fixed/fomp.lv2/modguis.ttl ${D}/${libdir}/lv2/fomp.lv2/
+	cp -R ${S}/plugins-fixed/Shiroverb.lv2/modgui ${S}/plugins-fixed/Shiroverb.lv2/modgui.ttl ${D}/${libdir}/lv2/Shiroverb.lv2/
+
+	install -d ${D}${libdir}/lv2/gx_zita_rev1.lv2
+	install -d ${D}${libdir}/lv2/gx_colwah.lv2
+	cp -R ${S}/plugins/gx_zita_rev1.lv2/modgui ${S}/plugins/gx_zita_rev1.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_zita_rev1.lv2/
+	cp -R ${S}/plugins/gx_colwah.lv2/modgui ${S}/plugins/gx_colwah.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_colwah.lv2/
 }
 

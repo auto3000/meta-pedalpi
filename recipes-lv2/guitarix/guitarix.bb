@@ -20,5 +20,8 @@ do_install_append() {
 	# built useless files that we are removing now
 	rm ${D}${libdir}/lv2/*.lv2/*_gui.so
 	rm ${D}${libdir}/libgxw*
+
+	# Clean files overriden by mod-lv2-data
+	rm -R ${D}${libdir}/lv2/gx_colwah.lv2/modgui.ttl
 }
 
