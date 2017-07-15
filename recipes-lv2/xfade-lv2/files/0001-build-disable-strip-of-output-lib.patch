@@ -1,0 +1,24 @@
+From 53c017496245e0bce3aa5d628730edc0ca788ac4 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 15 Jul 2017 15:08:22 +0200
+Subject: [PATCH] build: disable strip of output lib
+
+---
+ Makefile | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 28d71b8..3155e90 100644
+--- a/Makefile
++++ b/Makefile
+@@ -80,7 +80,6 @@ $(BUILDDIR)$(LV2NAME)$(LIB_EXT): $(LV2NAME).c
+ 	$(CC) $(CPPFLAGS) $(CFLAGS) \
+ 	  -o $(BUILDDIR)$(LV2NAME)$(LIB_EXT) $(LV2NAME).c \
+ 	  -shared $(LV2LDFLAGS) $(LDFLAGS) $(LOADLIBES)
+-	$(STRIP) $(STRIPFLAGS) $(BUILDDIR)$(LV2NAME)$(LIB_EXT)
+ 
+ # install/uninstall/clean target definitions
+ 
+-- 
+1.9.1
+
