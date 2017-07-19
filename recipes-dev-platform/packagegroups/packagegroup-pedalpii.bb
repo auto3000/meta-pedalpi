@@ -26,6 +26,7 @@ RDEPENDS_${PN} += "\
 	caps-lv2 \
 	fat1-lv2 \
 	stepseq-lv2 \
+	modspectre-lv2 \
 	swh-lv2 \
 	guitarix \
 	mclk-lv2 \
