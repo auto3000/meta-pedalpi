@@ -30,6 +30,7 @@ RDEPENDS_${PN} += "\
 	fil4-lv2 \
 	modmeter-lv2 \
 	tinyamp-lv2 \
+	midigen-lv2 \
 	swh-lv2 \
 	guitarix \
 	mclk-lv2 \
