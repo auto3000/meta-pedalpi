@@ -31,6 +31,7 @@ RDEPENDS_${PN} += "\
 	modmeter-lv2 \
 	tinyamp-lv2 \
 	midigen-lv2 \
+	midifilter-lv2 \ 
 	mtc-lv2 \
 	tuna-lv2 \
 	swh-lv2 \
