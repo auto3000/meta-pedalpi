@@ -28,6 +28,7 @@ RDEPENDS_${PN} += "\
 	stepseq-lv2 \
 	modspectre-lv2 \
 	fil4-lv2 \
+	modmeter-lv2 \
 	swh-lv2 \
 	guitarix \
 	mclk-lv2 \
