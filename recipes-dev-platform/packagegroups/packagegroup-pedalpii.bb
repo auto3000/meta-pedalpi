@@ -24,6 +24,7 @@ RDEPENDS_${PN} += "\
 	mod-ui \
 	mod-host \
 	caps-lv2 \
+	balance-lv2 \
 	fat1-lv2 \
 	stepseq-lv2 \
 	modspectre-lv2 \
