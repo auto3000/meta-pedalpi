@@ -53,6 +53,7 @@ RDEPENDS_${PN} += "\
 	invada-studio-plugins-lv2 \
 	calf-studio-gear \
 	mod-lv2-data \
+	convo-lv2 \
 	lv2 \
 	mda-lv2 \
 	sooperlooper-lv2-plugin \
