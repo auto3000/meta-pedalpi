@@ -13,6 +13,7 @@ RDEPENDS_${PN} += "\
 	jack-mod-pedalpii-initscripts-mod-host \
 	jack-mod-pedalpii-initscripts-mod-ui \
 	jack-mod-pedalpii-initscripts-pedalpii \
+	zita-convolver \ 
 	pedalpii \
 	jack-server \
 	mod-lilvlib  \
@@ -25,6 +26,7 @@ RDEPENDS_${PN} += "\
 	mod-host \
 	caps-lv2 \
 	balance-lv2 \
+	convoLV2 \
 	fat1-lv2 \
 	stepseq-lv2 \
 	modspectre-lv2 \
