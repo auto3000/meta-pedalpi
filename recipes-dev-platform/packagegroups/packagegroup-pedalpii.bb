@@ -25,6 +25,7 @@ RDEPENDS_${PN} += "\
 	mod-host \
 	caps-lv2 \
 	balance-lv2 \
+	controlfilter-lv2 \
 	fat1-lv2 \
 	stepseq-lv2 \
 	modspectre-lv2 \
