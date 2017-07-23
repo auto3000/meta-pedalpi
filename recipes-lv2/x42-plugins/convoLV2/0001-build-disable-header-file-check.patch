@@ -1,0 +1,26 @@
+From 9feab68235068dc9f6feee5fa28d18a2c1bd92d8 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 23 Jul 2017 00:16:14 +0200
+Subject: [PATCH] build: disable header file check
+
+---
+ Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 1d446cf..be2b65a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -62,9 +62,6 @@ ifneq ($(BUILDGTK), no)
+ endif
+ 
+ ifeq ($(LIBZITACONVOLVER),)
+-  ifeq ($(shell test -f /usr/include/zita-convolver.h -o -f /usr/local/include/zita-convolver.h || echo no ), no)
+-    $(error "libzita-convolver3, is required")
+-  endif
+   LOADLIBES += -lzita-convolver
+ endif
+ 
+-- 
+1.9.1
+
