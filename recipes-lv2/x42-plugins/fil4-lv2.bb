@@ -1,5 +1,7 @@
 require x42-plugins.inc
 
+SUMMARY = "4 Band Parametric EQ"
+
 SECTION = "multimedia"
 
 LICENSE = "GPLv2"
