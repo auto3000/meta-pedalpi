@@ -35,6 +35,7 @@ RDEPENDS_${PN} += "\
 	midigen-lv2 \
 	midifilter-lv2 \ 
 	mtc-lv2 \
+	onsettrigger-lv2 \
 	tuna-lv2 \
 	swh-lv2 \
 	guitarix \
