@@ -60,5 +60,6 @@ RDEPENDS_${PN} += "\
 	shiro-plugins \
 	tap-lv2 \
 	pdlv2 \
+	setbfree \
 	"
 
