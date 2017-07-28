@@ -61,5 +61,6 @@ RDEPENDS_${PN} += "\
 	tap-lv2 \
 	pdlv2 \
 	setbfree \
+	beatslash-lv2 \
 	"
 
