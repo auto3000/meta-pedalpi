@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=783b7e40cdfb4a1344d15b1f7081af66"
 SRC_URI = "git://github.com/blablack/beatslash-lv2.git"
 SRCREV = "48efeda5377b6cb9f247f4282d0448251b23a819"
 
-DEPENDS = " lvtk "
+DEPENDS = " lvtk gtkmm "
 
 FILES_${PN} = "${libdir}/lv2/"
 
