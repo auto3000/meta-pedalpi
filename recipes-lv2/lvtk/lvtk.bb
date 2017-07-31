@@ -7,5 +7,7 @@ SRCREV = "7c0ffdf49baecf92137441065ac921a1e57d2ca9"
 
 S = "${WORKDIR}/git/"
 
+DEPENDS = " gtkmm "
+
 inherit waf
 
