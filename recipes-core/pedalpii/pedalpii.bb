@@ -1,6 +1,6 @@
 DESCRIPTION = "Physical (button/LCD) and console interfaces for the pedalpii."
 SRC_URI = "git://github.com/auto3000/pedalpii.git"
-SRCREV = "d75f3fa4cbe6529723f7250e0ba8cbe7c090d1f1"
+SRCREV = "dfaf4f1f67831463c586f0270472d520e1e8d8dd"
 LICENSE = "GPLv3" 
 
 S = "${WORKDIR}/git/"
