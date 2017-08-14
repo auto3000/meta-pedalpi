@@ -15,5 +15,5 @@ FILES_${PN} = "  /usr/etc \
   ${bindir} \
   ${libdir} "
 
-inherit waf
+inherit waf pkgconfig
 
