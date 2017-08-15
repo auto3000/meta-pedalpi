@@ -6,5 +6,5 @@ LICENSE = "MIT"
 S = "${WORKDIR}/git/"
 LIC_FILES_CHKSUM = "file://COPYING;md5=7aceb3a3edc99517b08f5cdd557e11fb"
 
-inherit waf
+inherit waf pkgconfig
 
