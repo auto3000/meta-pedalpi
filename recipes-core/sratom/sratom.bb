@@ -8,5 +8,5 @@ DEPENDS = "serd sord"
 S = "${WORKDIR}/git/"
 LIC_FILES_CHKSUM = "file://COPYING;md5=394d0c1b7157c45525c00dbf16afbe51"
 
-inherit waf
+inherit waf pkgconfig
 
