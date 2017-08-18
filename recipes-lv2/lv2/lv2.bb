@@ -12,3 +12,4 @@ inherit waf
 
 FILES_${PN} += "${datadir}/lv2specgen/*"
 
+BBCLASSEXTEND = "native"
