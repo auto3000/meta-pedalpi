@@ -7,8 +7,7 @@ SRCREV = "56f064dce822a53ad668c38d1bb7b2b3025fe270"
 
 S = "${WORKDIR}/git/"
 
-
-inherit waf
+inherit waf pkgconfig
 
 FILES_${PN} += "${datadir}/lv2specgen/*"
 
