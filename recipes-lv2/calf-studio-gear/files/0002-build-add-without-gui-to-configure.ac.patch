@@ -1,0 +1,31 @@
+From 37f92021aac0c3e4b9643e9a9f9dcc0cb6c323f3 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 20 Aug 2017 10:01:45 +0200
+Subject: [PATCH 2/2] build: add --without-gui to configure.ac
+
+---
+ configure.ac | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index b35a93b..6c8562d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -102,6 +102,14 @@ fi
+ 
+ ############################################################################################
+ # Look for settings and installed libraries to determine what to compile/install/use
++if test "GUI_ENABLED" = "yes"; then
++  AC_MSG_CHECKING([whether to allow GUI])
++  AC_ARG_WITH(gui,
++    AC_HELP_STRING([--without-gui],[disable GUI]),
++      [if test "$withval" = "no"; then GUI_ENABLED="no"; fi],[])
++  AC_MSG_RESULT($GUI_ENABLED)
++fi
++
+ if test "$LV2_FOUND" = "yes"; then
+   AC_MSG_CHECKING([whether to allow LV2])
+   AC_ARG_WITH(lv2,
+-- 
+2.7.4
+
