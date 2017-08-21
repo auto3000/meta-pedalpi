@@ -13,7 +13,8 @@ FILES_${PN} = " ${libdir}/lv2 "
 
 S = "${WORKDIR}/git"
 
-EXTRA_OEMAKE = " INSTALL_PATH=${D}${libdir}/lv2 "
+# -j1 Fix issues rised with parallel builds
+EXTRA_OEMAKE = " INSTALL_PATH=${D}${libdir}/lv2 -j1 "
 
 do_install() {
         oe_runmake install-system
