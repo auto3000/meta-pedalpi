@@ -1,0 +1,35 @@
+From e9262e8e020eff18cbe683a6fda3146951982771 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com> 
+Date: Tue, 22 Aug 2017 16:17:59 +0200
+Subject: [PATCH] build: add dependency rule
+
+---
+ Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index c82c7e6..fb1d611 100644
+--- a/Makefile
++++ b/Makefile
+@@ -71,6 +71,9 @@ util: util/blo.o util/iir.o util/db.o util/rms.o util/pitchscale.o
+ %.c: OBJ = $(shell echo $@ | sed 's/\.c$$/-@OS@.$(EXT)/')
+ %.c: %.xml xslt/source.xsl xslt/manifest.xsl
+ 	xsltproc -novalid xslt/source.xsl $*.xml | sed 's/LADSPA_Data/float/g' > $@
++
++%.ttl.in: OBJ = $(shell echo $@ | sed 's/\.c$$/-@OS@.$(EXT)/')
++%.ttl.in: %.xml %.c
+ 	xsltproc -novalid -stringparam obj `basename $(OBJ)` xslt/manifest.xsl $*.xml > `dirname $@`/manifest.ttl.in
+ 
+ %.ttl: %.xml xslt/turtle.xsl
+@@ -81,7 +84,7 @@ util: util/blo.o util/iir.o util/db.o util/rms.o util/pitchscale.o
+ 	$(CC) $(PLUGIN_CFLAGS) $($(NAME)_CFLAGS) $*.c -c -o $@
+ 
+ %.$(EXT): NAME = $(shell echo $@ | sed 's/plugins\/\(.*\)-swh.*/\1/')
+-%.$(EXT): %.xml %.o %.ttl
++%.$(EXT): %.xml %.o %.ttl.in
+ 	$(CC) $*.o $(PLUGIN_LDFLAGS) $($(NAME)_LDFLAGS) -o $@
+ 	cp $@ $*-$(OS).$(EXT)
+ 	sed 's/@OS@/$(OS)/g' < `dirname $@`/manifest.ttl.in > `dirname $@`/manifest.ttl
+-- 
+2.7.4
+
