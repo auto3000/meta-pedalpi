@@ -51,6 +51,7 @@ RDEPENDS_${PN} += "\
 	dpf-plugins \
 	kxstudio-lv2-extensions \
 	invada-studio-plugins-lv2 \
+	calf-studio-gear \
 	mod-lv2-data \
 	lv2 \
 	mda-lv2 \
