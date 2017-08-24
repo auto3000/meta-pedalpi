@@ -1,25 +1,54 @@
-From 37f92021aac0c3e4b9643e9a9f9dcc0cb6c323f3 Mon Sep 17 00:00:00 2001
+From 2f85f9805f59a435398938da71299fd6ebf510bd Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
-Date: Sun, 20 Aug 2017 10:01:45 +0200
+Date: Thu, 24 Aug 2017 15:24:13 +0200
 Subject: [PATCH 2/2] build: add --without-gui to configure.ac
 
 ---
- configure.ac | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ configure.ac | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index b35a93b..6c8562d 100644
+index b35a93b..1e05e40 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -102,6 +102,14 @@ fi
+@@ -67,8 +67,13 @@ PKG_CHECK_MODULES(FLUIDSYNTH_DEPS, fluidsynth >= 1.0.7, true, AC_MSG_ERROR([flui
+ AC_CHECK_PROG(SORDI_ENABLED, sordi, yes, no)
+ 
+ if test "$have_jack_header" = "yes"; then
+-  PKG_CHECK_MODULES(JACK_DEPS, jack >= 0.103.0,
+-    AC_CHECK_LIB([jack], [jack_port_register], JACK_FOUND="yes", ),)
++  AC_ARG_WITH([jack],
++    AC_HELP_STRING([--without-jack],[disable JACK]))
++
++  AS_IF([test "x$with_jack" != "xno"],
++  	[PKG_CHECK_MODULES(JACK_DEPS, jack >= 0.103.0,
++	    AC_CHECK_LIB([jack], [jack_port_register], JACK_FOUND="yes", ),)
++	])
+ fi
+ 
+ if test "$JACK_FOUND" = "yes"; then
+@@ -94,14 +99,23 @@ LV2_ENABLED=$LV2_FOUND
+ LASH_ENABLED=$LASH_FOUND
+ 
+ if test "$JACK_FOUND" = "yes" -o "$LV2_FOUND" = "yes"; then
+-  PKG_CHECK_MODULES(GUI_DEPS, gtk+-2.0 >= 2.12.0 cairo >= 1.2.0,
+-    GUI_ENABLED="yes",
+-    GUI_ENABLED="no (GTK+ 2.12 and cairo 1.2 or newer required)"
+-  )
++  AC_ARG_WITH([gui],
++    AC_HELP_STRING([--without-gui],[disable GUI]))
++
++  AS_IF([test "x$with_gui" != "xno"],
++  	[PKG_CHECK_MODULES(GUI_DEPS, gtk+-2.0 >= 2.12.0 cairo >= 1.2.0,
++	    GUI_ENABLED="yes",
++	    GUI_ENABLED="no (GTK+ 2.12 and cairo 1.2 or newer required)")
++	])
+ fi
  
  ############################################################################################
  # Look for settings and installed libraries to determine what to compile/install/use
-+if test "GUI_ENABLED" = "yes"; then
++if test "$GUI_ENABLED" = "yes"; then
 +  AC_MSG_CHECKING([whether to allow GUI])
-+  AC_ARG_WITH(gui,
-+    AC_HELP_STRING([--without-gui],[disable GUI]),
-+      [if test "$withval" = "no"; then GUI_ENABLED="no"; fi],[])
 +  AC_MSG_RESULT($GUI_ENABLED)
 +fi
 +

@@ -14,7 +14,7 @@ FILES_${PN} = " ${libdir}/calf \
 	${libdir}/lv2/ \
 	"
 
-EXTRA_OECONF = " --without-gui "
+EXTRA_OECONF = " --without-gui --without-jack "
 
 S = "${WORKDIR}/git/"
 
