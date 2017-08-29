@@ -1,0 +1,25 @@
+From 01f8d6495b063736cbdea30724fe13e1781f45a2 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Tue, 29 Aug 2017 12:17:56 +0200
+Subject: [PATCH] build: remove object stripping
+
+---
+ Makefile.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.mk b/Makefile.mk
+index edb804b..6435273 100644
+--- a/Makefile.mk
++++ b/Makefile.mk
+@@ -4,7 +4,7 @@ CXX ?= g++
+ 
+ # flags
+ CXXFLAGS += -O3 -ffast-math -Wall -fPIC -DPIC $(shell pkg-config --cflags fftw3f) -I. -I../Shared_files
+-LDFLAGS += -shared -Wl,-O1 -Wl,--as-needed -Wl,--no-undefined -Wl,--strip-all $(shell pkg-config --libs fftw3f) -larmadillo -lm
++LDFLAGS += -shared -Wl,-O1 -Wl,--as-needed -Wl,--no-undefined $(shell pkg-config --libs fftw3f) -larmadillo -lm
+ 
+ ifneq ($(NOOPT),true)
+ CXXFLAGS += -mtune=generic -msse -msse2 -mfpmath=sse
+-- 
+2.7.4
+
