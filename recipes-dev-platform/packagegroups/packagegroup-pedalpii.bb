@@ -42,6 +42,7 @@ RDEPENDS_${PN} += "\
 	guitarix \
 	mclk-lv2 \
 	mod-distortion \
+	mod-pitchshifter \
 	gxslowgear \
 	gxswitchlesswah \
 	gxvfm \
