@@ -66,5 +66,6 @@ RDEPENDS_${PN} += "\
 	setbfree \
 	ams-lv2 \
 	beatslash-lv2 \
+	deteriorate-lv2 \
 	"
 
