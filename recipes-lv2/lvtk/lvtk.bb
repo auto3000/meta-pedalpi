@@ -9,5 +9,5 @@ S = "${WORKDIR}/git/"
 
 DEPENDS = " gtkmm lv2 "
 
-inherit waf
+inherit waf pkgconfig
 
