@@ -23,6 +23,7 @@ RDEPENDS_${PN} += "\
 	sratom \
 	mod-ui \
 	mod-host \
+	rakarrack-lv2 \
 	caps-lv2 \
 	balance-lv2 \
 	controlfilter-lv2 \
