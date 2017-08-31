@@ -57,6 +57,7 @@ RDEPENDS_${PN} += "\
 	mod-lv2-data \
 	convo-lv2 \
 	lv2 \
+	lv2-plugins \
 	mda-lv2 \
 	sooperlooper-lv2-plugin \
 	mod-factory-user-data \
