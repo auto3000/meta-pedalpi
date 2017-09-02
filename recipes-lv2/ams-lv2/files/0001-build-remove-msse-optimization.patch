@@ -1,0 +1,34 @@
+From 69a459753727d13d1bbc56e0528c195e254c5d43 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 2 Sep 2017 21:45:56 +0200
+Subject: [PATCH] build: remove msse optimization
+
+---
+ wscript | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wscript b/wscript
+index 068dc19..1a9f88f 100644
+--- a/wscript
++++ b/wscript
+@@ -75,7 +75,7 @@ def build_plugin(bld, bundle, name, source, cxxflags=[], cppflags=[], libs=[], a
+     obj.target       = os.path.join(bundle, name)
+     if cxxflags != []:
+         obj.cxxflags = cxxflags
+-    obj.cxxflags = obj.cxxflags + ['-msse', '-mfpmath=sse', '-ffast-math']
++    obj.cxxflags = obj.cxxflags + ['-ffast-math']
+     if cppflags != []:
+         obj.cppflags = cppflags
+     if libs != []:
+@@ -98,7 +98,7 @@ def build_plugin_gui(bld, bundle, name, source, cxxflags=[], cppflags=[], libs=[
+     obj.target       = os.path.join(bundle, name)
+     if cxxflags != []:
+         obj.cxxflags = cxxflags
+-    obj.cxxflags = obj.cxxflags + ['-msse', '-mfpmath=sse', '-ffast-math']
++    obj.cxxflags = obj.cxxflags + ['-ffast-math']
+     if cppflags != []:
+         obj.cppflags = cppflags
+     if libs != []:
+-- 
+1.9.1
+
