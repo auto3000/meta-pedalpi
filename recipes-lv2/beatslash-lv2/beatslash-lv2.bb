@@ -13,3 +13,8 @@ S = "${WORKDIR}/git/"
 
 inherit waf
 
+# Fix installation issue on parallel builds
+waf_do_install() {
+        ${S}/waf install --destdir=${D} -j1
+}
+
