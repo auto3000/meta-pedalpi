@@ -8,7 +8,9 @@ DEPENDS = "jack lilv readline"
 
 SRCREV = "f84cd25f31bab67128696f32ced7f37f137ab280"
 SRC_URI = "git://github.com/moddevices/mod-host.git \
-	file://0001-build-remove-object-stripping-and-O3-optimization.patch"
+	file://0001-build-remove-object-stripping-and-O3-optimization.patch \
+	file://0001-logger-add-syslog-support.patch \
+	"
 
 FILES_${PN} = " /usr/bin/mod-host /usr/lib/jack/ "
 

@@ -1,0 +1,453 @@
+From dc87e787201a3a97a0051df37ed3392294dd6b6a Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 16 Sep 2017 18:50:18 +0200
+Subject: [PATCH] logger: add syslog support
+
+---
+ src/completer.c | 10 +++++-----
+ src/effects.c   | 32 ++++++++++++++++----------------
+ src/logger.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
+ src/logger.h    | 27 +++++++++++++++++++++++++++
+ src/mod-host.c  | 25 ++++++++++---------------
+ src/protocol.c  | 10 +++++-----
+ src/worker.c    |  3 ++-
+ 7 files changed, 107 insertions(+), 42 deletions(-)
+ create mode 100644 src/logger.c
+ create mode 100644 src/logger.h
+
+diff --git a/src/completer.c b/src/completer.c
+index 42b2bb4..6d08068 100644
+--- a/src/completer.c
++++ b/src/completer.c
+@@ -31,7 +31,7 @@
+ #include "completer.h"
+ #include "effects.h"
+ #include "utils.h"
+-
++#include "logger.h"
+ 
+ /*
+ ************************************************************************************************************************
+@@ -141,7 +141,7 @@ static char *dupstr(const char *s)
+ 
+     if (!r)
+     {
+-        fprintf(stderr, "malloc error\n");
++        logger(LOG_ERR, "malloc error");
+         exit(EXIT_FAILURE);
+     }
+ 
+@@ -325,16 +325,16 @@ static char **completion(const char *text, int start, int end)
+             {
+                 effects_get_parameter_info(atoi(cmd[1]), cmd[2], g_param_range, g_scale_points);
+ 
+-                printf("\ndef: %.03f, min: %.03f, max: %.03f, curr: %.03f\n",
++                logger(LOG_INFO, "def: %.03f, min: %.03f, max: %.03f, curr: %.03f",
+                        *g_param_range[0], *g_param_range[1], *g_param_range[2], *g_param_range[3]);
+ 
+                 if (g_scale_points[0])
+                 {
+                     uint32_t i;
+-                    printf("scale points:\n");
++                    logger(LOG_INFO, "scale points:");
+                     for (i = 0; g_scale_points[i]; i+=2)
+                     {
+-                        printf("   %s: %s\n", g_scale_points[i], g_scale_points[i+1]);
++                        logger(LOG_INFO, "   %s: %s", g_scale_points[i], g_scale_points[i+1]);
+                     }
+                 }
+ 
+diff --git a/src/effects.c b/src/effects.c
+index d27992f..6c14968 100644
+--- a/src/effects.c
++++ b/src/effects.c
+@@ -102,7 +102,7 @@
+ #include "sha1/sha1.h"
+ #include "rtmempool/list.h"
+ #include "rtmempool/rtmempool.h"
+-
++#include "logger.h"
+ 
+ /*
+ ************************************************************************************************************************
+@@ -992,7 +992,7 @@ static int ProcessPlugin(jack_nframes_t nframes, void *arg)
+                 jack_midi_event_get(&ev, buf, j);
+                 if (!lv2_evbuf_write(&iter, ev.time, 0, g_urids.midi_MidiEvent, ev.size, ev.buffer))
+                 {
+-                    fprintf(stderr, "lv2 evbuf write failed\n");
++                    logger(LOG_ERR, "lv2 evbuf write failed");
+                 }
+             }
+ 
+@@ -1800,7 +1800,7 @@ static void SetParameterFromState(const char* symbol, void* user_data,
+     }
+     else
+     {
+-        fprintf(stderr, "SetParameterFromState called with unknown type: %u %u\n", type, size);
++        logger(LOG_ERR, "SetParameterFromState called with unknown type: %u %u", type, size);
+         return;
+     }
+ 
+@@ -2078,7 +2078,7 @@ int effects_init(void* client)
+     if (!rtsafe_memory_pool_create(&g_rtsafe_mem_pool, "mod-host", sizeof(postponed_event_list_data),
+                                    MAX_POSTPONED_EVENTS))
+     {
+-        fprintf(stderr, "can't allocate realtime-safe memory pool\n");
++        logger(LOG_ERR, "can't allocate realtime-safe memory pool");
+         if (client == NULL)
+             jack_client_close(g_jack_global_client);
+         return ERR_MEMORY_ALLOCATION;
+@@ -2222,7 +2222,7 @@ int effects_init(void* client)
+ 
+     if (! g_midi_in_port)
+     {
+-        fprintf(stderr, "can't register global jack midi-in port\n");
++        logger(LOG_ERR, "can't register global jack midi-in port");
+         if (client == NULL)
+             jack_client_close(g_jack_global_client);
+         return ERR_JACK_PORT_REGISTER;
+@@ -2364,7 +2364,7 @@ int effects_init(void* client)
+     /* Try activate the jack global client */
+     if (jack_activate(g_jack_global_client) != 0)
+     {
+-        fprintf(stderr, "can't activate global jack client\n");
++        logger(LOG_ERR, "can't activate global jack client");
+         if (client == NULL)
+             jack_client_close(g_jack_global_client);
+         return ERR_JACK_CLIENT_ACTIVATION;
+@@ -2531,7 +2531,7 @@ int effects_add(const char *uid, int instance)
+ 
+     if (!jack_client)
+     {
+-        fprintf(stderr, "can't get jack client\n");
++        logger(LOG_ERR, "can't get jack client");
+         error = ERR_JACK_CLIENT_CREATION;
+         goto error;
+     }
+@@ -2559,7 +2559,7 @@ int effects_add(const char *uid, int instance)
+         if (!plugin)
+ #endif
+         {
+-            fprintf(stderr, "can't get plugin\n");
++            logger(LOG_ERR, "can't get plugin");
+             error = ERR_LV2_INVALID_URI;
+             goto error;
+         }
+@@ -2575,7 +2575,7 @@ int effects_add(const char *uid, int instance)
+ 
+     if (!lilv_instance)
+     {
+-        fprintf(stderr, "can't get lilv instance\n");
++        logger(LOG_ERR, "can't get lilv instance");
+         error = ERR_LV2_INSTANTIATION;
+         goto error;
+     }
+@@ -2699,7 +2699,7 @@ int effects_add(const char *uid, int instance)
+             audio_buffer = (float *) calloc(g_sample_rate, sizeof(float));
+             if (!audio_buffer)
+             {
+-                fprintf(stderr, "can't get audio buffer\n");
++                logger(LOG_ERR, "can't get audio buffer");
+                 error = ERR_MEMORY_ALLOCATION;
+                 goto error;
+             }
+@@ -2712,7 +2712,7 @@ int effects_add(const char *uid, int instance)
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
+             if (jack_port == NULL)
+             {
+-                fprintf(stderr, "can't get jack port\n");
++                logger(LOG_ERR, "can't get jack port");
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -2730,7 +2730,7 @@ int effects_add(const char *uid, int instance)
+             control_buffer = (float *) malloc(sizeof(float));
+             if (!control_buffer)
+             {
+-                fprintf(stderr, "can't get control buffer\n");
++                logger(LOG_ERR, "can't get control buffer");
+                 error = ERR_MEMORY_ALLOCATION;
+                 goto error;
+             }
+@@ -2834,7 +2834,7 @@ int effects_add(const char *uid, int instance)
+             cv_buffer = (float *) calloc(g_sample_rate, sizeof(float));
+             if (!cv_buffer)
+             {
+-                fprintf(stderr, "can't get cv buffer\n");
++                logger(LOG_ERR, "can't get cv buffer");
+                 error = ERR_MEMORY_ALLOCATION;
+                 goto error;
+             }
+@@ -2848,7 +2848,7 @@ int effects_add(const char *uid, int instance)
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
+             if (jack_port == NULL)
+             {
+-                fprintf(stderr, "can't get jack port\n");
++                logger(LOG_ERR, "can't get jack port");
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -2875,7 +2875,7 @@ int effects_add(const char *uid, int instance)
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_MIDI_TYPE, jack_flags, 0);
+             if (jack_port == NULL)
+             {
+-                fprintf(stderr, "can't get jack port\n");
++                logger(LOG_ERR, "can't get jack port");
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -3219,7 +3219,7 @@ int effects_add(const char *uid, int instance)
+     /* Try activate the Jack client */
+     if (jack_activate(jack_client) != 0)
+     {
+-        fprintf(stderr, "can't activate jack_client\n");
++        logger(LOG_ERR, "can't activate jack_client");
+         error = ERR_JACK_CLIENT_ACTIVATION;
+         goto error;
+     }
+diff --git a/src/logger.c b/src/logger.c
+new file mode 100644
+index 0000000..de3cfbf
+--- /dev/null
++++ b/src/logger.c
+@@ -0,0 +1,42 @@
++/*
++ * This file is part of mod-host.
++ *
++ * mod-host is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * mod-host is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with mod-host.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++
++#include <string.h>
++#include <stdio.h>
++#include <stdarg.h>
++#include <stdlib.h>
++
++#include "logger.h"
++
++#define MAX_MESSAGE_LEN 256
++
++/** Print some message on stdout and syslog. 
++ * @priority follow the LOG_xxx parameters of syslog(3)
++ */
++void logger(int priority, const char *format, ...) 
++{
++    va_list ap;
++    char str[MAX_MESSAGE_LEN];
++    va_start(ap, format);
++    vsnprintf(str, MAX_MESSAGE_LEN, format, ap);
++    va_end(ap);
++    syslog(priority, "%s", str);
++    printf("%s\n", str);
++}
++
+diff --git a/src/logger.h b/src/logger.h
+new file mode 100644
+index 0000000..07c32a4
+--- /dev/null
++++ b/src/logger.h
+@@ -0,0 +1,27 @@
++/*
++ * This file is part of mod-host.
++ *
++ * mod-host is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * mod-host is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with mod-host.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#ifndef LOGGER_H
++#define LOGGER_H
++
++#include <syslog.h>
++
++extern void logger(int priority, const char *format, ...);
++
++#endif // LOGGER_H
++
+diff --git a/src/mod-host.c b/src/mod-host.c
+index 9c81395..60bab83 100644
+--- a/src/mod-host.c
++++ b/src/mod-host.c
+@@ -61,7 +61,7 @@
+ #include "completer.h"
+ #include "monitor.h"
+ #include "info.h"
+-
++#include "logger.h"
+ 
+ /*
+ ************************************************************************************************************************
+@@ -420,7 +420,7 @@ static void load_cb(proto_t *proto)
+ 
+         while (fgets(line, sizeof(line), fp))
+         {
+-            printf("%s", line);
++            logger(LOG_ERR, "%s", line);
+ 
+             /* removes the \n at end of line */
+             line[strlen(line)-1] = 0;
+@@ -429,8 +429,6 @@ static void load_cb(proto_t *proto)
+             msg.data = line;
+             msg.data_size = strlen(line);
+             protocol_parse(&msg);
+-
+-            printf("\n");
+         }
+ 
+         fclose(fp);
+@@ -502,11 +500,8 @@ static void output_data_ready(proto_t *proto)
+ static void help_cb(proto_t *proto)
+ {
+     proto->response = 0;
+-
+-    size_t i, len = strlen(help_msg);
+-    for (i = 0; i < len; i++)
+-        printf("%c", help_msg[i]);
+-    fflush(stdout);
++    
++    logger(LOG_ERR, "%s", help_msg);
+ }
+ 
+ static void quit_cb(proto_t *proto)
+@@ -544,7 +539,6 @@ static void interactive_mode(void)
+                 msg.data = input;
+                 msg.data_size = strlen(input);
+                 protocol_parse(&msg);
+-                printf("\n");
+ 
+                 free(input);
+                 input = NULL;
+@@ -711,23 +705,25 @@ int main(int argc, char **argv)
+         }
+     }
+ 
++    openlog("mod-host", LOG_NDELAY | LOG_PID, LOG_DAEMON);
++    logger(LOG_INFO, "logging is started.");
++
+     if (! nofork)
+     {
+         int pid;
+         pid = fork();
+         if (pid != 0)
+         {
+-            printf("Forking... child PID: %d\n", pid);
++            logger(LOG_INFO, "Forking... child PID: %d", pid);
+ 
+             FILE *fd;
+             fd = fopen(PID_FILE, "w");
+             if (fd == NULL)
+             {
+-                fprintf(stderr, "can't open PID File\n");
++                logger(LOG_ERR, "can't open PID File");
+             }
+             else
+             {
+-                fprintf(fd, "%d\n", pid);
+                 fclose(fd);
+             }
+             exit(EXIT_SUCCESS);
+@@ -762,8 +758,7 @@ int main(int argc, char **argv)
+     protocol_verbose(verbose);
+ 
+     /* Report ready */
+-    printf("mod-host ready!\n");
+-    fflush(stdout);
++    logger(LOG_INFO, "mod-host ready!");
+ 
+     running = 1;
+     while (running) socket_run(interactive);
+diff --git a/src/protocol.c b/src/protocol.c
+index 7e2852c..b604b56 100644
+--- a/src/protocol.c
++++ b/src/protocol.c
+@@ -27,7 +27,7 @@
+ 
+ #include "protocol.h"
+ #include "utils.h"
+-
++#include "logger.h"
+ 
+ /*
+ ************************************************************************************************************************
+@@ -126,7 +126,7 @@ void protocol_parse(msg_t *msg)
+     int32_t index;
+     proto_t proto;
+ 
+-    if (g_verbose) printf("received: %s\n", msg->data);
++    if (g_verbose) logger(LOG_INFO, "received: %s", msg->data);
+ 
+     proto.list = strarr_split(msg->data);
+     proto.list_count = strarr_length(proto.list);
+@@ -211,7 +211,7 @@ void protocol_parse(msg_t *msg)
+             if (proto.response)
+             {
+                 SEND_TO_SENDER(msg->sender_id, proto.response, proto.response_size);
+-                if (g_verbose) printf("response: %s\n", proto.response);
++                if (g_verbose) logger(LOG_INFO, "response: %s", proto.response);
+ 
+                 FREE(proto.response);
+             }
+@@ -221,7 +221,7 @@ void protocol_parse(msg_t *msg)
+     else
+     {
+         SEND_TO_SENDER(msg->sender_id, g_error_messages[-index-1], strlen(g_error_messages[-index-1]));
+-        if (g_verbose) printf("error: %s\n", g_error_messages[-index-1]);
++        logger(LOG_ERR, "protocol error: %s", g_error_messages[-index-1]);
+     }
+ 
+     FREE(proto.list);
+@@ -232,7 +232,7 @@ void protocol_add_command(const char *command, void (*callback)(proto_t *proto))
+ {
+     if (g_command_count >= PROTOCOL_MAX_COMMANDS)
+     {
+-        printf("error: PROTOCOL_MAX_COMMANDS reached (reconfigure it)\n");
++        logger(LOG_ERR, "error: PROTOCOL_MAX_COMMANDS reached (reconfigure it)");
+         return;
+     }
+ 
+diff --git a/src/worker.c b/src/worker.c
+index a038565..ac07d26 100644
+--- a/src/worker.c
++++ b/src/worker.c
+@@ -17,6 +17,7 @@
+ #include <stdlib.h>
+ 
+ #include "worker.h"
++#include "logger.h"
+ 
+ static LV2_Worker_Status worker_respond(LV2_Worker_Respond_Handle handle, uint32_t size, const void* data)
+ {
+@@ -38,7 +39,7 @@ static void* worker_func(void* data)
+         jack_ringbuffer_read(worker->requests, (char*)&size, sizeof(size));
+ 
+         if (!(buf = realloc(buf, size))) {
+-            fprintf(stderr, "worker_func: realloc() failed\n");
++            logger(LOG_ERR, "worker_func: realloc() failed");
+             free(buf);
+             return NULL;
+         }
+-- 
+1.9.1
+
