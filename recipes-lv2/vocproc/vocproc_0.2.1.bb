@@ -26,8 +26,8 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}${libdir}/${SRCNAME}.lv2/
-	install -c -m 644 manifest.ttl vocproc.so vocproc_gui.so vocproc_gui.ui ${D}${libdir}/${SRCNAME}.lv2/
-	install -c -m 644 vocproc.ttl.voc ${D}${libdir}/${SRCNAME}.lv2/vocproc.ttl
+	install -d ${D}${libdir}/lv2/${SRCNAME}.lv2/
+	install -c -m 644 manifest.ttl vocproc.so vocproc_gui.so vocproc_gui.ui ${D}${libdir}/lv2/${SRCNAME}.lv2/
+	install -c -m 644 vocproc.ttl.voc ${D}${libdir}/lv2/${SRCNAME}.lv2/vocproc.ttl
 }
 
