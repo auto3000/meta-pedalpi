@@ -1,0 +1,60 @@
+From 3b26e625c68edd3736b8220175e52074f5ec0ebf Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Wed, 4 Oct 2017 22:36:40 +0200
+Subject: [PATCH] build: set constants for arch 32
+
+---
+ wscript | 37 +++----------------------------------
+ 1 file changed, 3 insertions(+), 34 deletions(-)
+
+diff --git a/wscript b/wscript
+index 2b4e27d..c492dfc 100644
+--- a/wscript
++++ b/wscript
+@@ -170,40 +170,9 @@ def configure(conf):
+     
+ #    print conf.env
+ 
+-    conf.check( fragment='#include <stdio.h>\n int main ( int argc, char **argv ) { printf("%u", (unsigned)sizeof(short)); return 0; }',
+-                   execute=True,
+-                   define_ret=True,
+-                   quote=False,
+-                   define_name='SIZEOF_SHORT',
+-                 msg='Checking sizeof short',
+-                               mandatory=True);
+-
+-    conf.check( fragment='#include <stdio.h>\n int main ( int argc, char **argv ) { printf("%u", (unsigned)sizeof(int)); return 0; }',
+-                   execute=True,
+-                   quote=False,
+-                   define_ret=True,
+-                 msg='Checking sizeof int',
+-                   define_name='SIZEOF_INT', mandatory=True );
+-
+-    conf.check( fragment='#include <stdio.h>\n int main ( int argc, char **argv ) { printf("%u", (unsigned)sizeof(long)); return 0; }',
+-                   quote=False,
+-                   execute=True,
+-                   define_ret=True,
+-                 msg='Checking sizeof long',
+-                   define_name='SIZEOF_LONG', mandatory=True );
+-    
+-    if int(conf.get_define('SIZEOF_SHORT')) == 2:
+-        conf.define( 'U16', 'unsigned short', quote=False )
+-
+-    if int(conf.get_define('SIZEOF_INT')) == 4:
+-        conf.define( 'U32', 'unsigned int', quote=False )
+-    elif int(conf.get_define('SIZEOF_LONG')) == 4:
+-        conf.define( 'U32', 'unsigned long', quote=False )
+-
+-    if int(conf.get_define('SIZEOF_INT')) == 8:
+-        conf.define( 'U64', 'unsigned int', quote=False )
+-    elif int(conf.get_define('SIZEOF_LONG')) == 8:
+-        conf.define( 'U64', 'unsigned long', quote=False )
++    conf.define( 'U16', 'unsigned short', quote=False )
++    conf.define( 'U32', 'unsigned int', quote=False )
++    conf.define( 'U64', 'unsigned long', quote=False )
+ 
+     # FIXME: use a test for this
+     conf.define( 'WORDS_BIGENDIAN', 0 )
+-- 
+1.9.1
+
