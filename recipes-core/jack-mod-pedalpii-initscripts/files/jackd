@@ -62,7 +62,7 @@ case "$1" in
                 fi
                 sleep $DELAY_BEFORE_START
                 rm -f $PIDFILE || true
-                if start-stop-daemon -b -S -o -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
                         success
                 else
                         failure
