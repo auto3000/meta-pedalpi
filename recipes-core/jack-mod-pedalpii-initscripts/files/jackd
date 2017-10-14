@@ -37,7 +37,7 @@ case "$1" in
                 echo "Starting jackd audio server:" "jackd"
                 /bin/mount -o remount,size=128M /dev/shm > /dev/null 2>&1
                 sleep $DELAY_BEFORE_START
-                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x /bin/sh -- -c "exec $DAEMON $OPTIONS 2>&1 | logger -t jackd "; then
                         success
                 else
                         failure
@@ -62,7 +62,7 @@ case "$1" in
                 fi
                 sleep $DELAY_BEFORE_START
                 rm -f $PIDFILE || true
-                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x /bin/sh -- -c "exec $DAEMON $OPTIONS 2>&1 | logger -t jackd "; then
                         success
                 else
                         failure
