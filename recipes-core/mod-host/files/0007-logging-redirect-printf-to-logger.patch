@@ -1,0 +1,215 @@
+From 2682592a6abee1c6678723e7b67a1fcc52bb60c6 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Tue, 17 Oct 2017 20:17:05 +0200
+Subject: [PATCH 7/7] logging: redirect printf to logger
+
+---
+ src/effects.c | 21 +++++++++++----------
+ src/socket.c  | 25 +++++++++++++------------
+ 2 files changed, 24 insertions(+), 22 deletions(-)
+
+diff --git a/src/effects.c b/src/effects.c
+index 88e1be4..8c5df79 100644
+--- a/src/effects.c
++++ b/src/effects.c
+@@ -2598,7 +2598,7 @@ int effects_add(const char *uid, int instance)
+         if (!plugin)
+ #endif
+         {
+-            logger(LOG_ERR, "can't get plugin");
++            logger(LOG_ERR, "%s: can't get plugin uid=%s", effect_name, uid);
+             error = ERR_LV2_INVALID_URI;
+             goto error;
+         }
+@@ -2614,7 +2614,7 @@ int effects_add(const char *uid, int instance)
+ 
+     if (!lilv_instance)
+     {
+-        logger(LOG_ERR, "can't get lilv instance");
++        logger(LOG_ERR, "%s: can't get lilv instance uid=%s", effect_name, uid);
+         error = ERR_LV2_INSTANTIATION;
+         goto error;
+     }
+@@ -2738,7 +2738,7 @@ int effects_add(const char *uid, int instance)
+             audio_buffer = (float *) calloc(g_sample_rate, sizeof(float));
+             if (!audio_buffer)
+             {
+-                logger(LOG_ERR, "can't get audio buffer");
++                logger(LOG_ERR, "%s: can't get audio buffer uid=%s", effect_name, uid);
+                 error = ERR_MEMORY_ALLOCATION;
+                 goto error;
+             }
+@@ -2749,9 +2749,10 @@ int effects_add(const char *uid, int instance)
+ 
+             /* Jack port creation */
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
+-            if (jack_port == NULL)
++
++            if (((long int) jack_port) <= 0)
+             {
+-                logger(LOG_ERR, "can't get jack port");
++                logger(LOG_ERR, "%s: can't get jack port name=%s uid=%s", effect_name, port_name, uid);
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -2769,7 +2770,7 @@ int effects_add(const char *uid, int instance)
+             control_buffer = (float *) malloc(sizeof(float));
+             if (!control_buffer)
+             {
+-                logger(LOG_ERR, "can't get control buffer");
++                logger(LOG_ERR, "%s: can't get control buffer uid=%s", effect_name, uid);
+                 error = ERR_MEMORY_ALLOCATION;
+                 goto error;
+             }
+@@ -2873,7 +2874,7 @@ int effects_add(const char *uid, int instance)
+             cv_buffer = (float *) calloc(g_sample_rate, sizeof(float));
+             if (!cv_buffer)
+             {
+-                logger(LOG_ERR, "can't get cv buffer");
++                logger(LOG_ERR, "%s: can't get cv buffer uid=%s", effect_name, uid);
+                 error = ERR_MEMORY_ALLOCATION;
+                 goto error;
+             }
+@@ -2887,7 +2888,7 @@ int effects_add(const char *uid, int instance)
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
+             if (jack_port == NULL)
+             {
+-                logger(LOG_ERR, "can't get jack port");
++                logger(LOG_ERR, "%s: can't get jack port name=%s with JackPortIsControlVoltage flag uid=%s", effect_name, port_name, uid);
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -2914,7 +2915,7 @@ int effects_add(const char *uid, int instance)
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_MIDI_TYPE, jack_flags, 0);
+             if (jack_port == NULL)
+             {
+-                logger(LOG_ERR, "can't get jack port");
++                logger(LOG_ERR, "%s: can't get jack MIDI port name=%s uid=%s", effect_name, port_name, uid);
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -3258,7 +3259,7 @@ int effects_add(const char *uid, int instance)
+     /* Try activate the Jack client */
+     if (jack_activate(jack_client) != 0)
+     {
+-        logger(LOG_ERR, "can't activate jack_client");
++        logger(LOG_ERR, "%s: can't activate jack_client uid=%s", effect_name, uid);
+         error = ERR_JACK_CLIENT_ACTIVATION;
+         goto error;
+     }
+diff --git a/src/socket.c b/src/socket.c
+index 5b5d7f1..b4aca09 100644
+--- a/src/socket.c
++++ b/src/socket.c
+@@ -28,9 +28,10 @@
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
++#include <errno.h>
+ 
+ #include "socket.h"
+-
++#include "logger.h"
+ 
+ /*
+ ************************************************************************************************************************
+@@ -118,7 +119,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+ 
+     if (g_serverfd < 0)
+     {
+-        perror("socket error");
++        logger(LOG_ERR, "socket error %s", strerror(errno));
+         return -1;
+     }
+ 
+@@ -128,7 +129,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+ 
+         if (g_fbserverfd < 0)
+         {
+-            perror("socket error");
++            logger(LOG_ERR, "socket error %s", strerror(errno));
+             return -1;
+         }
+     }
+@@ -163,7 +164,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+     serv_addr.sin_port = htons(socket_port);
+     if (bind(g_serverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+     {
+-        perror("bind error");
++        logger(LOG_ERR, "bind error %s", strerror(errno));
+         return -1;
+     }
+ 
+@@ -173,7 +174,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+         serv_addr.sin_port = htons(feedback_port);
+         if (bind(g_fbserverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+         {
+-            perror("bind error");
++            logger(LOG_ERR, "bind error %s", strerror(errno));
+             return -1;
+         }
+     }
+@@ -181,13 +182,13 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+     /* Start listen the sockets */
+     if (listen(g_serverfd, MOD_SOCKET_BACKLOG) < 0)
+     {
+-        perror("listen error");
++        logger(LOG_ERR, "listen error %s", strerror(errno));
+         return -1;
+     }
+ 
+     if (feedback_port != 0 && listen(g_fbserverfd, MOD_SOCKET_BACKLOG) < 0)
+     {
+-        perror("listen error");
++        logger(LOG_ERR, "listen error %s", strerror(errno));
+         return -1;
+     }
+ 
+@@ -238,7 +239,7 @@ int socket_send(int destination, const char *buffer, int size)
+     ret = write(destination, buffer, size);
+     if (ret < 0)
+     {
+-        perror("send error");
++        logger(LOG_ERR, "write error %s", strerror(errno));
+     }
+ 
+     return ret;
+@@ -268,7 +269,7 @@ void socket_run(int exit_on_failure)
+         if (! exit_on_failure)
+             return;
+ 
+-        perror("malloc error");
++        logger(LOG_ERR, "malloc error %s", strerror(errno));
+         exit(EXIT_FAILURE);
+     }
+ 
+@@ -282,7 +283,7 @@ void socket_run(int exit_on_failure)
+         if (! exit_on_failure)
+             return;
+ 
+-        perror("accept error");
++        logger(LOG_ERR, "accept error %s", strerror(errno));
+         exit(EXIT_FAILURE);
+     }
+ 
+@@ -297,7 +298,7 @@ void socket_run(int exit_on_failure)
+             if (! exit_on_failure)
+                 return;
+ 
+-            perror("accept error");
++            logger(LOG_ERR, "accept error %s", strerror(errno));
+             exit(EXIT_FAILURE);
+         }
+     }
+@@ -326,7 +327,7 @@ void socket_run(int exit_on_failure)
+             if (! exit_on_failure)
+                 break;
+ 
+-            perror("read error");
++            logger(LOG_ERR, "read error %s", strerror(errno));
+             exit(EXIT_FAILURE);
+         }
+         else /* Client disconnected */
+-- 
+1.9.1
+

@@ -1,7 +1,7 @@
 From dc87e787201a3a97a0051df37ed3392294dd6b6a Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Sat, 16 Sep 2017 18:50:18 +0200
-Subject: [PATCH] logger: add syslog support
+Subject: [PATCH 2/7] logger: add syslog support
 
 ---
  src/completer.c | 10 +++++-----

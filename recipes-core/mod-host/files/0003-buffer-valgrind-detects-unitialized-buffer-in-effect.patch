@@ -1,0 +1,26 @@
+From 1e798f76d178991c90fa8f4eb99b3a6322727bb6 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 15 Oct 2017 23:10:56 +0200
+Subject: [PATCH 3/7] buffer: valgrind detects unitialized buffer in
+ effects_add
+
+---
+ src/effects.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/effects.c b/src/effects.c
+index 6c14968..ae2aa17 100644
+--- a/src/effects.c
++++ b/src/effects.c
+@@ -862,7 +862,7 @@ static int ProcessPlugin(jack_nframes_t nframes, void *arg)
+     }
+ 
+     /* transport */
+-    uint8_t pos_buf[256];
++    uint8_t pos_buf[256] = { 0 };
+     LV2_Atom* lv2_pos = (LV2_Atom*)pos_buf;
+ 
+     if (effect->hints & HINT_TRANSPORT)
+-- 
+1.9.1
+
