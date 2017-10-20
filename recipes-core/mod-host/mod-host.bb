@@ -9,7 +9,7 @@ DEPENDS_armv7 += " ne10 "
 DEPENDS_aarch64 += " ne10 "
 RDEPENDS_${PN} = " jack-utils "
 
-SRCREV = "f84cd25f31bab67128696f32ced7f37f137ab280"
+SRCREV = "1726ad06b11323da7e1aaed690ff8aef91f702b5"
 SRC_URI = "git://github.com/moddevices/mod-host.git \
 	file://0001-build-remove-object-stripping-and-O3-optimization.patch \
 	file://0002-logger-add-syslog-support.patch \
