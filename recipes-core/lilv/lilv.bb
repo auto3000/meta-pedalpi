@@ -1,5 +1,7 @@
 DESCRIPTION = "Lilv LV2 host library."
-SRC_URI = "git://git.drobilla.net/lilv.git;protocol=http"
+SRC_URI = "git://git.drobilla.net/lilv.git;protocol=http \
+           file://0001-logging-redirect-errors-to-syslog.patch \
+           "
 SRCREV = "a208ffd4776ebc9072bfca2603d6931e24917ccf"
 LICENSE = "MIT" 
 

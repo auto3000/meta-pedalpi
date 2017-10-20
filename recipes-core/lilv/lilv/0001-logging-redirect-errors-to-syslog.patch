@@ -1,0 +1,77 @@
+From 2701a0853bd1032185b8d7f82ae6b4b817710af6 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Fri, 20 Oct 2017 07:40:45 +0200
+Subject: [PATCH] logging: redirect errors to syslog
+
+---
+ src/lib.c           | 16 +++++++++++++++-
+ src/lilv_internal.h | 15 +++++++++------
+ 2 files changed, 24 insertions(+), 7 deletions(-)
+
+diff --git a/src/lib.c b/src/lib.c
+index 73e57bb..09356e5 100644
+--- a/src/lib.c
++++ b/src/lib.c
+@@ -13,9 +13,11 @@
+   ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+-
++#include <syslog.h>
+ #include "lilv_internal.h"
+ 
++#define MAX_MESSAGE_LEN 128
++
+ LilvLib*
+ lilv_lib_open(LilvWorld*               world,
+               const LilvNode*          uri,
+@@ -110,3 +112,15 @@ lilv_lib_close(LilvLib* lib)
+ 		free(lib);
+ 	}
+ }
++
++/** Send log to syslog. */
++void lilv_logger(const char *format, ...)
++{
++    va_list ap;
++    char str[MAX_MESSAGE_LEN];
++    va_start(ap, format);
++    vsnprintf(str, MAX_MESSAGE_LEN, format, ap);
++    va_end(ap);
++    syslog(LOG_INFO, "%s", str);
++    printf("%s\n", str);
++}
+diff --git a/src/lilv_internal.h b/src/lilv_internal.h
+index af8e31a..8ae5d7a 100644
+--- a/src/lilv_internal.h
++++ b/src/lilv_internal.h
+@@ -421,17 +421,20 @@ lilv_dlfunc(void* handle, const char* symbol)
+ static const LV2_Feature* const dman_features = { NULL };
+ #endif
+ 
+-#define LILV_ERROR(str)       fprintf(stderr, "%s(): error: " str, \
++extern void lilv_logger(const char *format, ...);
++
++
++#define LILV_ERROR(str)       lilv_logger("%s(): error: " str, \
+                                       __func__)
+-#define LILV_ERRORF(fmt, ...) fprintf(stderr, "%s(): error: " fmt, \
++#define LILV_ERRORF(fmt, ...) lilv_logger("%s(): error: " fmt, \
+                                       __func__, __VA_ARGS__)
+-#define LILV_WARN(str)        fprintf(stderr, "%s(): warning: " str, \
++#define LILV_WARN(str)        lilv_logger("%s(): warning: " str, \
+                                       __func__)
+-#define LILV_WARNF(fmt, ...)  fprintf(stderr, "%s(): warning: " fmt, \
++#define LILV_WARNF(fmt, ...)  lilv_logger("%s(): warning: " fmt, \
+                                       __func__, __VA_ARGS__)
+-#define LILV_NOTE(str)        fprintf(stderr, "%s(): note: " str, \
++#define LILV_NOTE(str)        lilv_logger("%s(): note: " str, \
+                                       __func__)
+-#define LILV_NOTEF(fmt, ...)  fprintf(stderr, "%s(): note: " fmt, \
++#define LILV_NOTEF(fmt, ...)  lilv_logger("%s(): note: " fmt, \
+                                       __func__, __VA_ARGS__)
+ 
+ #ifdef __cplusplus
+-- 
+1.9.1
+
