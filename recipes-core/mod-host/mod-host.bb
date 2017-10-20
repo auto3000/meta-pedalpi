@@ -4,7 +4,9 @@ SECTION = "multimedia"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
-DEPENDS = "jack lilv readline ne10 fftwf "
+DEPENDS = "jack lilv readline fftwf "
+DEPENDS_armv7 += " ne10 "
+DEPENDS_aarch64 += " ne10 "
 RDEPENDS_${PN} = " jack-utils "
 
 SRCREV = "f84cd25f31bab67128696f32ced7f37f137ab280"
@@ -22,7 +24,9 @@ FILES_${PN} = " /usr/bin/mod-host /usr/lib/jack/ "
 
 S = "${WORKDIR}/git"
 
-EXTRA_OEMAKE = " PREFIX=/usr DESTDIR=${D} HAVE_NE10=true "
+EXTRA_OEMAKE = " PREFIX=/usr DESTDIR=${D} "
+EXTRA_OEMAKE_armv7 += " HAVE_NE10=true "
+EXTRA_OEMAKE_aarch64 += " HAVE_NE10=true "
 
 do_install() {
         oe_runmake install
