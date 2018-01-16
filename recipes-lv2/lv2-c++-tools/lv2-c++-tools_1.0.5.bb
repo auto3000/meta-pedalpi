@@ -13,7 +13,7 @@ SRC_URI = "\
 SRC_URI[md5sum] = "4707f2507f86d6c7bbaa809bb52eed9b"
 SRC_URI[sha256sum] = "6ce16a51a37259a45d8a7a59f39a6c36fc09b4c700dd26244a9dada241864e3b"
 
-DEPENDS = " lv2 boost "
+DEPENDS = " lv2 boost gtkmm "
 
 inherit pkgconfig
 
