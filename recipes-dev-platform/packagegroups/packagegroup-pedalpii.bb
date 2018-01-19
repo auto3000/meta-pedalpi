@@ -67,6 +67,7 @@ RDEPENDS_${PN} += "\
 	tap-lv2 \
 	pdlv2 \
 	setbfree \
+	ams-lv2 \
 	beatslash-lv2 \
 	deteriorate-lv2 \
 	"
