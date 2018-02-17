@@ -1,0 +1,86 @@
+From 48d4a61647733c7b8c540f6bd7ef523b538abec1 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 21 Oct 2017 16:13:45 +0200
+Subject: [PATCH 13/16] lilv: redirect error log to syslog
+
+---
+ utils/utils_lilv.cpp | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/utils/utils_lilv.cpp b/utils/utils_lilv.cpp
+index 8ed3750..d497847 100644
+--- a/utils/utils_lilv.cpp
++++ b/utils/utils_lilv.cpp
+@@ -16,7 +16,7 @@
+  */
+ 
+ #include "utils.h"
+-
++#include <syslog.h>
+ #include <libgen.h>
+ #include <limits.h>
+ #include <stdlib.h>
+@@ -2356,7 +2356,6 @@ bool _is_pedalboard_broken(const LilvPlugin* const p,
+                            const LilvNode* const lv2protonode)
+ {
+     bool broken = false;
+-
+     if (LilvNodes* const blocks = lilv_plugin_get_value(p, ingenblocknode))
+     {
+         LILV_FOREACH(nodes, itblocks, blocks)
+@@ -2370,9 +2369,16 @@ bool _is_pedalboard_broken(const LilvPlugin* const p,
+ 
+                 if (PLUGNFO.count(uri) == 0)
+                 {
++
++                  syslog(LOG_INFO| LOG_LOCAL1, "broken=true missing plugin=%s... ",uri.c_str() );
++
+                     broken = true;
+                     break;
+                 }
++                else
++                {
++                  syslog(LOG_INFO| LOG_LOCAL1, "broken=false found plugin=%s... ",uri.c_str() );
++                }
+             }
+         }
+ 
+@@ -3010,6 +3016,8 @@ const char* const* add_bundle_to_lilv_world(const char* const bundle)
+             if (std::find(BLACKLIST.begin(), BLACKLIST.end(), uri) != BLACKLIST.end())
+                 continue;
+ 
++                syslog(LOG_INFO| LOG_LOCAL1, "Found plugin=%s... ",uri.c_str() );
++
+             // store new empty data
+             PLUGNFO[uri] = PluginInfo_Init;
+             PLUGNFO_Mini[uri] = PluginInfo_Mini_Init;
+@@ -3506,7 +3514,7 @@ const PedalboardInfo_Mini* const* get_all_pedalboards(void)
+ 
+         // get new info
+         const PedalboardInfo_Mini& info = _get_pedalboard_info_mini(p, w, rdftypenode, ingenblocknode, lv2protonode);
+-
++        syslog(LOG_INFO | LOG_LOCAL1,"get_all_pedalboards: x1 title=%s valid=%d",info.title, info.valid);
+         if (! info.valid)
+             continue;
+ 
+@@ -3567,6 +3575,8 @@ const char* const* get_broken_pedalboards(void)
+         {
+             const std::string pedalboard(lilv_node_as_uri(lilv_plugin_get_uri(p)));
+             brokenpedals.push_back(pedalboard);
++            syslog(LOG_INFO| LOG_LOCAL1, "brokenpedals add=%s... ",pedalboard.c_str() );
++
+         }
+     }
+ 
+@@ -3593,6 +3603,8 @@ const char* const* get_broken_pedalboards(void)
+         return _get_broken_pedals_ret;
+     }
+ 
++    syslog(LOG_INFO| LOG_LOCAL1, "No brokenpedals" );
++
+     return nullptr;
+ }
+ 
+-- 
+2.7.4
+

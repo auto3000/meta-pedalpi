@@ -1,0 +1,254 @@
+From dbed336c4e11b90b0bb4327bfcd0d77f39f52d9c Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Fri, 31 Mar 2017 18:19:34 +0000
+Subject: [PATCH 03/16] hmi: add HMI socket
+
+---
+ mod/development.py |  9 ++++++
+ mod/hmi_socket.py  | 65 ---------------------------------------
+ mod/hmisocket.py   | 90 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ mod/session.py     |  9 ++++--
+ mod/settings.py    |  1 +
+ 5 files changed, 107 insertions(+), 67 deletions(-)
+ delete mode 100644 mod/hmi_socket.py
+ create mode 100644 mod/hmisocket.py
+
+diff --git a/mod/development.py b/mod/development.py
+index 3f0acc1..d014983 100644
+--- a/mod/development.py
++++ b/mod/development.py
+@@ -21,9 +21,18 @@ from mod.hmi import HMI
+ from mod.host import Host
+ 
+ class FakeHMI(HMI):
++    def __init__(self):
++        self.sp = None
++        self.queue = []
++        self.queue_idle = True
++        self.initialized = False
++
+     def init(self, callback):
+         pass
+ 
++    #def read_until(delimiter, callback=None, max_bytes=None):
++    #    pass
++
+     def send(self, msg, callback=None, datatype=None):
+         logging.info(msg)
+         if callback is None:
+diff --git a/mod/hmi_socket.py b/mod/hmi_socket.py
+deleted file mode 100644
+index 1a64538..0000000
+--- a/mod/hmi_socket.py
++++ /dev/null
+@@ -1,65 +0,0 @@
+-# coding: utf-8
+-
+-# Copyright 2017 pedalpi
+-#
+-# This program is free software: you can redistribute it and/or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation, either version 3 of the License, or
+-# (at your option) any later version.
+-#
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-#
+-# You should have received a copy of the GNU General Public License
+-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-
+-import errno
+-import functools
+-import socket
+-from tornado import ioloop, iostream
+-
+-class HMI_socket(HMI):
+-    def send_request():
+-        sp.write(b"Hello my friend JFD protocol\r\n\r\n")
+-
+-    def connection_ready(sock, fd, events):
+-        while True:
+-            try:
+-                connection, address = sock.accept()
+-            except socket.error, e:
+-                if e[0] not in (errno.EWOULDBLOCK, errno.EAGAIN):
+-                    raise
+-                return
+-            else:
+-                logging.error('[hmi_socket] connection from %s' % repr(address))
+-                connection.setblocking(0)
+-                self.sp = tornado.iostream.IOStream(connection)
+-
+-    # overrides super class
+-    def init(self, callback):
+-        self.sp = FakeHMI()
+-
+-        try:
+-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+-            sock.setblocking(0)
+-            sock.bind(("", 9999))
+-            sock.listen(1)
+-            sp = tornado.iostream.IOStream(sock)
+-        except Exception as e:
+-            print("ERROR: Failed to open HMI socket port, error was:\n%s" % e)
+-            return
+-
+-        def clear_callback(ok):
+-            callback()
+-
+-        # calls ping until ok is received
+-        def ping_callback(ok):
+-            if ok:
+-                self.clear(clear_callback)
+-            else:
+-                self.ioloop.add_timeout(timedelta(seconds=1), lambda:self.ping(ping_callback))
+-
+-        self.ping(ping_callback)
+-        self.checker()
+diff --git a/mod/hmisocket.py b/mod/hmisocket.py
+new file mode 100644
+index 0000000..7c508ce
+--- /dev/null
++++ b/mod/hmisocket.py
+@@ -0,0 +1,90 @@
++# coding: utf-8
++
++# Copyright 2017 pedalpi
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 3 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++import errno
++import functools
++import socket
++import functools
++import os, json, logging
++
++from tornado import ioloop, iostream
++from tornado.tcpserver import TCPServer
++from tornado.iostream import StreamClosedError
++from tornado import gen
++
++from mod.hmi import HMI, SerialIOStream
++from mod.development import FakeHMI
++
++class EchoServer(TCPServer):
++    def __init__(self, my_ioloop, my_hmisocket, callback):
++        super().__init__(my_ioloop)
++        self.callback = callback
++        self.my_hmisocket = my_hmisocket
++
++    @gen.coroutine
++    def handle_stream(self, stream, address):
++        self.my_hmisocket.handle_stream(stream, address)
++
++
++class HMISocket(HMI):
++
++    def __init__(self, port, callback):
++        print("JFD launch HMISocket on port", port)
++        self.sp = FakeHMI().sp
++        self.port = port
++        self.queue = []
++        self.queue_idle = True
++        self.initialized = False
++        self.ioloop = ioloop.IOLoop.instance()
++        self.callback = callback
++        self.init()
++
++    # overrides super class
++    def init(self):
++
++        try:
++            server = EchoServer(ioloop.IOLoop.instance(), self, self.callback)
++            server.listen(self.port)
++        except Exception as e:
++            print("ERROR: Failed to open HMI socket port, error was: %s" % e)
++            return
++
++    def clear_callback(ok):
++        self.callback()
++
++    # calls ping until ok is received
++    def ping_callback(ok):
++        logging.error('[hmi_socket] ping_callback %s' % ok)
++        if ok:
++            self.clear(self.clear_callback)
++        else:
++            self.ioloop.add_timeout(timedelta(seconds=1), lambda:self.ping(self.ping_callback))
++
++    def handle_stream(self, stream, address):
++        logging.info('[hmi_socket] connection from %s' % repr(address))
++        self.sp = SerialIOStream(stream)
++        #while True:
++        stream.write(b"Hello my friend JFD protocol\r\n\r\n")
++        #    try:
++        #        data = yield stream.read_until(b"\n")
++        #        yield stream.write(data)
++        #    except StreamClosedError:
++        #        break
++        #self.sp = FakeHMI().sp
++        #self.ping(self.ping_callback)
++        self.clear(self.clear_callback)
++        self.checker()
+diff --git a/mod/session.py b/mod/session.py
+index c628a0f..c547df8 100644
+--- a/mod/session.py
++++ b/mod/session.py
+@@ -28,7 +28,9 @@ from mod.recorder import Recorder, Player
+ from mod.screenshot import ScreenshotGenerator
+ from mod.settings import (DEV_ENVIRONMENT, DEV_HMI, DEV_HOST,
+                           HMI_SERIAL_PORT, HMI_BAUD_RATE, HOST_CARLA,
++                          HMI_SOCKET_PORT,
+                           PREFERENCES_JSON_FILE)
++from mod.hmisocket import HMISocket
+ 
+ if DEV_HOST:
+     from mod.development import FakeHost as Host
+@@ -73,14 +75,17 @@ class Session(object):
+         # Try to open real HMI
+         hmiOpened = False
+ 
+-        if not DEV_HMI:
++        if DEV_HMI:
+             self.hmi  = HMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, self.hmi_initialized_cb)
+             hmiOpened = self.hmi.sp is not None
++        else:
++            self.hmi  = HMISocket(HMI_SOCKET_PORT, self.hmi_initialized_cb)
++            hmiOpened = self.hmi.sp is not None
+ 
+         print("Using HMI =>", hmiOpened)
+ 
+         if not hmiOpened:
+-            self.hmi = FakeHMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, self.hmi_initialized_cb)
++            self.hmi = FakeHMI()
+ 
+         self.host = Host(self.hmi, self.prefs, self.msg_callback)
+ 
+diff --git a/mod/settings.py b/mod/settings.py
+index 06102a8..7bda0ea 100644
+--- a/mod/settings.py
++++ b/mod/settings.py
+@@ -56,6 +56,7 @@ LV2_PEDALBOARDS_DIR = os.path.expanduser("~/.pedalboards/")
+ 
+ HMI_BAUD_RATE = os.environ.get('MOD_HMI_BAUD_RATE', 10000000)
+ HMI_SERIAL_PORT = os.environ.get('MOD_HMI_SERIAL_PORT', "/dev/ttyUSB0")
++HMI_SOCKET_PORT = os.environ.get('MOD_HMI_SOCKET_PORT', 9999)
+ 
+ DEVICE_WEBSERVER_PORT = int(os.environ.get('MOD_DEVICE_WEBSERVER_PORT', 80))
+ 
+-- 
+2.7.4
+

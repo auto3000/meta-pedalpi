@@ -1,0 +1,107 @@
+From cc42e484d332bf7a27e2b46dea7cf92991b84be2 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Thu, 29 Jun 2017 16:44:50 +0200
+Subject: [PATCH 11/16] logging: fix print to logging in webserver.py
+
+---
+ mod/webserver.py | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/mod/webserver.py b/mod/webserver.py
+index 71eb599..e74e157 100644
+--- a/mod/webserver.py
++++ b/mod/webserver.py
+@@ -830,7 +830,7 @@ class EffectAdd(JsonRequestHandler):
+         try:
+             data = get_plugin_info(uri)
+         except:
+-            print("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
++            logging.error("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
+             raise web.HTTPError(404)
+ 
+         self.write(data)
+@@ -849,7 +849,7 @@ class EffectGet(JsonRequestHandler):
+         try:
+             data = get_plugin_info(uri)
+         except:
+-            print("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
++            logging.error("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
+             raise web.HTTPError(404)
+ 
+         self.write(data)
+@@ -876,7 +876,7 @@ class EffectParameterAddress(JsonRequestHandler):
+         uri  = data.get('uri', None)
+ 
+         if uri is None:
+-            print("ERROR in webserver.py: Attempting to address without an URI")
++            logging.error("ERROR in webserver.py: Attempting to address without an URI")
+             raise web.HTTPError(404)
+ 
+         label   = data.get('label', '---') or '---'
+@@ -926,13 +926,13 @@ class EffectPresetDelete(JsonRequestHandler):
+ class ServerWebSocket(websocket.WebSocketHandler):
+     @gen.coroutine
+     def open(self):
+-        print("websocket open")
++        logging.info("websocket open")
+         self.set_nodelay(True)
+         yield gen.Task(SESSION.websocket_opened, self)
+ 
+     @gen.coroutine
+     def on_close(self):
+-        print("websocket close")
++        logging.info("websocket close")
+         yield gen.Task(SESSION.websocket_closed, self)
+ 
+     def on_message(self, message):
+@@ -1446,7 +1446,7 @@ class TemplateHandler(TimelessRequestHandler):
+         try:
+             pedalboard = get_pedalboard_info(bundlepath)
+         except:
+-            print("ERROR in webserver.py: get_pedalboard_info failed")
++            logging.error("ERROR in webserver.py: get_pedalboard_info failed")
+             pedalboard = {
+                 'height': 0,
+                 'width': 0,
+@@ -1599,7 +1599,7 @@ class FavoritesAdd(JsonRequestHandler):
+ 
+         # safety check, no duplicates please
+         if uri in gState.favorites:
+-            print("ERROR: URI '%s' already in favorites" % uri)
++            logging.error("ERROR: URI '%s' already in favorites" % uri)
+             self.write(False)
+             return
+ 
+@@ -1617,7 +1617,7 @@ class FavoritesRemove(JsonRequestHandler):
+ 
+         # safety check
+         if uri not in gState.favorites:
+-            print("ERROR: URI '%s' not in favorites" % uri)
++            logging.error("ERROR: URI '%s' not in favorites" % uri)
+             self.write(False)
+             return
+ 
+@@ -1901,9 +1901,9 @@ def prepare(isModApp = False):
+                 gState.favorites.remove(uri)
+ 
+     if False:
+-        print("Scanning plugins, this may take a little...")
++        logging.info("Scanning plugins, this may take a little...")
+         get_all_plugins()
+-        print("Done!")
++        logging.info("Done!")
+ 
+     if not isModApp:
+         signal(SIGUSR1, signal_recv)
+@@ -1917,7 +1917,7 @@ def prepare(isModApp = False):
+ 
+     def checkhost():
+         if SESSION.host.readsock is None or SESSION.host.writesock is None:
+-            print("Host failed to initialize, is the backend running?")
++            logging.error("Host failed to initialize, is the backend running?")
+             SESSION.host.close_jack()
+             sys.exit(1)
+ 
+-- 
+2.7.4
+
