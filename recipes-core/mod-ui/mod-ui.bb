@@ -4,7 +4,7 @@ SECTION = "multimedia"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=b5abed640d912caca185601d2312815e"
 
-RDEPENDS_${PN} = "python3-textutils python3-json python3-setuptools python3-pyserial pystache pillow python3-tornado"
+RDEPENDS_${PN} = "python3-textutils python3-json python3-setuptools python3-pyserial pystache python3-pillow python3-tornado"
 DEPENDS = "lilv jack alsa-lib"
 
 SRCREV = "03ede9bbfac9d42010f010e59dacf66ac54fa8b3"
