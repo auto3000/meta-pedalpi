@@ -17,3 +17,7 @@ FILES_${PN} = " ${bindir} ${datadir} "
 
 inherit distutils3 
 
+do_install_append() {
+	install -d ${D}${datadir}/mod-sdk
+	cp -R html ${D}${datadir}/mod-sdk/
+}
