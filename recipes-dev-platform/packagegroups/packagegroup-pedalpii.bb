@@ -71,5 +71,7 @@ RDEPENDS_${PN} += "\
 	ams-lv2 \
 	beatslash-lv2 \
 	deteriorate-lv2 \
+	fontconfig \
+	liberation-fonts \
 	"
 
