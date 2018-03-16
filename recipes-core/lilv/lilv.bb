@@ -2,7 +2,7 @@ DESCRIPTION = "Lilv LV2 host library."
 SRC_URI = "git://git.drobilla.net/lilv.git;protocol=http \
            file://0001-logging-redirect-errors-to-syslog.patch \
            "
-SRCREV = "a208ffd4776ebc9072bfca2603d6931e24917ccf"
+SRCREV = "b52c6ff71fa08557294f25faf0f2c4c6e285b796"
 LICENSE = "MIT" 
 
 DEPENDS = "serd sord sratom libsndfile1"
