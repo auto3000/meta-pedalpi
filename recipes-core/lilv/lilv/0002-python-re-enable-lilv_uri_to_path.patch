@@ -1,0 +1,36 @@
+From 7375dc868f657f217b34388321df34c483f1c972 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Thu, 5 Jul 2018 22:04:33 +0200
+Subject: [PATCH] python: re-enable lilv_uri_to_path
+
+---
+ bindings/python/lilv.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/bindings/python/lilv.py b/bindings/python/lilv.py
+index 024bfe7..aa26822 100644
+--- a/bindings/python/lilv.py
++++ b/bindings/python/lilv.py
+@@ -37,7 +37,7 @@ def _as_uri(obj):
+         return obj
+ 
+ free                             = _lib.lilv_free
+-# uri_to_path                      = _lib.lilv_uri_to_path
++uri_to_path                      = _lib.lilv_uri_to_path
+ file_uri_parse                   = _lib.lilv_file_uri_parse
+ new_uri                          = _lib.lilv_new_uri
+ new_file_uri                     = _lib.lilv_new_file_uri
+@@ -1293,8 +1293,8 @@ class VariadicFunction(object):
+ free.argtypes = [POINTER(None)]
+ free.restype  = None
+ 
+-# uri_to_path.argtypes = [String]
+-# uri_to_path.restype  = c_char_p
++uri_to_path.argtypes = [String]
++uri_to_path.restype  = c_char_p
+ 
+ file_uri_parse.argtypes = [String, POINTER(POINTER(c_char))]
+ file_uri_parse.restype  = c_char_p
+-- 
+2.14.1
+
