@@ -16,7 +16,6 @@ RDEPENDS_${PN} += "\
 	jack-mod-pedalpii-initscripts-pedalpii \
 	pedalpii \
 	jack-server \
-	mod-lilvlib  \
 	mod-sdk \
 	mod-utilities \
 	serd \
