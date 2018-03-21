@@ -33,13 +33,13 @@ inherit waf pkgconfig python3-dir distutils3
 
 # pass " --bindings " for installation
 do_configure() {
-	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf configure --prefix=${prefix} ${EXTRA_OECONF}
+	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf configure --top ${S} --prefix=${prefix} ${EXTRA_OECONF}
 }
 
 do_install() {
-	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf install --destdir=${D} ${EXTRA_OECONF}
+	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf install --top ${S} --destdir=${D} ${EXTRA_OECONF}
 }
 
 do_compile()  {
-	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf build ${@get_waf_parallel_make(d)} --destdir=${D} ${EXTRA_OECONF}
+	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf build --top ${S} ${@get_waf_parallel_make(d)} --destdir=${D} ${EXTRA_OECONF}
 }
