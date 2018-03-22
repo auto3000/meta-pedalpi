@@ -1,0 +1,48 @@
+From 083ba3b9fa1fdb6fccb3940d85b56d3833bceac5 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Tue, 6 Feb 2018 19:35:55 +0200
+Subject: [PATCH] webserver: replace Tornado.process Popen to Subprocess
+
+The Tornado API Popen is used to invoke 'tar' as a subprocess. The
+Subprocess is way superior to manage process termination.
+
+---
+ modsdk/webserver.py | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/modsdk/webserver.py b/modsdk/webserver.py
+index eefd8ec..dc513a6 100644
+--- a/modsdk/webserver.py
++++ b/modsdk/webserver.py
+@@ -511,14 +511,11 @@ class BundlePost(web.RequestHandler):
+         tmpfile    = "/tmp/%s.tgz" % bundlename
+         cwd        = os.path.abspath(os.path.join(bundle, os.path.pardir))
+ 
+-        proc = subprocess.Popen(['tar', 'chzf', tmpfile, '-C', cwd, '--hard-dereference', bundlename],
+-                                 cwd=cwd, stdout=subprocess.PIPE)
+-
+-        def proc_callback(fileno, event):
+-            if proc.poll() is None:
+-                return
+-            loop.remove_handler(fileno)
++        print(['tar', 'chzf', tmpfile, '-C', cwd, '--hard-dereference', bundlename])
++        proc = process.Subprocess(['tar', 'chzf', tmpfile, '-C', cwd, '--hard-dereference', bundlename],
++                                 cwd=cwd)
+ 
++        def proc_callback(event):
+             if not os.path.exists(tmpfile):
+                 print("ERROR in webserver.py: tar failed to create compressed bundle file")
+                 return
+@@ -530,8 +527,7 @@ class BundlePost(web.RequestHandler):
+ 
+             return self.send_bundle(bundlename, data, address)
+ 
+-        loop = ioloop.IOLoop.instance()
+-        loop.add_handler(proc.stdout.fileno(), proc_callback, 16)
++        proc.set_exit_callback(proc_callback)
+ 
+     def send_bundle(self, bundlename, data, address, fields={}):
+         content_type, body = self.encode_multipart_formdata(bundlename, data, fields)
+-- 
+2.14.1
+

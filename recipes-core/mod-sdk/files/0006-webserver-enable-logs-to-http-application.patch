@@ -1,0 +1,25 @@
+From c395c8eed8c6b029ed719b13f35757657c20ba77 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Mon, 5 Feb 2018 19:34:38 +0200
+Subject: [PATCH 5/6] webserver: enable logs to http application
+
+---
+ modsdk/webserver.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modsdk/webserver.py b/modsdk/webserver.py
+index c621445..eefd8ec 100644
+--- a/modsdk/webserver.py
++++ b/modsdk/webserver.py
+@@ -665,7 +665,7 @@ class EffectResource(web.StaticFileHandler):
+         super(EffectResource, self).initialize(os.path.join(HTML_DIR, 'resources'))
+         return super(EffectResource, self).get(path)
+ 
+-def make_application(port=PORT, output_log=False):
++def make_application(port=PORT, output_log=True):
+     application = web.Application([
+             (r"/bundles", BundleList),
+             (r"/effects", EffectList),
+-- 
+2.14.1
+

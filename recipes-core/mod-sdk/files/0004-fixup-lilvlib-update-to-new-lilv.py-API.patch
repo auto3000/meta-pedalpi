@@ -1,0 +1,33 @@
+From 28ef9f410e708b99cf386aa221818e5644892704 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 3 Feb 2018 19:24:28 +0200
+Subject: [PATCH 3/6] fixup! lilvlib: update to new lilv.py API
+
+---
+ modsdk/lilvlib.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/modsdk/lilvlib.py b/modsdk/lilvlib.py
+index 9096e90..59f6c0b 100755
+--- a/modsdk/lilvlib.py
++++ b/modsdk/lilvlib.py
+@@ -457,13 +457,13 @@ def get_pedalboard_name(bundle):
+ 
+     # check if the plugin is a pedalboard
+     def fill_in_type(node):
+-        return node.as_string()
+-    plugin_types = [i for i in LILV_FOREACH(plugin.get_value(ns_rdf.type_), fill_in_type)]
++        return str(node)
++    plugin_types = [i for i in LILV_FOREACH(plugin.get_value(ns_rdf.type), fill_in_type)]
+ 
+     if "http://moddevices.com/ns/modpedal#Pedalboard" not in plugin_types:
+         raise Exception('get_pedalboard_info(%s) - plugin has no mod:Pedalboard type'.format(bundle))
+ 
+-    return plugin.get_name().as_string()
++    return str(plugin.get_name())
+ 
+ # ------------------------------------------------------------------------------------------------------------
+ # plugin_has_modgui
+-- 
+2.14.1
+

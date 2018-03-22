@@ -1,0 +1,40 @@
+From d8b21804d8ec8565ee026ed12cad39ee7415f602 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Fri, 2 Feb 2018 19:03:12 +0200
+Subject: [PATCH 2/6] settings: make default http://localhost:80 instead of
+ :8888
+
+---
+ html/index.html    | 2 +-
+ modsdk/settings.py | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/html/index.html b/html/index.html
+index b127524..2ab3e41 100644
+--- a/html/index.html
++++ b/html/index.html
+@@ -229,7 +229,7 @@
+                 <div class="controls clearfix">
+                     <label>Device address</label>
+                     <input id="device" type="text" value="{{default_device}}"/>
+-                    <span id="device-local" data="http://localhost:8888">local</span> |
++                    <span id="device-local" data="http://localhost:80">local</span> |
+                     <span id="device-device" data="http://192.168.51.1">device</span>
+                 </div>
+                 <button id="deploy">Deploy via webserver</button>
+diff --git a/modsdk/settings.py b/modsdk/settings.py
+index bec5238..de43cd3 100644
+--- a/modsdk/settings.py
++++ b/modsdk/settings.py
+@@ -21,7 +21,7 @@ PORT = 9000
+ HTML_DIR = os.path.join(ROOT, 'html')
+ WIZARD_DB = os.path.join(HTML_DIR, 'resources/wizard.json')
+ TEMPLATE_DIR = os.path.join(HTML_DIR, 'resources/templates')
+-DEFAULT_DEVICE = "http://localhost:8888"
++DEFAULT_DEVICE = "http://localhost:80"
+ DEFAULT_ICON_TEMPLATE = os.path.join(HTML_DIR, 'resources/templates/pedal-default.html')
+ DEFAULT_SETTINGS_TEMPLATE = os.path.join(HTML_DIR, 'resources/settings.html')
+ DEFAULT_ICON_IMAGE = {
+-- 
+2.14.1
+
