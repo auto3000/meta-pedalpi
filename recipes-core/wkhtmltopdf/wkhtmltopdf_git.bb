@@ -16,6 +16,9 @@ inherit qmake5
 
 INSANE_SKIP_${PN} = " useless-rpaths "
 
+# Include the symlink in the package
+FILES_${PN} += " /usr/lib/fonts "
+
 # move output to /usr
 do_install_append() {
 	cd ${D}
@@ -24,4 +27,7 @@ do_install_append() {
 	echo $X
 	mkdir usr
 	mv $X usr/
+
+	# Fix path problem related to QT5 and fontconfig
+	ln -sf /usr/share/fonts ${D}/usr/lib/fonts
 }
