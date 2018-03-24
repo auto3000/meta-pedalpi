@@ -2,6 +2,7 @@ DESCRIPTION = "Lilv LV2 host library."
 SRC_URI = "git://git.drobilla.net/lilv.git;protocol=http \
            file://0001-logging-redirect-errors-to-syslog.patch \
            file://0002-python-re-enable-lilv_uri_to_path.patch \
+           file://0003-node-initialize-node-field-with-NULL.patch \
            "
 SRCREV = "b52c6ff71fa08557294f25faf0f2c4c6e285b796"
 LICENSE = "MIT" 

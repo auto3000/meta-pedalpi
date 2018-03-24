@@ -1,0 +1,24 @@
+From faa748f27d8119bc49c3f577986f8fc470e40de3 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Wed, 31 Jan 2018 18:52:50 +0200
+Subject: [PATCH] node: initialize node field with NULL
+
+---
+ src/node.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/node.c b/src/node.c
+index 5605177..262d5d9 100644
+--- a/src/node.c
++++ b/src/node.c
+@@ -55,6 +55,7 @@ lilv_node_new(LilvWorld* world, LilvNodeType type, const char* str)
+ 	LilvNode* val = (LilvNode*)malloc(sizeof(LilvNode));
+ 	val->world = world;
+ 	val->type  = type;
++	val->node = NULL;
+ 
+ 	const uint8_t* ustr = (const uint8_t*)str;
+ 	switch (type) {
+-- 
+2.14.1
+
