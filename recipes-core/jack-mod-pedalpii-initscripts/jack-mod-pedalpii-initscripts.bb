@@ -36,7 +36,7 @@ do_install () {
 	install -c -m 755 ${WORKDIR}/jackd ${D}${sysconfdir}/init.d/jackd
 	install -c -m 755 ${WORKDIR}/mod-host ${D}${sysconfdir}/init.d/mod-host
 	install -c -m 755 ${WORKDIR}/mod-ui ${D}${sysconfdir}/init.d/mod-ui
-	install -c -m 755 ${WORKDIR}/pedalpII ${D}${sysconfdir}/init.d/mod-sdk
+	install -c -m 755 ${WORKDIR}/mod-sdk ${D}${sysconfdir}/init.d/mod-sdk
 	install -c -m 755 ${WORKDIR}/pedalpII ${D}${sysconfdir}/init.d/pedalpII
 }
 
