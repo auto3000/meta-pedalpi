@@ -14,7 +14,7 @@
 
 # Defaults
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/bin/mod-sdk
+DAEMON=/usr/bin/modsdk
 OPTIONS=""
 START_DAEMON=yes
 DELAY_BEFORE_START=0
