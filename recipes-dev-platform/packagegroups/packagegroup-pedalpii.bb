@@ -21,6 +21,7 @@ RDEPENDS_${PN} += "\
 	serd \
 	sord \
 	sratom \
+	lsof \
 	mod-ui \
 	mod-host \
 	rakarrack-lv2 \
