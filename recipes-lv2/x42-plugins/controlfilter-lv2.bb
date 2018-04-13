@@ -9,6 +9,6 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=4641e94ec96f98fabc56ff9cc48be14b"
 
 DEPENDS = "lv2 fftwf"
 
-SRCREV = "f8db86708c0ad8603422a802a8aa4329dfd2b736"
+SRCREV = "4e18641898a8681be914098225f7870401ae1987"
 SRC_URI = "git://github.com/x42/controlfilter.lv2.git"
 
