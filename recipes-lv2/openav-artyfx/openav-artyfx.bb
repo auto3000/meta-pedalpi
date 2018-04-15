@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=4cc91856b08b094b4f406a29dc61db21"
 
 SRC_URI = "git://github.com/openAVproductions/openAV-ArtyFX.git"
-SRCREV = "01b303e4ef37c8d05841afbad09f4fa393062bdb"
+SRCREV = "b247969a51bd7f5499e2f8d77c183c9faf828a11"
 
 DEPENDS = "lv2 libsndfile1"
 
