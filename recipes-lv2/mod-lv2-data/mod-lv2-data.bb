@@ -4,7 +4,7 @@ SECTION = "multimedia"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293b95dea7b07891"
 
-SRCREV = "45dc0960d7b2b9ad9f6ca2835f1fcf06a2e165ed"
+SRCREV = "bc731ed68c44227530625592fb3ca7a687531771"
 SRC_URI = "git://github.com/moddevices/mod-lv2-data.git"
 
 DEPENDS = " guitarix "
