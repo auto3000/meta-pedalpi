@@ -1,0 +1,1474 @@
+From f82c857bc07c3bc75018e959571406fe5c6f2fae Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Wed, 15 Aug 2018 11:27:16 +0200
+Subject: [PATCH] plugins: update TTL and modgui resources
+
+These resources have been backported from updates found from
+https://github.com/moddevices/mod-lv2-data at commit
+bc731ed68c44227530625592fb3ca7a687531771.
+
+Signed-off-by: auto3000 <auto3000@users.noreply.github.com>
+---
+ plugins/mod-caps-AmpVTS.lv2/AmpVTS.ttl             |  6 ++--
+ plugins/mod-caps-AmpVTS.lv2/default-preset.ttl     | 42 ++++++++++++++++++++++
+ plugins/mod-caps-AmpVTS.lv2/manifest.ttl           |  7 ++++
+ plugins/mod-caps-AutoFilter.lv2/AutoFilter.ttl     | 14 ++++----
+ plugins/mod-caps-AutoFilter.lv2/default-preset.ttl | 33 +++++++++++++++++
+ plugins/mod-caps-AutoFilter.lv2/manifest.ttl       |  7 ++++
+ plugins/mod-caps-AutoFilter.lv2/modgui.ttl         | 16 +++++----
+ plugins/mod-caps-CEO.lv2/default-preset.ttl        | 18 ++++++++++
+ plugins/mod-caps-CEO.lv2/manifest.ttl              |  7 ++++
+ plugins/mod-caps-CEO.lv2/modgui.ttl                |  8 ++---
+ plugins/mod-caps-CabinetIV.lv2/default-preset.ttl  | 15 ++++++++
+ plugins/mod-caps-CabinetIV.lv2/manifest.ttl        |  7 ++++
+ plugins/mod-caps-ChorusI.lv2/default-preset.ttl    | 27 ++++++++++++++
+ plugins/mod-caps-ChorusI.lv2/manifest.ttl          |  7 ++++
+ plugins/mod-caps-ChorusI.lv2/modgui.ttl            | 24 ++++++-------
+ plugins/mod-caps-Click.lv2/default-preset.ttl      | 21 +++++++++++
+ plugins/mod-caps-Click.lv2/manifest.ttl            |  7 ++++
+ plugins/mod-caps-Click.lv2/modgui.ttl              |  5 +--
+ plugins/mod-caps-Compress.lv2/default-preset.ttl   | 30 ++++++++++++++++
+ plugins/mod-caps-Compress.lv2/manifest.ttl         |  7 ++++
+ plugins/mod-caps-CompressX2.lv2/default-preset.ttl | 30 ++++++++++++++++
+ plugins/mod-caps-CompressX2.lv2/manifest.ttl       |  7 ++++
+ plugins/mod-caps-Fractal.lv2/default-preset.ttl    | 30 ++++++++++++++++
+ plugins/mod-caps-Fractal.lv2/manifest.ttl          |  7 ++++
+ plugins/mod-caps-Fractal.lv2/modgui.ttl            |  2 +-
+ plugins/mod-caps-Narrower.lv2/default-preset.ttl   | 15 ++++++++
+ plugins/mod-caps-Narrower.lv2/manifest.ttl         |  7 ++++
+ plugins/mod-caps-PhaserII.lv2/default-preset.ttl   | 24 +++++++++++++
+ plugins/mod-caps-PhaserII.lv2/manifest.ttl         |  7 ++++
+ plugins/mod-caps-PhaserII.lv2/modgui.ttl           |  8 +++--
+ plugins/mod-caps-Plate.lv2/Plate.ttl               |  3 ++
+ plugins/mod-caps-Plate.lv2/default-preset.ttl      | 21 +++++++++++
+ plugins/mod-caps-Plate.lv2/manifest.ttl            |  7 ++++
+ plugins/mod-caps-Plate.lv2/modgui.ttl              |  8 ++---
+ plugins/mod-caps-PlateX2.lv2/PlateX2.ttl           |  3 ++
+ plugins/mod-caps-PlateX2.lv2/default-preset.ttl    | 21 +++++++++++
+ plugins/mod-caps-PlateX2.lv2/manifest.ttl          |  7 ++++
+ plugins/mod-caps-PlateX2.lv2/modgui.ttl            |  8 ++---
+ plugins/mod-caps-Saturate.lv2/default-preset.ttl   | 18 ++++++++++
+ plugins/mod-caps-Saturate.lv2/manifest.ttl         |  7 ++++
+ plugins/mod-caps-Scape.lv2/Scape.ttl               |  5 ++-
+ plugins/mod-caps-Scape.lv2/default-preset.ttl      | 27 ++++++++++++++
+ plugins/mod-caps-Scape.lv2/manifest.ttl            |  7 ++++
+ plugins/mod-caps-Scape.lv2/modgui.ttl              | 10 +++---
+ plugins/mod-caps-Spice.lv2/default-preset.ttl      | 24 +++++++++++++
+ plugins/mod-caps-Spice.lv2/manifest.ttl            |  7 ++++
+ plugins/mod-caps-Spice.lv2/modgui.ttl              | 10 +++---
+ plugins/mod-caps-SpiceX2.lv2/default-preset.ttl    | 24 +++++++++++++
+ plugins/mod-caps-SpiceX2.lv2/manifest.ttl          |  7 ++++
+ plugins/mod-caps-SpiceX2.lv2/modgui.ttl            | 10 +++---
+ plugins/mod-caps-ToneStack.lv2/default-preset.ttl  | 21 +++++++++++
+ plugins/mod-caps-ToneStack.lv2/manifest.ttl        |  7 ++++
+ plugins/mod-caps-White.lv2/default-preset.ttl      | 12 +++++++
+ plugins/mod-caps-White.lv2/manifest.ttl            |  7 ++++
+ plugins/mod-caps-Wider.lv2/default-preset.ttl      | 15 ++++++++
+ plugins/mod-caps-Wider.lv2/manifest.ttl            |  7 ++++
+ 56 files changed, 687 insertions(+), 61 deletions(-)
+ create mode 100644 plugins/mod-caps-AmpVTS.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-AutoFilter.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-CEO.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-CabinetIV.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-ChorusI.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Click.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Compress.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-CompressX2.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Fractal.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Narrower.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-PhaserII.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Plate.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-PlateX2.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Saturate.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Scape.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Spice.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-SpiceX2.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-ToneStack.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-White.lv2/default-preset.ttl
+ create mode 100644 plugins/mod-caps-Wider.lv2/default-preset.ttl
+
+diff --git a/plugins/mod-caps-AmpVTS.lv2/AmpVTS.ttl b/plugins/mod-caps-AmpVTS.lv2/AmpVTS.ttl
+index a837ee3..91b3e59 100644
+--- a/plugins/mod-caps-AmpVTS.lv2/AmpVTS.ttl
++++ b/plugins/mod-caps-AmpVTS.lv2/AmpVTS.ttl
+@@ -27,7 +27,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 0;
+-    lv2:default 1;
++    lv2:default 2;
+     lv2:maximum 2;
+     lv2:minimum 0;
+     lv2:name "Over";
+@@ -151,7 +151,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 8;
+-    lv2:default 0.75;
++    lv2:default 0.0;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Attack";
+@@ -160,7 +160,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 9;
+-    lv2:default 0.25;
++    lv2:default 0.0;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Squash";
+diff --git a/plugins/mod-caps-AmpVTS.lv2/default-preset.ttl b/plugins/mod-caps-AmpVTS.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..980fe7c
+--- /dev/null
++++ b/plugins/mod-caps-AmpVTS.lv2/default-preset.ttl
+@@ -0,0 +1,42 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/AmpVTS> ;
++	lv2:port [
++		lv2:symbol "attack" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "bass" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "bright" ;
++		pset:value 0.75
++	] , [
++		lv2:symbol "gain" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "low_cut" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "mid" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "over" ;
++		pset:value 2.0
++	] , [
++		lv2:symbol "power" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "squash" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "tonestack" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "treble" ;
++		pset:value 0.75
++	] .
++
+diff --git a/plugins/mod-caps-AmpVTS.lv2/manifest.ttl b/plugins/mod-caps-AmpVTS.lv2/manifest.ttl
+index 281338c..1b90f5a 100644
+--- a/plugins/mod-caps-AmpVTS.lv2/manifest.ttl
++++ b/plugins/mod-caps-AmpVTS.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <AmpVTS.so> ;
+     rdfs:seeAlso <AmpVTS.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/AmpVTS> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-AutoFilter.lv2/AutoFilter.ttl b/plugins/mod-caps-AutoFilter.lv2/AutoFilter.ttl
+index c44b7c0..b08eac4 100644
+--- a/plugins/mod-caps-AutoFilter.lv2/AutoFilter.ttl
++++ b/plugins/mod-caps-AutoFilter.lv2/AutoFilter.ttl
+@@ -31,7 +31,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 0;
+-    lv2:default 1;
++    lv2:default 0;
+     lv2:maximum 1;
+     lv2:minimum 0;
+     lv2:name "Mode";
+@@ -69,7 +69,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 2;
+-    lv2:default 2555.0;
++    lv2:default 2500.0;
+     lv2:maximum 3400.0;
+     lv2:minimum 20.0;
+     lv2:name "Frequency";
+@@ -80,7 +80,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 3;
+-    lv2:default 0.25;
++    lv2:default 0.27;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Q";
+@@ -89,7 +89,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 4;
+-    lv2:default 1.0;
++    lv2:default 0.81;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Depth";
+@@ -98,7 +98,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 5;
+-    lv2:default 0.25;
++    lv2:default 0.16;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "LFO/Envelope";
+@@ -107,7 +107,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 6;
+-    lv2:default 0.25;
++    lv2:default 0.26;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Rate";
+@@ -116,7 +116,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 7;
+-    lv2:default 1.0;
++    lv2:default 0.35;
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "X/Z";
+diff --git a/plugins/mod-caps-AutoFilter.lv2/default-preset.ttl b/plugins/mod-caps-AutoFilter.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..e189a0e
+--- /dev/null
++++ b/plugins/mod-caps-AutoFilter.lv2/default-preset.ttl
+@@ -0,0 +1,33 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/AutoFilter> ;
++	lv2:port [
++		lv2:symbol "Q" ;
++		pset:value 0.27
++	] , [
++		lv2:symbol "depth" ;
++		pset:value 0.81
++	] , [
++		lv2:symbol "filter" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "frequency" ;
++		pset:value 2500.0
++	] , [
++		lv2:symbol "lfoenv" ;
++		pset:value 0.16
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "rate" ;
++		pset:value 0.26
++	] , [
++		lv2:symbol "x_z" ;
++		pset:value 0.35
++	] .
++
+diff --git a/plugins/mod-caps-AutoFilter.lv2/manifest.ttl b/plugins/mod-caps-AutoFilter.lv2/manifest.ttl
+index 68497f1..a31c972 100644
+--- a/plugins/mod-caps-AutoFilter.lv2/manifest.ttl
++++ b/plugins/mod-caps-AutoFilter.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <AutoFilter.so> ;
+     rdfs:seeAlso <AutoFilter.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/AutoFilter> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-AutoFilter.lv2/modgui.ttl b/plugins/mod-caps-AutoFilter.lv2/modgui.ttl
+index a6b2488..74d86ff 100644
+--- a/plugins/mod-caps-AutoFilter.lv2/modgui.ttl
++++ b/plugins/mod-caps-AutoFilter.lv2/modgui.ttl
+@@ -11,7 +11,7 @@
+         modgui:brand "CAPS" ;
+         modgui:label "Auto Filter" ;
+         modgui:model "boxy" ;
+-        modgui:panel "1-select-3-knobs" ;
++        modgui:panel "1-select-4-knobs" ;
+         modgui:color "yellow" ;
+         modgui:knob "black" ;
+         modgui:port [
+@@ -20,15 +20,19 @@
+             lv2:name "Filter" ;
+         ] , [
+             lv2:index 1 ;
++            lv2:symbol "depth" ;
++            lv2:name "Depth" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "rate" ;
++            lv2:name "Rate" ;
++        ] , [
++            lv2:index 3 ;
+             lv2:symbol "frequency" ;
+             lv2:name "Freq" ;
+         ] , [
+-            lv2:index 2 ;
++            lv2:index 4 ;
+             lv2:symbol "Q" ;
+             lv2:name "Q" ;
+-        ] , [
+-            lv2:index 3 ;
+-            lv2:symbol "depth" ;
+-            lv2:name "Depth" ;
+         ] ;
+     ] .
+\ No newline at end of file
+diff --git a/plugins/mod-caps-CEO.lv2/default-preset.ttl b/plugins/mod-caps-CEO.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..a8f9972
+--- /dev/null
++++ b/plugins/mod-caps-CEO.lv2/default-preset.ttl
+@@ -0,0 +1,18 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/CEO> ;
++	lv2:port [
++		lv2:symbol "damping" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "ppm" ;
++		pset:value 80.0
++	] , [
++		lv2:symbol "volume" ;
++		pset:value 0.75
++	] .
++
+diff --git a/plugins/mod-caps-CEO.lv2/manifest.ttl b/plugins/mod-caps-CEO.lv2/manifest.ttl
+index 1de2294..078238d 100644
+--- a/plugins/mod-caps-CEO.lv2/manifest.ttl
++++ b/plugins/mod-caps-CEO.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <CEO.so> ;
+     rdfs:seeAlso <CEO.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/CEO> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-CEO.lv2/modgui.ttl b/plugins/mod-caps-CEO.lv2/modgui.ttl
+index 6aac7e1..974e4b2 100644
+--- a/plugins/mod-caps-CEO.lv2/modgui.ttl
++++ b/plugins/mod-caps-CEO.lv2/modgui.ttl
+@@ -20,11 +20,11 @@
+             lv2:name "Profit" ;
+         ] , [
+             lv2:index 1 ;
+-            lv2:symbol "volume" ;
+-            lv2:name "Level" ;
+-        ] , [
+-            lv2:index 2 ;
+             lv2:symbol "damping" ;
+             lv2:name "Damping" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "volume" ;
++            lv2:name "Level" ;
+         ] ;
+     ] .
+\ No newline at end of file
+diff --git a/plugins/mod-caps-CabinetIV.lv2/default-preset.ttl b/plugins/mod-caps-CabinetIV.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..3b1a4c6
+--- /dev/null
++++ b/plugins/mod-caps-CabinetIV.lv2/default-preset.ttl
+@@ -0,0 +1,15 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/CabinetIV> ;
++	lv2:port [
++		lv2:symbol "gain" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "model" ;
++		pset:value 12.0
++	] .
++
+diff --git a/plugins/mod-caps-CabinetIV.lv2/manifest.ttl b/plugins/mod-caps-CabinetIV.lv2/manifest.ttl
+index 954835a..6c8f708 100644
+--- a/plugins/mod-caps-CabinetIV.lv2/manifest.ttl
++++ b/plugins/mod-caps-CabinetIV.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <CabinetIV.so> ;
+     rdfs:seeAlso <CabinetIV.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/CabinetIV> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-ChorusI.lv2/default-preset.ttl b/plugins/mod-caps-ChorusI.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..72a8141
+--- /dev/null
++++ b/plugins/mod-caps-ChorusI.lv2/default-preset.ttl
+@@ -0,0 +1,27 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/ChorusI> ;
++	lv2:port [
++		lv2:symbol "blend" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "feedback" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "feedforward" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "rate" ;
++		pset:value 1.25
++	] , [
++		lv2:symbol "time" ;
++		pset:value 10.0
++	] , [
++		lv2:symbol "width" ;
++		pset:value 3.0
++	] .
++
+diff --git a/plugins/mod-caps-ChorusI.lv2/manifest.ttl b/plugins/mod-caps-ChorusI.lv2/manifest.ttl
+index bdfcb57..89912ff 100644
+--- a/plugins/mod-caps-ChorusI.lv2/manifest.ttl
++++ b/plugins/mod-caps-ChorusI.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <ChorusI.so> ;
+     rdfs:seeAlso <ChorusI.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/ChorusI> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-ChorusI.lv2/modgui.ttl b/plugins/mod-caps-ChorusI.lv2/modgui.ttl
+index 115568e..8c65cde 100644
+--- a/plugins/mod-caps-ChorusI.lv2/modgui.ttl
++++ b/plugins/mod-caps-ChorusI.lv2/modgui.ttl
+@@ -16,27 +16,27 @@
+         modgui:knob "black" ;
+         modgui:port [
+             lv2:index 0 ;
+-            lv2:symbol "time" ;
+-            lv2:name "time" ;
++            lv2:symbol "width" ;
++            lv2:name "Depth" ;
+         ] , [
+             lv2:index 1 ;
+-            lv2:symbol "width" ;
+-            lv2:name "width" ;
++            lv2:symbol "rate" ;
++            lv2:name "Rate" ;
+         ] , [
+             lv2:index 2 ;
+-            lv2:symbol "rate" ;
+-            lv2:name "rate" ;
++            lv2:symbol "blend" ;
++            lv2:name "Mix" ;
+         ] , [
+             lv2:index 3 ;
+-            lv2:symbol "blend" ;
+-            lv2:name "blend" ;
++            lv2:symbol "time" ;
++            lv2:name "Delay" ;
+         ] , [
+             lv2:index 4 ;
+-            lv2:symbol "feedforward" ;
+-            lv2:name "f.forw." ;
++            lv2:symbol "feedback" ;
++            lv2:name "Feedb." ;
+         ] , [
+             lv2:index 5 ;
+-            lv2:symbol "feedback" ;
+-            lv2:name "f.back" ;
++            lv2:symbol "feedforward" ;
++            lv2:name "Feedf." ;
+         ] ;
+     ] .
+\ No newline at end of file
+diff --git a/plugins/mod-caps-Click.lv2/default-preset.ttl b/plugins/mod-caps-Click.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..6ed89ce
+--- /dev/null
++++ b/plugins/mod-caps-Click.lv2/default-preset.ttl
+@@ -0,0 +1,21 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Click> ;
++	lv2:port [
++		lv2:symbol "bpm" ;
++		pset:value 63.0
++	] , [
++		lv2:symbol "damping" ;
++		pset:value 0.75
++	] , [
++		lv2:symbol "model" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "volume" ;
++		pset:value 0.75
++	] .
++
+diff --git a/plugins/mod-caps-Click.lv2/manifest.ttl b/plugins/mod-caps-Click.lv2/manifest.ttl
+index 30f0fb1..0dffb61 100644
+--- a/plugins/mod-caps-Click.lv2/manifest.ttl
++++ b/plugins/mod-caps-Click.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Click.so> ;
+     rdfs:seeAlso <Click.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Click> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Click.lv2/modgui.ttl b/plugins/mod-caps-Click.lv2/modgui.ttl
+index 662f57b..c4ce720 100644
+--- a/plugins/mod-caps-Click.lv2/modgui.ttl
++++ b/plugins/mod-caps-Click.lv2/modgui.ttl
+@@ -21,7 +21,7 @@
+         ] , [
+             lv2:index 1 ;
+             lv2:symbol "bpm" ;
+-            lv2:name "rate" ;
++            lv2:name "bpm" ;
+         ] , [
+             lv2:index 2 ;
+             lv2:symbol "damping" ;
+@@ -30,5 +30,6 @@
+             lv2:index 3 ;
+             lv2:symbol "volume" ;
+             lv2:name "level" ;
++            lv2:shortName "level" ;
+         ] ;
+-    ] .
+\ No newline at end of file
++    ] .
+diff --git a/plugins/mod-caps-Compress.lv2/default-preset.ttl b/plugins/mod-caps-Compress.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..0fea905
+--- /dev/null
++++ b/plugins/mod-caps-Compress.lv2/default-preset.ttl
+@@ -0,0 +1,30 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Compress> ;
++	lv2:port [
++		lv2:symbol "attack" ;
++		pset:value 0.75
++	] , [
++		lv2:symbol "gain" ;
++		pset:value 3.0
++	] , [
++		lv2:symbol "measure" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "release" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "strength" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "threshold" ;
++		pset:value 0.5
++	] .
++
+diff --git a/plugins/mod-caps-Compress.lv2/manifest.ttl b/plugins/mod-caps-Compress.lv2/manifest.ttl
+index 8ed1e00..3ce8e8e 100644
+--- a/plugins/mod-caps-Compress.lv2/manifest.ttl
++++ b/plugins/mod-caps-Compress.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Compress.so> ;
+     rdfs:seeAlso <Compress.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Compress> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-CompressX2.lv2/default-preset.ttl b/plugins/mod-caps-CompressX2.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..d2ffee8
+--- /dev/null
++++ b/plugins/mod-caps-CompressX2.lv2/default-preset.ttl
+@@ -0,0 +1,30 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/CompressX2> ;
++	lv2:port [
++		lv2:symbol "attack" ;
++		pset:value 0.75
++	] , [
++		lv2:symbol "gain" ;
++		pset:value 3.0
++	] , [
++		lv2:symbol "measure" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "release" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "strength" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "threshold" ;
++		pset:value 0.5
++	] .
++
+diff --git a/plugins/mod-caps-CompressX2.lv2/manifest.ttl b/plugins/mod-caps-CompressX2.lv2/manifest.ttl
+index f297de3..44b0c38 100644
+--- a/plugins/mod-caps-CompressX2.lv2/manifest.ttl
++++ b/plugins/mod-caps-CompressX2.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <CompressX2.so> ;
+     rdfs:seeAlso <CompressX2.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/CompressX2> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Fractal.lv2/default-preset.ttl b/plugins/mod-caps-Fractal.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..ecdc6f4
+--- /dev/null
++++ b/plugins/mod-caps-Fractal.lv2/default-preset.ttl
+@@ -0,0 +1,30 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Fractal> ;
++	lv2:port [
++		lv2:symbol "hp" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "rate" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "volume" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "x" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "y" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "z" ;
++		pset:value 0.5
++	] .
++
+diff --git a/plugins/mod-caps-Fractal.lv2/manifest.ttl b/plugins/mod-caps-Fractal.lv2/manifest.ttl
+index 71d2fc9..728fe48 100644
+--- a/plugins/mod-caps-Fractal.lv2/manifest.ttl
++++ b/plugins/mod-caps-Fractal.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Fractal.so> ;
+     rdfs:seeAlso <Fractal.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Fractal> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Fractal.lv2/modgui.ttl b/plugins/mod-caps-Fractal.lv2/modgui.ttl
+index 8e33bc0..faa044d 100644
+--- a/plugins/mod-caps-Fractal.lv2/modgui.ttl
++++ b/plugins/mod-caps-Fractal.lv2/modgui.ttl
+@@ -25,7 +25,7 @@
+         ] , [
+             lv2:index 2 ;
+             lv2:symbol "volume" ;
+-            lv2:name "Volume" ;
++            lv2:name "Level" ;
+         ] , [
+             lv2:index 3 ;
+             lv2:symbol "x" ;
+diff --git a/plugins/mod-caps-Narrower.lv2/default-preset.ttl b/plugins/mod-caps-Narrower.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..978be84
+--- /dev/null
++++ b/plugins/mod-caps-Narrower.lv2/default-preset.ttl
+@@ -0,0 +1,15 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Narrower> ;
++	lv2:port [
++		lv2:symbol "mode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "strength" ;
++		pset:value 0.25
++	] .
++
+diff --git a/plugins/mod-caps-Narrower.lv2/manifest.ttl b/plugins/mod-caps-Narrower.lv2/manifest.ttl
+index dea25eb..4702757 100644
+--- a/plugins/mod-caps-Narrower.lv2/manifest.ttl
++++ b/plugins/mod-caps-Narrower.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Narrower.so> ;
+     rdfs:seeAlso <Narrower.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Narrower> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-PhaserII.lv2/default-preset.ttl b/plugins/mod-caps-PhaserII.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..858ee83
+--- /dev/null
++++ b/plugins/mod-caps-PhaserII.lv2/default-preset.ttl
+@@ -0,0 +1,24 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/PhaserII> ;
++	lv2:port [
++		lv2:symbol "depth" ;
++		pset:value 0.75
++	] , [
++		lv2:symbol "lfo" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "rate" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "resonance" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "spread" ;
++		pset:value 0.75
++	] .
++
+diff --git a/plugins/mod-caps-PhaserII.lv2/manifest.ttl b/plugins/mod-caps-PhaserII.lv2/manifest.ttl
+index 0e89840..ff42654 100644
+--- a/plugins/mod-caps-PhaserII.lv2/manifest.ttl
++++ b/plugins/mod-caps-PhaserII.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <PhaserII.so> ;
+     rdfs:seeAlso <PhaserII.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/PhaserII> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-PhaserII.lv2/modgui.ttl b/plugins/mod-caps-PhaserII.lv2/modgui.ttl
+index 58128e8..936bd89 100644
+--- a/plugins/mod-caps-PhaserII.lv2/modgui.ttl
++++ b/plugins/mod-caps-PhaserII.lv2/modgui.ttl
+@@ -11,7 +11,7 @@
+         modgui:brand "CAPS" ;
+         modgui:label "Phaser II" ;
+         modgui:model "boxy" ;
+-        modgui:panel "4-knobs" ;
++        modgui:panel "5-knobs" ;
+         modgui:color "purple" ;
+         modgui:knob "black" ;
+         modgui:port [
+@@ -25,9 +25,13 @@
+         ] , [
+             lv2:index 2 ;
+             lv2:symbol "resonance" ;
+-            lv2:name "Reso" ;
++            lv2:name "Reson" ;
+         ] , [
+             lv2:index 3 ;
++            lv2:symbol "lfo" ;
++            lv2:name "LFO" ;
++        ] , [
++            lv2:index 4 ;
+             lv2:symbol "spread" ;
+             lv2:name "Spread" ;
+         ] ;
+diff --git a/plugins/mod-caps-Plate.lv2/Plate.ttl b/plugins/mod-caps-Plate.lv2/Plate.ttl
+index 2b92587..2bbd739 100644
+--- a/plugins/mod-caps-Plate.lv2/Plate.ttl
++++ b/plugins/mod-caps-Plate.lv2/Plate.ttl
+@@ -28,6 +28,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Bandwidth";
++    lv2:shortName "Lowpass" ;
+     lv2:symbol "bandwidth";
+ ],
+ [
+@@ -37,6 +38,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Tail";
++    lv2:shortName "Decay" ;
+     lv2:symbol "tail";
+ ],
+ [
+@@ -55,6 +57,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Blend";
++    lv2:shortName "Mix" ;
+     lv2:symbol "blend";
+ ],
+ [
+diff --git a/plugins/mod-caps-Plate.lv2/default-preset.ttl b/plugins/mod-caps-Plate.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..7c0d8d9
+--- /dev/null
++++ b/plugins/mod-caps-Plate.lv2/default-preset.ttl
+@@ -0,0 +1,21 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Plate> ;
++	lv2:port [
++		lv2:symbol "bandwidth" ;
++		pset:value 0.99949998
++	] , [
++		lv2:symbol "blend" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "damping" ;
++		pset:value 0.0005
++	] , [
++		lv2:symbol "tail" ;
++		pset:value 0.5
++	] .
++
+diff --git a/plugins/mod-caps-Plate.lv2/manifest.ttl b/plugins/mod-caps-Plate.lv2/manifest.ttl
+index 4c7ddce..912b263 100644
+--- a/plugins/mod-caps-Plate.lv2/manifest.ttl
++++ b/plugins/mod-caps-Plate.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Plate.so> ;
+     rdfs:seeAlso <Plate.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Plate> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Plate.lv2/modgui.ttl b/plugins/mod-caps-Plate.lv2/modgui.ttl
+index 9f681e8..e965289 100644
+--- a/plugins/mod-caps-Plate.lv2/modgui.ttl
++++ b/plugins/mod-caps-Plate.lv2/modgui.ttl
+@@ -20,12 +20,12 @@
+             lv2:name "Decay" ;
+         ] , [
+             lv2:index 1 ;
+-            lv2:symbol "bandwidth" ;
+-            lv2:name "lowpass" ;
++            lv2:symbol "damping" ;
++            lv2:name "Damping" ;
+         ] , [
+             lv2:index 2 ;
+-            lv2:symbol "damping" ;
+-            lv2:name "damping" ;
++            lv2:symbol "bandwidth" ;
++            lv2:name "Lowpass" ;
+         ] , [
+             lv2:index 3 ;
+             lv2:symbol "blend" ;
+diff --git a/plugins/mod-caps-PlateX2.lv2/PlateX2.ttl b/plugins/mod-caps-PlateX2.lv2/PlateX2.ttl
+index 0f50dbf..cd33fca 100644
+--- a/plugins/mod-caps-PlateX2.lv2/PlateX2.ttl
++++ b/plugins/mod-caps-PlateX2.lv2/PlateX2.ttl
+@@ -26,6 +26,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Bandwidth";
++    lv2:shortName "Lowpass" ;
+     lv2:symbol "bandwidth";
+ ],
+ [
+@@ -35,6 +36,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Tail";
++    lv2:shortName "Decay" ;
+     lv2:symbol "tail";
+ ],
+ [
+@@ -53,6 +55,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Blend";
++    lv2:shortName "Mix" ;
+     lv2:symbol "blend";
+ ],
+ [
+diff --git a/plugins/mod-caps-PlateX2.lv2/default-preset.ttl b/plugins/mod-caps-PlateX2.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..3d48e66
+--- /dev/null
++++ b/plugins/mod-caps-PlateX2.lv2/default-preset.ttl
+@@ -0,0 +1,21 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/PlateX2> ;
++	lv2:port [
++		lv2:symbol "bandwidth" ;
++		pset:value 0.99949998
++	] , [
++		lv2:symbol "blend" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "damping" ;
++		pset:value 0.0005
++	] , [
++		lv2:symbol "tail" ;
++		pset:value 0.5
++	] .
++
+diff --git a/plugins/mod-caps-PlateX2.lv2/manifest.ttl b/plugins/mod-caps-PlateX2.lv2/manifest.ttl
+index ec8338b..28d617b 100644
+--- a/plugins/mod-caps-PlateX2.lv2/manifest.ttl
++++ b/plugins/mod-caps-PlateX2.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <PlateX2.so> ;
+     rdfs:seeAlso <PlateX2.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/PlateX2> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-PlateX2.lv2/modgui.ttl b/plugins/mod-caps-PlateX2.lv2/modgui.ttl
+index 2b102c2..b92c76e 100644
+--- a/plugins/mod-caps-PlateX2.lv2/modgui.ttl
++++ b/plugins/mod-caps-PlateX2.lv2/modgui.ttl
+@@ -20,12 +20,12 @@
+             lv2:name "Decay" ;
+         ] , [
+             lv2:index 1 ;
+-            lv2:symbol "bandwidth" ;
+-            lv2:name "lowpass" ;
++            lv2:symbol "damping" ;
++            lv2:name "Damping" ;
+         ] , [
+             lv2:index 2 ;
+-            lv2:symbol "damping" ;
+-            lv2:name "damping" ;
++            lv2:symbol "bandwidth" ;
++            lv2:name "Lowpass" ;
+         ] , [
+             lv2:index 3 ;
+             lv2:symbol "blend" ;
+diff --git a/plugins/mod-caps-Saturate.lv2/default-preset.ttl b/plugins/mod-caps-Saturate.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..6219a46
+--- /dev/null
++++ b/plugins/mod-caps-Saturate.lv2/default-preset.ttl
+@@ -0,0 +1,18 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Saturate> ;
++	lv2:port [
++		lv2:symbol "bias" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "gain" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 1.0
++	] .
++
+diff --git a/plugins/mod-caps-Saturate.lv2/manifest.ttl b/plugins/mod-caps-Saturate.lv2/manifest.ttl
+index 78920ad..302dde0 100644
+--- a/plugins/mod-caps-Saturate.lv2/manifest.ttl
++++ b/plugins/mod-caps-Saturate.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Saturate.so> ;
+     rdfs:seeAlso <Saturate.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Saturate> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Scape.lv2/Scape.ttl b/plugins/mod-caps-Scape.lv2/Scape.ttl
+index 2c12553..69ccfb7 100644
+--- a/plugins/mod-caps-Scape.lv2/Scape.ttl
++++ b/plugins/mod-caps-Scape.lv2/Scape.ttl
+@@ -31,6 +31,7 @@ lv2:port
+     lv2:maximum 164.0;
+     lv2:minimum 30.0;
+     lv2:name "BPM";
++    lv2:portProperty mod:tapTempo;
+     lv2:symbol "bpm";
+     lv2:designation time:beatsPerMinute;
+     units:unit units:bpm;
+@@ -38,7 +39,7 @@ lv2:port
+ [
+     a lv2:ControlPort, lv2:InputPort;
+     lv2:index 1;
+-    lv2:default 3;
++    lv2:default 2;
+     lv2:maximum 4;
+     lv2:minimum 2;
+     lv2:name "Divider";
+@@ -75,6 +76,7 @@ lv2:port
+     lv2:minimum 0.0;
+     lv2:name "Dry";
+     lv2:symbol "dry";
++    mod:default 0.75;
+ ],
+ [
+     a lv2:ControlPort, lv2:InputPort;
+@@ -83,6 +85,7 @@ lv2:port
+     lv2:maximum 1.0;
+     lv2:minimum 0.0;
+     lv2:name "Blend";
++    lv2:shortName "Mix" ;
+     lv2:symbol "blend";
+ ],
+ [
+diff --git a/plugins/mod-caps-Scape.lv2/default-preset.ttl b/plugins/mod-caps-Scape.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..e36ba51
+--- /dev/null
++++ b/plugins/mod-caps-Scape.lv2/default-preset.ttl
+@@ -0,0 +1,27 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Scape> ;
++	lv2:port [
++		lv2:symbol "blend" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "bpm" ;
++		pset:value 100.0
++	] , [
++		lv2:symbol "divider" ;
++		pset:value 2.0
++	] , [
++		lv2:symbol "dry" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "feedback" ;
++		pset:value 0.75
++	] , [
++		lv2:symbol "tune" ;
++		pset:value 440.0
++	] .
++
+diff --git a/plugins/mod-caps-Scape.lv2/manifest.ttl b/plugins/mod-caps-Scape.lv2/manifest.ttl
+index 4160643..8036428 100644
+--- a/plugins/mod-caps-Scape.lv2/manifest.ttl
++++ b/plugins/mod-caps-Scape.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Scape.so> ;
+     rdfs:seeAlso <Scape.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Scape> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Scape.lv2/modgui.ttl b/plugins/mod-caps-Scape.lv2/modgui.ttl
+index ad66bc1..f07de07 100644
+--- a/plugins/mod-caps-Scape.lv2/modgui.ttl
++++ b/plugins/mod-caps-Scape.lv2/modgui.ttl
+@@ -11,17 +11,17 @@
+         modgui:brand "CAPS" ;
+         modgui:label "Scape" ;
+         modgui:model "boxy" ;
+-        modgui:panel "4-knobs" ;
++        modgui:panel "1-select-3-knobs" ;
+         modgui:color "zinc" ;
+         modgui:knob "black" ;
+         modgui:port [
+             lv2:index 0 ;
+-            lv2:symbol "bpm" ;
+-            lv2:name "Time" ;
++            lv2:symbol "divider" ;
++            lv2:name "Divider" ;
+         ] , [
+             lv2:index 1 ;
+-            lv2:symbol "divider" ;
+-            lv2:name "Division" ;
++            lv2:symbol "bpm" ;
++            lv2:name "BPM" ;
+         ] , [
+             lv2:index 2 ;
+             lv2:symbol "feedback" ;
+diff --git a/plugins/mod-caps-Spice.lv2/default-preset.ttl b/plugins/mod-caps-Spice.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..32a17df
+--- /dev/null
++++ b/plugins/mod-caps-Spice.lv2/default-preset.ttl
+@@ -0,0 +1,24 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Spice> ;
++	lv2:port [
++		lv2:symbol "hif" ;
++		pset:value 1350.0
++	] , [
++		lv2:symbol "higain" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "locomp" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "lof" ;
++		pset:value 225.0
++	] , [
++		lv2:symbol "logain" ;
++		pset:value 0.25
++	] .
++
+diff --git a/plugins/mod-caps-Spice.lv2/manifest.ttl b/plugins/mod-caps-Spice.lv2/manifest.ttl
+index 2b394b4..12751ab 100644
+--- a/plugins/mod-caps-Spice.lv2/manifest.ttl
++++ b/plugins/mod-caps-Spice.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Spice.so> ;
+     rdfs:seeAlso <Spice.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Spice> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Spice.lv2/modgui.ttl b/plugins/mod-caps-Spice.lv2/modgui.ttl
+index 76b58d6..a0e6b0a 100644
+--- a/plugins/mod-caps-Spice.lv2/modgui.ttl
++++ b/plugins/mod-caps-Spice.lv2/modgui.ttl
+@@ -17,22 +17,22 @@
+         modgui:port [
+             lv2:index 0 ;
+             lv2:symbol "locomp" ;
+-            lv2:name "lo.Comp" ;
++            lv2:name "lo-Comp" ;
+         ] , [
+             lv2:index 1 ;
+             lv2:symbol "lof" ;
+-            lv2:name "lo.freq" ;
++            lv2:name "lo-freq" ;
+         ] , [
+             lv2:index 2 ;
+             lv2:symbol "logain" ;
+-            lv2:name "lo.gain" ;
++            lv2:name "lo-gain" ;
+         ] , [
+             lv2:index 3 ;
+             lv2:symbol "hif" ;
+-            lv2:name "hi.freq" ;
++            lv2:name "hi-freq" ;
+         ] , [
+             lv2:index 4 ;
+             lv2:symbol "higain" ;
+-            lv2:name "hi.gain" ;
++            lv2:name "hi-gain" ;
+         ] ;
+     ] .
+\ No newline at end of file
+diff --git a/plugins/mod-caps-SpiceX2.lv2/default-preset.ttl b/plugins/mod-caps-SpiceX2.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..deb8467
+--- /dev/null
++++ b/plugins/mod-caps-SpiceX2.lv2/default-preset.ttl
+@@ -0,0 +1,24 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/SpiceX2> ;
++	lv2:port [
++		lv2:symbol "hif" ;
++		pset:value 1350.0
++	] , [
++		lv2:symbol "higain" ;
++		pset:value 0.25
++	] , [
++		lv2:symbol "locomp" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "lof" ;
++		pset:value 225.0
++	] , [
++		lv2:symbol "logain" ;
++		pset:value 0.25
++	] .
++
+diff --git a/plugins/mod-caps-SpiceX2.lv2/manifest.ttl b/plugins/mod-caps-SpiceX2.lv2/manifest.ttl
+index 3dbae58..c259c8b 100644
+--- a/plugins/mod-caps-SpiceX2.lv2/manifest.ttl
++++ b/plugins/mod-caps-SpiceX2.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <SpiceX2.so> ;
+     rdfs:seeAlso <SpiceX2.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/SpiceX2> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-SpiceX2.lv2/modgui.ttl b/plugins/mod-caps-SpiceX2.lv2/modgui.ttl
+index 4e3d7dd..d49fa30 100644
+--- a/plugins/mod-caps-SpiceX2.lv2/modgui.ttl
++++ b/plugins/mod-caps-SpiceX2.lv2/modgui.ttl
+@@ -17,22 +17,22 @@
+         modgui:port [
+             lv2:index 0 ;
+             lv2:symbol "locomp" ;
+-            lv2:name "lo.Comp" ;
++            lv2:name "lo-Comp" ;
+         ] , [
+             lv2:index 1 ;
+             lv2:symbol "lof" ;
+-            lv2:name "lo.freq" ;
++            lv2:name "lo-freq" ;
+         ] , [
+             lv2:index 2 ;
+             lv2:symbol "logain" ;
+-            lv2:name "lo.gain" ;
++            lv2:name "lo-gain" ;
+         ] , [
+             lv2:index 3 ;
+             lv2:symbol "hif" ;
+-            lv2:name "hi.freq" ;
++            lv2:name "hi-freq" ;
+         ] , [
+             lv2:index 4 ;
+             lv2:symbol "higain" ;
+-            lv2:name "hi.gain" ;
++            lv2:name "hi-gain" ;
+         ] ;
+     ] .
+\ No newline at end of file
+diff --git a/plugins/mod-caps-ToneStack.lv2/default-preset.ttl b/plugins/mod-caps-ToneStack.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..605aa18
+--- /dev/null
++++ b/plugins/mod-caps-ToneStack.lv2/default-preset.ttl
+@@ -0,0 +1,21 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/ToneStack> ;
++	lv2:port [
++		lv2:symbol "bass" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "mid" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "model" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "treble" ;
++		pset:value 0.5
++	] .
++
+diff --git a/plugins/mod-caps-ToneStack.lv2/manifest.ttl b/plugins/mod-caps-ToneStack.lv2/manifest.ttl
+index ef74a50..bc723c2 100644
+--- a/plugins/mod-caps-ToneStack.lv2/manifest.ttl
++++ b/plugins/mod-caps-ToneStack.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <ToneStack.so> ;
+     rdfs:seeAlso <ToneStack.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/ToneStack> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-White.lv2/default-preset.ttl b/plugins/mod-caps-White.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..fe38ace
+--- /dev/null
++++ b/plugins/mod-caps-White.lv2/default-preset.ttl
+@@ -0,0 +1,12 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/White> ;
++	lv2:port [
++		lv2:symbol "volume" ;
++		pset:value 0.75
++	] .
++
+diff --git a/plugins/mod-caps-White.lv2/manifest.ttl b/plugins/mod-caps-White.lv2/manifest.ttl
+index f412d8a..8201c6f 100644
+--- a/plugins/mod-caps-White.lv2/manifest.ttl
++++ b/plugins/mod-caps-White.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <White.so> ;
+     rdfs:seeAlso <White.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/White> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/plugins/mod-caps-Wider.lv2/default-preset.ttl b/plugins/mod-caps-Wider.lv2/default-preset.ttl
+new file mode 100644
+index 0000000..7a76f07
+--- /dev/null
++++ b/plugins/mod-caps-Wider.lv2/default-preset.ttl
+@@ -0,0 +1,15 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://moddevices.com/plugins/caps/Wider> ;
++	lv2:port [
++		lv2:symbol "pan" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "width" ;
++		pset:value 1.0
++	] .
++
+diff --git a/plugins/mod-caps-Wider.lv2/manifest.ttl b/plugins/mod-caps-Wider.lv2/manifest.ttl
+index e4464ae..2f3f230 100644
+--- a/plugins/mod-caps-Wider.lv2/manifest.ttl
++++ b/plugins/mod-caps-Wider.lv2/manifest.ttl
+@@ -8,3 +8,10 @@
+     lv2:binary <Wider.so> ;
+     rdfs:seeAlso <Wider.ttl> ,
+                  <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://moddevices.com/plugins/caps/Wider> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+-- 
+2.14.1
+
