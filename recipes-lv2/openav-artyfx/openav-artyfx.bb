@@ -2,7 +2,9 @@ DESCRIPTION = "ArtyFX OpenAV Productions."
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=4cc91856b08b094b4f406a29dc61db21"
 
-SRC_URI = "git://github.com/openAVproductions/openAV-ArtyFX.git"
+SRC_URI = "git://github.com/openAVproductions/openAV-ArtyFX.git \
+           file://0001-lv2-update-modgui-and-.TTL-resources.patch \
+           "
 SRCREV = "b247969a51bd7f5499e2f8d77c183c9faf828a11"
 
 DEPENDS = "lv2 libsndfile1"
