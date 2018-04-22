@@ -19,9 +19,6 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}${libdir}/lv2/invada.lv2/modgui
-	cp -R ${S}/plugins-fixed/invada.lv2/modgui ${D}/${libdir}/lv2/invada.lv2/
-
 	install -d ${D}${libdir}/lv2/Kars.lv2/
 	install -d ${D}${libdir}/lv2/MVerb.lv2/
 	install -d ${D}${libdir}/lv2/Nekobi.lv2/
