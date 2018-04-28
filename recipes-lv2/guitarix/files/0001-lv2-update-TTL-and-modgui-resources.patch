@@ -1,0 +1,656 @@
+From f9fa1a56eade8499ba0e19204968bc57ae008aa4 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Wed, 15 Aug 2018 13:39:04 +0200
+Subject: [PATCH] lv2: update TTL and modgui resources
+
+These resources have been backported from updates found from
+https://github.com/moddevices/mod-lv2-data at commit
+bc731ed68c44227530625592fb3ca7a687531771.
+
+Signed-off-by: auto3000 <auto3000@users.noreply.github.com>
+---
+ trunk/src/LV2/gx_gcb_95.lv2/default-preset.ttl | 15 +++++++++++++
+ trunk/src/LV2/gx_gcb_95.lv2/gx_gcb_95.ttl      | 13 +++++++++--
+ trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl       |  9 +++++++-
+ trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl.in    |  9 +++++++-
+ trunk/src/LV2/gx_gcb_95.lv2/modgui.ttl         | 26 ++++++++++++++++++++++
+ trunk/src/LV2/gx_mole.lv2/default-preset.ttl   | 12 +++++++++++
+ trunk/src/LV2/gx_mole.lv2/gx_mole.ttl          | 22 +++++++++++++------
+ trunk/src/LV2/gx_mole.lv2/manifest.ttl         | 11 ++++++++--
+ trunk/src/LV2/gx_mole.lv2/manifest.ttl.in      | 11 ++++++++--
+ trunk/src/LV2/gx_mole.lv2/modgui.ttl           | 26 ++++++++++++++++++++++
+ trunk/src/LV2/gx_muff.lv2/default-preset.ttl   | 15 +++++++++++++
+ trunk/src/LV2/gx_muff.lv2/gx_muff.ttl          | 22 +++++++++++++------
+ trunk/src/LV2/gx_muff.lv2/manifest.ttl         | 11 ++++++++--
+ trunk/src/LV2/gx_muff.lv2/manifest.ttl.in      | 11 ++++++++--
+ trunk/src/LV2/gx_muff.lv2/modgui.ttl           | 26 ++++++++++++++++++++++
+ trunk/src/LV2/gxts9.lv2/default-preset.ttl     | 18 ++++++++++++++++
+ trunk/src/LV2/gxts9.lv2/manifest.ttl           | 12 +++++++++--
+ trunk/src/LV2/gxts9.lv2/manifest.ttl.in        | 14 +++++++++---
+ trunk/src/LV2/gxts9.lv2/modgui.ttl             | 30 ++++++++++++++++++++++++++
+ 19 files changed, 284 insertions(+), 29 deletions(-)
+ create mode 100644 trunk/src/LV2/gx_gcb_95.lv2/default-preset.ttl
+ create mode 100644 trunk/src/LV2/gx_gcb_95.lv2/modgui.ttl
+ create mode 100644 trunk/src/LV2/gx_mole.lv2/default-preset.ttl
+ create mode 100644 trunk/src/LV2/gx_mole.lv2/modgui.ttl
+ create mode 100644 trunk/src/LV2/gx_muff.lv2/default-preset.ttl
+ create mode 100644 trunk/src/LV2/gx_muff.lv2/modgui.ttl
+ create mode 100644 trunk/src/LV2/gxts9.lv2/default-preset.ttl
+ create mode 100644 trunk/src/LV2/gxts9.lv2/modgui.ttl
+
+diff --git a/trunk/src/LV2/gx_gcb_95.lv2/default-preset.ttl b/trunk/src/LV2/gx_gcb_95.lv2/default-preset.ttl
+new file mode 100644
+index 00000000..02a82722
+--- /dev/null
++++ b/trunk/src/LV2/gx_gcb_95.lv2/default-preset.ttl
+@@ -0,0 +1,15 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_> ;
++	lv2:port [
++		lv2:symbol "HOTPOTZ" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "VOLUME" ;
++		pset:value 0.0
++	] .
++
+diff --git a/trunk/src/LV2/gx_gcb_95.lv2/gx_gcb_95.ttl b/trunk/src/LV2/gx_gcb_95.lv2/gx_gcb_95.ttl
+index db01ea59..e387a95e 100644
+--- a/trunk/src/LV2/gx_gcb_95.lv2/gx_gcb_95.ttl
++++ b/trunk/src/LV2/gx_gcb_95.lv2/gx_gcb_95.ttl
+@@ -26,6 +26,7 @@
+ @prefix guiext: <http://lv2plug.in/ns/extensions/ui#>.
+ @prefix time: <http://lv2plug.in/ns/ext/time#>.
+ @prefix units: <http://lv2plug.in/ns/extensions/units#> .
++@prefix mod: <http://moddevices.com/ns/mod#>.
+ 
+ <http://guitarix.sourceforge.net#me>
+ 	a foaf:Person ;
+@@ -50,11 +51,19 @@
+     lv2:minorVersion 34;
+     lv2:microVersion 0;
+ 
++    mod:brand "Guitarix" ;
++    mod:label "GxCrybaby" ;
++
+   guiext:ui <http://guitarix.sourceforge.net/plugins/gx_gcb_95_gui#_gcb_95_>;
+     
+ rdfs:comment """
++Analog wah emulation of the classic Dunlop GCB95 Crybaby (*), in a auto-wah version.
++
++(*) 'Other product names modeled in this software are trademarks of their respective companies that do not endorse and are not associated or affiliated with MOD.
++Dunlop GCB95 Crybaby is a trademark or trade name of another manufacturer and was used merely to identify the product whose sound was reviewed in the creation of this product.
++All other trademarks are the property of their respective holders.'
+ 
+-...
++*Unofficial documentation
+ 
+ """;
+ 
+@@ -77,6 +86,7 @@ rdfs:comment """
+         lv2:index 2 ;
+         lv2:symbol "VOLUME" ;
+         lv2:name "VOLUME" ;
++        lv2:shortName "Level" ;
+         lv2:default 0.0 ;
+         lv2:minimum -2e+01 ;
+         lv2:maximum 4.0 ;
+@@ -94,5 +104,4 @@ rdfs:comment """
+ <http://guitarix.sourceforge.net/plugins/gx_gcb_95_gui#_gcb_95_>
+   a guiext:GtkUI;
+   guiext:binary <gx_gcb_95_gui.so>;
+-  guiext:requiredFeature guiext:makeResident;
+   .
+diff --git a/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl b/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl
+index e4ff4ada..2b6a0aac 100644
+--- a/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl
++++ b/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl
+@@ -23,4 +23,11 @@
+ <http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_>
+     a lv2:Plugin ;
+     lv2:binary <gx_gcb_95.so>  ;
+-    rdfs:seeAlso <gx_gcb_95.ttl> .
++    rdfs:seeAlso <gx_gcb_95.ttl> , <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl.in b/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl.in
+index 738ddfda..95d3213a 100644
+--- a/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl.in
++++ b/trunk/src/LV2/gx_gcb_95.lv2/manifest.ttl.in
+@@ -23,4 +23,11 @@
+ <http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_>
+     a lv2:Plugin ;
+     lv2:binary <gx_gcb_95@LIB_EXT@>  ;
+-    rdfs:seeAlso <gx_gcb_95.ttl> .
++    rdfs:seeAlso <gx_gcb_95.ttl> , <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gx_gcb_95.lv2/modgui.ttl b/trunk/src/LV2/gx_gcb_95.lv2/modgui.ttl
+new file mode 100644
+index 00000000..cd956c91
+--- /dev/null
++++ b/trunk/src/LV2/gx_gcb_95.lv2/modgui.ttl
+@@ -0,0 +1,26 @@
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++
++<http://guitarix.sourceforge.net/plugins/gx_gcb_95_#_gcb_95_>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-gxgcb95.html> ;
++        modgui:stylesheet <modgui/stylesheet-gxgcb95.css> ;
++        modgui:screenshot <modgui/screenshot-gxgcb95.png> ;
++        modgui:thumbnail <modgui/thumbnail-gxgcb95.png> ;
++        modgui:brand "Guitarix" ;
++        modgui:label "GxCrybaby" ;
++        modgui:model "boxy" ;
++        modgui:panel "2-knobs" ;
++        modgui:color "warning" ;
++        modgui:knob "black" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "VOLUME" ;
++            lv2:name "Level" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "HOTPOTZ" ;
++            lv2:name "WAH" ;
++        ] ;
++    ] .
+\ No newline at end of file
+diff --git a/trunk/src/LV2/gx_mole.lv2/default-preset.ttl b/trunk/src/LV2/gx_mole.lv2/default-preset.ttl
+new file mode 100644
+index 00000000..bf7e242d
+--- /dev/null
++++ b/trunk/src/LV2/gx_mole.lv2/default-preset.ttl
+@@ -0,0 +1,12 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://guitarix.sourceforge.net/plugins/gx_mole_#_mole_> ;
++	lv2:port [
++		lv2:symbol "BOOST" ;
++		pset:value 0.5
++	] .
++
+diff --git a/trunk/src/LV2/gx_mole.lv2/gx_mole.ttl b/trunk/src/LV2/gx_mole.lv2/gx_mole.ttl
+index 7b0997a3..ca0bba58 100644
+--- a/trunk/src/LV2/gx_mole.lv2/gx_mole.ttl
++++ b/trunk/src/LV2/gx_mole.lv2/gx_mole.ttl
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2014 Guitarix project MOD project
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -26,11 +26,13 @@
+ @prefix guiext: <http://lv2plug.in/ns/extensions/ui#>.
+ @prefix time: <http://lv2plug.in/ns/ext/time#>.
+ @prefix units: <http://lv2plug.in/ns/extensions/units#> .
++@prefix mod: <http://moddevices.com/ns/mod#>.
+ 
+ <http://guitarix.sourceforge.net#me>
+ 	a foaf:Person ;
+ 	foaf:name "Guitarix team" ;
+ 	foaf:mbox <mailto:guitarix-developer@lists.sourceforge.net> ;
++	foaf:homepage <http://www.guitarix.org/> ;
+ 	rdfs:seeAlso <http://guitarix.sourceforge.net> .
+ 
+ <http://guitarix.sourceforge.net/plugins/gx_mole_>
+@@ -46,15 +48,23 @@
+     doap:license <http://opensource.org/licenses/isc> ;
+     lv2:project <http://guitarix.sourceforge.net/plugins/gx_mole_> ;
+     lv2:optionalFeature lv2:hardRTCapable ;
+-      
++
+     lv2:minorVersion 34;
+     lv2:microVersion 0;
+ 
++    mod:brand "Guitarix" ;
++    mod:label "GxMole" ;
++
+   guiext:ui <http://guitarix.sourceforge.net/plugins/gx_mole_gui#_mole_>;
+-    
++
+ rdfs:comment """
++Emulation of the Electro-Harmonix Mole bass booster (*)
++
++(*) 'Other product names modeled in this software are trademarks of their respective companies that do not endorse and are not associated or affiliated with MOD.
++Electro-Harmonix Mole is a trademark or trade name of another manufacturer and was used merely to identify the product whose sound was reviewed in the creation of this product.
++All other trademarks are the property of their respective holders.'
+ 
+-...
++*Unofficial documentation
+ 
+ """;
+ 
+@@ -70,7 +80,7 @@ rdfs:comment """
+         lv2:index 1 ;
+         lv2:symbol "in" ;
+         lv2:name "In" ;
+-    ] 
++    ]
+       , [
+         a lv2:InputPort ,
+             lv2:ControlPort ;
+@@ -86,6 +96,7 @@ rdfs:comment """
+         lv2:index 3 ;
+         lv2:symbol "WET_DRY" ;
+         lv2:name "WET_DRY" ;
++        lv2:shortName "MIX" ;
+         lv2:default 1e+02 ;
+         lv2:minimum 0.0 ;
+         lv2:maximum 1e+02 ;
+@@ -94,5 +105,4 @@ rdfs:comment """
+ <http://guitarix.sourceforge.net/plugins/gx_mole_gui#_mole_>
+   a guiext:GtkUI;
+   guiext:binary <gx_mole_gui.so>;
+-  guiext:requiredFeature guiext:makeResident;
+   .
+diff --git a/trunk/src/LV2/gx_mole.lv2/manifest.ttl b/trunk/src/LV2/gx_mole.lv2/manifest.ttl
+index 1a3b809e..6376b403 100644
+--- a/trunk/src/LV2/gx_mole.lv2/manifest.ttl
++++ b/trunk/src/LV2/gx_mole.lv2/manifest.ttl
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2012 Hermann Meyer, Andreas Degert, Pete Shorthose, Steve Poskitt
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -23,4 +23,11 @@
+ <http://guitarix.sourceforge.net/plugins/gx_mole_#_mole_>
+     a lv2:Plugin ;
+     lv2:binary <gx_mole.so>  ;
+-    rdfs:seeAlso <gx_mole.ttl> .
++    rdfs:seeAlso <gx_mole.ttl>, <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gx_mole_#_mole_> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gx_mole.lv2/manifest.ttl.in b/trunk/src/LV2/gx_mole.lv2/manifest.ttl.in
+index 5f14b538..6853adb2 100644
+--- a/trunk/src/LV2/gx_mole.lv2/manifest.ttl.in
++++ b/trunk/src/LV2/gx_mole.lv2/manifest.ttl.in
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2012 Hermann Meyer, Andreas Degert, Pete Shorthose, Steve Poskitt
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -23,4 +23,11 @@
+ <http://guitarix.sourceforge.net/plugins/gx_mole_#_mole_>
+     a lv2:Plugin ;
+     lv2:binary <gx_mole@LIB_EXT@>  ;
+-    rdfs:seeAlso <gx_mole.ttl> .
++    rdfs:seeAlso <gx_mole.ttl>, <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gx_mole_#_mole_> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gx_mole.lv2/modgui.ttl b/trunk/src/LV2/gx_mole.lv2/modgui.ttl
+new file mode 100644
+index 00000000..cf043291
+--- /dev/null
++++ b/trunk/src/LV2/gx_mole.lv2/modgui.ttl
+@@ -0,0 +1,26 @@
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++
++<http://guitarix.sourceforge.net/plugins/gx_mole_#_mole_>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-gxmole.html> ;
++        modgui:stylesheet <modgui/stylesheet-gxmole.css> ;
++        modgui:screenshot <modgui/screenshot-gxmole.png> ;
++        modgui:thumbnail <modgui/thumbnail-gxmole.png> ;
++        modgui:brand "Guitarix" ;
++        modgui:label "Mole" ;
++        modgui:model "boxy" ;
++        modgui:panel "2-knobs" ;
++        modgui:color "brown" ;
++        modgui:knob "black" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "BOOST" ;
++            lv2:name "BOOST" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "WET_DRY" ;
++            lv2:name "Mix" ;
++        ] ;
++    ] .
+\ No newline at end of file
+diff --git a/trunk/src/LV2/gx_muff.lv2/default-preset.ttl b/trunk/src/LV2/gx_muff.lv2/default-preset.ttl
+new file mode 100644
+index 00000000..913be9d0
+--- /dev/null
++++ b/trunk/src/LV2/gx_muff.lv2/default-preset.ttl
+@@ -0,0 +1,15 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://guitarix.sourceforge.net/plugins/gx_muff_#_muff_> ;
++	lv2:port [
++		lv2:symbol "TONE" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "VOLUME" ;
++		pset:value 0.5
++	] .
++
+diff --git a/trunk/src/LV2/gx_muff.lv2/gx_muff.ttl b/trunk/src/LV2/gx_muff.lv2/gx_muff.ttl
+index 13ccda78..e62fc209 100644
+--- a/trunk/src/LV2/gx_muff.lv2/gx_muff.ttl
++++ b/trunk/src/LV2/gx_muff.lv2/gx_muff.ttl
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2014 Guitarix project MOD project
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -26,11 +26,13 @@
+ @prefix guiext: <http://lv2plug.in/ns/extensions/ui#>.
+ @prefix time: <http://lv2plug.in/ns/ext/time#>.
+ @prefix units: <http://lv2plug.in/ns/extensions/units#> .
++@prefix mod: <http://moddevices.com/ns/mod#>.
+ 
+ <http://guitarix.sourceforge.net#me>
+ 	a foaf:Person ;
+ 	foaf:name "Guitarix team" ;
+ 	foaf:mbox <mailto:guitarix-developer@lists.sourceforge.net> ;
++	foaf:homepage <http://www.guitarix.org/> ;
+ 	rdfs:seeAlso <http://guitarix.sourceforge.net> .
+ 
+ <http://guitarix.sourceforge.net/plugins/gx_muff_>
+@@ -46,15 +48,23 @@
+     doap:license <http://opensource.org/licenses/isc> ;
+     lv2:project <http://guitarix.sourceforge.net/plugins/gx_muff_> ;
+     lv2:optionalFeature lv2:hardRTCapable ;
+-      
++
+     lv2:minorVersion 34;
+     lv2:microVersion 0;
+ 
++    mod:brand "Guitarix" ;
++    mod:label "GxMuff" ;
++
+   guiext:ui <http://guitarix.sourceforge.net/plugins/gx_muff_gui#_muff_>;
+-    
++
+ rdfs:comment """
++Analog distortion emulation of the Electro-Harmonix Muff (*)
++
++(*) 'Other product names modeled in this software are trademarks of their respective companies that do not endorse and are not associated or affiliated with MOD.
++Electro-Harmonix Muff is a trademark or trade name of another manufacturer and was used merely to identify the product whose sound was reviewed in the creation of this product.
++All other trademarks are the property of their respective holders.'
+ 
+-...
++*Unofficial documentation
+ 
+ """;
+ 
+@@ -70,7 +80,7 @@ rdfs:comment """
+         lv2:index 1 ;
+         lv2:symbol "in" ;
+         lv2:name "In" ;
+-    ] 
++    ]
+       , [
+         a lv2:InputPort ,
+             lv2:ControlPort ;
+@@ -86,6 +96,7 @@ rdfs:comment """
+         lv2:index 3 ;
+         lv2:symbol "VOLUME" ;
+         lv2:name "VOLUME" ;
++        lv2:shortName "BOOST" ;
+         lv2:default 0.5 ;
+         lv2:minimum 0.0 ;
+         lv2:maximum 1.0 ;
+@@ -94,5 +105,4 @@ rdfs:comment """
+ <http://guitarix.sourceforge.net/plugins/gx_muff_gui#_muff_>
+   a guiext:GtkUI;
+   guiext:binary <gx_muff_gui.so>;
+-  guiext:requiredFeature guiext:makeResident;
+   .
+diff --git a/trunk/src/LV2/gx_muff.lv2/manifest.ttl b/trunk/src/LV2/gx_muff.lv2/manifest.ttl
+index dd56c056..bad379cd 100644
+--- a/trunk/src/LV2/gx_muff.lv2/manifest.ttl
++++ b/trunk/src/LV2/gx_muff.lv2/manifest.ttl
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2012 Hermann Meyer, Andreas Degert, Pete Shorthose, Steve Poskitt
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -23,4 +23,11 @@
+ <http://guitarix.sourceforge.net/plugins/gx_muff_#_muff_>
+     a lv2:Plugin ;
+     lv2:binary <gx_muff.so>  ;
+-    rdfs:seeAlso <gx_muff.ttl> .
++    rdfs:seeAlso <gx_muff.ttl>, <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gx_muff_#_muff_> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gx_muff.lv2/manifest.ttl.in b/trunk/src/LV2/gx_muff.lv2/manifest.ttl.in
+index ef6e7a7c..e7bcfd38 100644
+--- a/trunk/src/LV2/gx_muff.lv2/manifest.ttl.in
++++ b/trunk/src/LV2/gx_muff.lv2/manifest.ttl.in
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2012 Hermann Meyer, Andreas Degert, Pete Shorthose, Steve Poskitt
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -23,4 +23,11 @@
+ <http://guitarix.sourceforge.net/plugins/gx_muff_#_muff_>
+     a lv2:Plugin ;
+     lv2:binary <gx_muff@LIB_EXT@>  ;
+-    rdfs:seeAlso <gx_muff.ttl> .
++    rdfs:seeAlso <gx_muff.ttl>, <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gx_muff_#_muff_> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gx_muff.lv2/modgui.ttl b/trunk/src/LV2/gx_muff.lv2/modgui.ttl
+new file mode 100644
+index 00000000..a13c61f1
+--- /dev/null
++++ b/trunk/src/LV2/gx_muff.lv2/modgui.ttl
+@@ -0,0 +1,26 @@
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++
++<http://guitarix.sourceforge.net/plugins/gx_muff_#_muff_>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-gxmuff.html> ;
++        modgui:stylesheet <modgui/stylesheet-gxmuff.css> ;
++        modgui:screenshot <modgui/screenshot-gxmuff.png> ;
++        modgui:thumbnail <modgui/thumbnail-gxmuff.png> ;
++        modgui:brand "Guitarix" ;
++        modgui:label "Muff" ;
++        modgui:model "boxy" ;
++        modgui:panel "2-knobs" ;
++        modgui:color "black" ;
++        modgui:knob "copper" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "VOLUME" ;
++            lv2:name "BOOST" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "TONE" ;
++            lv2:name "TONE" ;
++        ] ;
++    ] .
+\ No newline at end of file
+diff --git a/trunk/src/LV2/gxts9.lv2/default-preset.ttl b/trunk/src/LV2/gxts9.lv2/default-preset.ttl
+new file mode 100644
+index 00000000..60e619de
+--- /dev/null
++++ b/trunk/src/LV2/gxts9.lv2/default-preset.ttl
+@@ -0,0 +1,18 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://guitarix.sourceforge.net/plugins/gxts9#ts9sim> ;
++	lv2:port [
++		lv2:symbol "fslider0_" ;
++		pset:value -16.0
++	] , [
++		lv2:symbol "fslider1_" ;
++		pset:value 400.0
++	] , [
++		lv2:symbol "fslider2_" ;
++		pset:value 0.5
++	] .
++
+diff --git a/trunk/src/LV2/gxts9.lv2/manifest.ttl b/trunk/src/LV2/gxts9.lv2/manifest.ttl
+index ad2530f3..a004e13b 100644
+--- a/trunk/src/LV2/gxts9.lv2/manifest.ttl
++++ b/trunk/src/LV2/gxts9.lv2/manifest.ttl
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2012 Hermann Meyer, Andreas Degert, Pete Shorthose, Steve Poskitt
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -19,8 +19,16 @@
+ 
+ @prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+ @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
+ 
+ <http://guitarix.sourceforge.net/plugins/gxts9#ts9sim>
+     a lv2:Plugin ;
+     lv2:binary <gxts9.so>  ;
+-    rdfs:seeAlso <gxts9.ttl> .
++    rdfs:seeAlso <gxts9.ttl>, <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gxts9#ts9sim> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gxts9.lv2/manifest.ttl.in b/trunk/src/LV2/gxts9.lv2/manifest.ttl.in
+index 7709fc65..19e10ef8 100644
+--- a/trunk/src/LV2/gxts9.lv2/manifest.ttl.in
++++ b/trunk/src/LV2/gxts9.lv2/manifest.ttl.in
+@@ -1,6 +1,6 @@
+ #
+ # Copyright (C) 2012 Hermann Meyer, Andreas Degert, Pete Shorthose, Steve Poskitt
+-# 
++#
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+@@ -19,8 +19,16 @@
+ 
+ @prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+ @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
+ 
+ <http://guitarix.sourceforge.net/plugins/gxts9#ts9sim>
+     a lv2:Plugin ;
+     lv2:binary <gxts9@LIB_EXT@>  ;
+-    rdfs:seeAlso <gxts9.ttl> .
++    rdfs:seeAlso <gxts9.ttl>, <modgui.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://guitarix.sourceforge.net/plugins/gxts9#ts9sim> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/trunk/src/LV2/gxts9.lv2/modgui.ttl b/trunk/src/LV2/gxts9.lv2/modgui.ttl
+new file mode 100644
+index 00000000..122ad2ce
+--- /dev/null
++++ b/trunk/src/LV2/gxts9.lv2/modgui.ttl
+@@ -0,0 +1,30 @@
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++
++<http://guitarix.sourceforge.net/plugins/gxts9#ts9sim>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-gxtubescreamer.html> ;
++        modgui:stylesheet <modgui/stylesheet-gxtubescreamer.css> ;
++        modgui:screenshot <modgui/screenshot-gxtubescreamer.png> ;
++        modgui:thumbnail <modgui/thumbnail-gxtubescreamer.png> ;
++        modgui:brand "Guitarix" ;
++        modgui:label "Tube Screamer" ;
++        modgui:model "boxy" ;
++        modgui:panel "3-knobs" ;
++        modgui:color "green" ;
++        modgui:knob "silver" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "fslider2_" ;
++            lv2:name "Drive" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "fslider1_" ;
++            lv2:name "Tone" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "fslider0_" ;
++            lv2:name "Level" ;
++        ] ;
++    ] .
+\ No newline at end of file
+-- 
+2.14.1
+
