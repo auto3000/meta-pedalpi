@@ -2,7 +2,10 @@ DESCRIPTION = "guitarix virtual versatile amplification for Jack/Linux."
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=384f45fb7968a0fe30622ce6160d3b69"
 
-SRC_URI = "git://git.code.sf.net/p/guitarix/git;protocol=http"
+SRC_URI = "git://git.code.sf.net/p/guitarix/git;protocol=http \
+	file://0001-lv2-update-TTL-and-modgui-resources.patch;striplevel=2 \
+	file://0001-lv2-update-TTL-and-modgui-resources.tgz \
+"
 SRCREV = "787969e02a017e9ab715ef9a098665176b58129b"
 
 DEPENDS = "jack glibmm fftwf lv2 libeigen gtk+ gtkmm"
