@@ -49,7 +49,6 @@ do_install() {
 	install -d ${D}${libdir}/lv2/Modulay.lv2
 	install -d ${D}${libdir}/lv2/Pitchotto.lv2
 	install -d ${D}${libdir}/lv2/Harmless.lv2
-	install -d ${D}${libdir}/lv2/fomp.lv2
 	install -d ${D}${libdir}/lv2/Shiroverb.lv2
 	cp -R ${S}/plugins-fixed/Larynx.lv2/modgui ${S}/plugins-fixed/Larynx.lv2/modgui.ttl ${D}/${libdir}/lv2/Larynx.lv2/
 	cp -R ${S}/plugins-fixed/Shiroverb.lv2/modgui ${S}/plugins-fixed/Shiroverb.lv2/modgui.ttl ${D}/${libdir}/lv2/Shiroverb.lv2/
@@ -58,6 +57,5 @@ do_install() {
 
 	cp -R ${S}/plugins-fixed/xfade.lv2/modgui ${S}/plugins-fixed/xfade.lv2/modgui.ttl ${D}/${libdir}/lv2/xfade.lv2/
 	cp -R ${S}/plugins-fixed/Pitchotto.lv2/modgui ${S}/plugins-fixed/Pitchotto.lv2/modgui.ttl ${D}/${libdir}/lv2/Pitchotto.lv2/
-	cp -R ${S}/plugins-fixed/fomp.lv2/modgui ${S}/plugins-fixed/fomp.lv2/modguis.ttl ${D}/${libdir}/lv2/fomp.lv2/
 }
 
