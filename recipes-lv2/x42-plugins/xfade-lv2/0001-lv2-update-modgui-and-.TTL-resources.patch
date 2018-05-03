@@ -1,0 +1,165 @@
+From d06ca7a6c882c344bc5e28e73fbe23e8fdd500dc Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Fri, 17 Aug 2018 09:56:03 +0200
+Subject: [PATCH] lv2: update modgui and .TTL resources
+
+These resources are a backport from
+https://github.com/moddevices/mod-lv2-data at commit
+bc731ed68c44227530625592fb3ca7a687531771.
+
+Signed-off-by: auto3000 <auto3000@users.noreply.github.com>
+---
+ Makefile           |  6 ++++++
+ default-preset.ttl | 18 ++++++++++++++++++
+ manifest.ttl.in    |  8 +++++++-
+ modgui.ttl         | 30 ++++++++++++++++++++++++++++++
+ xfade.ttl.in       | 10 ++++++----
+ 5 files changed, 67 insertions(+), 5 deletions(-)
+ create mode 100644 default-preset.ttl
+ create mode 100644 modgui.ttl
+
+diff --git a/Makefile b/Makefile
+index 28d71b8..9701ac6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -88,11 +88,17 @@ install: all
+ 	install -d $(DESTDIR)$(LV2DIR)/$(BUNDLE)
+ 	install -m755 $(BUILDDIR)$(LV2NAME)$(LIB_EXT) $(DESTDIR)$(LV2DIR)/$(BUNDLE)
+ 	install -m644 $(BUILDDIR)manifest.ttl $(BUILDDIR)$(LV2NAME).ttl $(DESTDIR)$(LV2DIR)/$(BUNDLE)
++	install -m644 $(BUILDDIR)$(LV2NAME).ttl $(DESTDIR)$(LV2DIR)/$(BUNDLE)
++	install -m644 default-preset.ttl modgui.ttl $(DESTDIR)$(LV2DIR)/$(BUNDLE)
++	cp -R modgui $(DESTDIR)$(LV2DIR)/$(BUNDLE)/modgui
+ 
+ uninstall:
+ 	rm -f $(DESTDIR)$(LV2DIR)/$(BUNDLE)/manifest.ttl
+ 	rm -f $(DESTDIR)$(LV2DIR)/$(BUNDLE)/$(LV2NAME).ttl
+ 	rm -f $(DESTDIR)$(LV2DIR)/$(BUNDLE)/$(LV2NAME)$(LIB_EXT)
++	rm -f $(DESTDIR)$(LV2DIR)/$(BUNDLE)/modgui.ttl
++	rm -f $(DESTDIR)$(LV2DIR)/$(BUNDLE)/default-preset.ttl
++	rm -rf $(DESTDIR)$(LV2DIR)/$(BUNDLE)/modgui
+ 	-rmdir $(DESTDIR)$(LV2DIR)/$(BUNDLE)
+ 
+ clean:
+diff --git a/default-preset.ttl b/default-preset.ttl
+new file mode 100644
+index 0000000..ca53aef
+--- /dev/null
++++ b/default-preset.ttl
+@@ -0,0 +1,18 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://gareus.org/oss/lv2/xfade> ;
++	lv2:port [
++		lv2:symbol "mode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "shape" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "xfade" ;
++		pset:value 0.0
++	] .
++
+diff --git a/manifest.ttl.in b/manifest.ttl.in
+index 24dd8d4..90e24d1 100644
+--- a/manifest.ttl.in
++++ b/manifest.ttl.in
+@@ -5,4 +5,10 @@
+ <http://gareus.org/oss/lv2/@LV2NAME@>
+ 	a lv2:Plugin ;
+ 	lv2:binary <@LV2NAME@@LIB_EXT@>  ;
+-	rdfs:seeAlso <@LV2NAME@.ttl> .
++	rdfs:seeAlso <@LV2NAME@.ttl>, <modgui.ttl> .
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://gareus.org/oss/lv2/@LV2NAME@> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/modgui.ttl b/modgui.ttl
+new file mode 100644
+index 0000000..706cc9c
+--- /dev/null
++++ b/modgui.ttl
+@@ -0,0 +1,30 @@
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++
++<http://gareus.org/oss/lv2/xfade>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-stereo-dj-x-fade.html> ;
++        modgui:stylesheet <modgui/stylesheet-stereo-dj-x-fade.css> ;
++        modgui:screenshot <modgui/screenshot-stereo-dj-x-fade.png> ;
++        modgui:thumbnail <modgui/thumbnail-stereo-dj-x-fade.png> ;
++        modgui:brand "x42" ;
++        modgui:label "Stereo X-Fade" ;
++        modgui:model "boxy" ;
++        modgui:panel "1-select-2-knobs" ;
++        modgui:color "black" ;
++        modgui:knob "steel" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "mode" ;
++            lv2:name "Mode" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "xfade" ;
++            lv2:name "Signal A/B" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "shape" ;
++            lv2:name "Shape" ;
++        ] ;
++    ] .
+\ No newline at end of file
+diff --git a/xfade.ttl.in b/xfade.ttl.in
+index d1e0525..cc70239 100644
+--- a/xfade.ttl.in
++++ b/xfade.ttl.in
+@@ -5,6 +5,7 @@
+ @prefix pg:    <http://lv2plug.in/ns/ext/port-groups#> .
+ @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+ @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix mod: <http://moddevices.com/ns/mod#> .
+ 
+ <http://gareus.org/rgareus#me>
+ 	a foaf:Person ;
+@@ -16,8 +17,9 @@
+ 	a lv2:Plugin, lv2:MixerPlugin, doap:Project;
+ 	doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+ 	doap:maintainer <http://gareus.org/rgareus#me> ;
+-	doap:name "Stereo DJ X-Fade";
++	doap:name "Stereo X-Fade";
+ 	@VERSION@
++	mod:brand "x42" ;
+ 	lv2:optionalFeature lv2:hardRTCapable ;
+ 	lv2:port [
+ 		a lv2:InputPort ,
+@@ -65,10 +67,10 @@
+ 		lv2:maximum 1 ;
+ 		lv2:portProperty lv2:integer, lv2:enumeration;
+ 		lv2:scalePoint [
+-			rdfs:label "X-fade: Overlapping Cross Fade: [-1..+1]" ;
++			rdfs:label "X-fade: Overlap [-1..+1]" ;
+ 			rdf:value 0 ;
+ 		] , [
+-			rdfs:label "V-fade: Non-overlapping Fade [-1..0], [0..1]" ;
++			rdfs:label "V-fade: Non-overlap [-1..0][0..1]" ;
+ 			rdf:value 1 ;
+ 		]
+ 	] , [
+@@ -114,5 +116,5 @@
+ 		lv2:name "Out Right" ;
+ 		lv2:designation pg:right ;
+ 	] ;
+-	rdfs:comment "stereo DJ X-fade plugin"
++	rdfs:comment "A stereo crossfade plugin"
+ 	.
+-- 
+2.7.4
+
