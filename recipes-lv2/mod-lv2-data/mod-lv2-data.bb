@@ -45,7 +45,6 @@ do_install() {
         cp ${S}/plugins/MaFreeverb.lv2/manifest.ttl ${S}/plugins/MaFreeverb.lv2/MaFreeverb_dsp.ttl ${S}/plugins/MaFreeverb.lv2/default-preset.ttl ${D}/${libdir}/lv2/MaFreeverb.lv2
 
 	install -d ${D}${libdir}/lv2/Larynx.lv2
-	install -d ${D}${libdir}/lv2/xfade.lv2
 	install -d ${D}${libdir}/lv2/Modulay.lv2
 	install -d ${D}${libdir}/lv2/Pitchotto.lv2
 	install -d ${D}${libdir}/lv2/Harmless.lv2
@@ -55,7 +54,6 @@ do_install() {
 	cp -R ${S}/plugins-fixed/Harmless.lv2/modgui ${S}/plugins-fixed/Harmless.lv2/modgui.ttl ${D}/${libdir}/lv2/Harmless.lv2/
 	cp -R ${S}/plugins-fixed/Modulay.lv2/modgui ${S}/plugins-fixed/Modulay.lv2/modgui.ttl ${D}/${libdir}/lv2/Modulay.lv2/
 
-	cp -R ${S}/plugins-fixed/xfade.lv2/modgui ${S}/plugins-fixed/xfade.lv2/modgui.ttl ${D}/${libdir}/lv2/xfade.lv2/
 	cp -R ${S}/plugins-fixed/Pitchotto.lv2/modgui ${S}/plugins-fixed/Pitchotto.lv2/modgui.ttl ${D}/${libdir}/lv2/Pitchotto.lv2/
 }
 
