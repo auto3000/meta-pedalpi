@@ -17,34 +17,34 @@ FILES_${PN} = "${libdir}/lv2/"
 do_compile() {
 	# Generate compilation rules with output of:
 	# $ bitbake -c devshell caps-lv2
-	# grep SOURCES\ = plugins/*/Makefile |tr '/' ' ' | tr '-' ' ' | sed 's/\.lv2//' | awk '{ print "\t${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o", $4 ".so " $9 " dsp/polynomials.cc plugins/mod-caps-" $4 ".lv2/interface.cc" }' | sed 's/Amp\.cc/Amp.cc ToneStack.cc/'
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o AmpVTS.so Amp.cc ToneStack.cc dsp/polynomials.cc plugins/mod-caps-AmpVTS.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o AutoFilter.so AutoFilter.cc dsp/polynomials.cc plugins/mod-caps-AutoFilter.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o CabinetIII.so CabIII.cc dsp/polynomials.cc plugins/mod-caps-CabinetIII.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o CabinetIV.so CabIV.cc dsp/polynomials.cc plugins/mod-caps-CabinetIV.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o CEO.so Click.cc dsp/polynomials.cc plugins/mod-caps-CEO.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o ChorusI.so Chorus.cc dsp/polynomials.cc plugins/mod-caps-ChorusI.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Click.so Click.cc dsp/polynomials.cc plugins/mod-caps-Click.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Compress.so Compress.cc dsp/polynomials.cc plugins/mod-caps-Compress.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o CompressX2.so Compress.cc dsp/polynomials.cc plugins/mod-caps-CompressX2.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Eq10.so Eq.cc dsp/polynomials.cc plugins/mod-caps-Eq10.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Eq10X2.so Eq.cc dsp/polynomials.cc plugins/mod-caps-Eq10X2.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Eq4p.so Eq.cc dsp/polynomials.cc plugins/mod-caps-Eq4p.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o EqFA4p.so Eq.cc dsp/polynomials.cc plugins/mod-caps-EqFA4p.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Fractal.so Fractals.cc dsp/polynomials.cc plugins/mod-caps-Fractal.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Narrower.so Pan.cc dsp/polynomials.cc plugins/mod-caps-Narrower.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Noisegate.so Noisegate.cc dsp/polynomials.cc plugins/mod-caps-Noisegate.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o PhaserII.so Phaser.cc dsp/polynomials.cc plugins/mod-caps-PhaserII.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Plate.so Reverb.cc dsp/polynomials.cc plugins/mod-caps-Plate.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o PlateX2.so Reverb.cc dsp/polynomials.cc plugins/mod-caps-PlateX2.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Saturate.so Saturate.cc dsp/polynomials.cc plugins/mod-caps-Saturate.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Scape.so Scape.cc dsp/polynomials.cc plugins/mod-caps-Scape.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Sin.so Sin.cc dsp/polynomials.cc plugins/mod-caps-Sin.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Spice.so Saturate.cc dsp/polynomials.cc plugins/mod-caps-Spice.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o SpiceX2.so Saturate.cc dsp/polynomials.cc plugins/mod-caps-SpiceX2.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o ToneStack.so ToneStack.cc dsp/polynomials.cc plugins/mod-caps-ToneStack.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o White.so White.cc dsp/polynomials.cc plugins/mod-caps-White.lv2/interface.cc
-	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -ffast-math -fPIC -shared -Wl,--no-undefined -o Wider.so Pan.cc dsp/polynomials.cc plugins/mod-caps-Wider.lv2/interface.cc
+	# grep SOURCES\ = plugins/*/Makefile |tr '/' ' ' | tr '-' ' ' | sed 's/\.lv2//' | awk '{ print "\t${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o", $4 ".so " $9 " dsp/polynomials.cc plugins/mod-caps-" $4 ".lv2/interface.cc" }' | sed 's/Amp\.cc/Amp.cc ToneStack.cc/'
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o AmpVTS.so Amp.cc ToneStack.cc dsp/polynomials.cc plugins/mod-caps-AmpVTS.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o AutoFilter.so AutoFilter.cc dsp/polynomials.cc plugins/mod-caps-AutoFilter.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o CabinetIII.so CabIII.cc dsp/polynomials.cc plugins/mod-caps-CabinetIII.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o CabinetIV.so CabIV.cc dsp/polynomials.cc plugins/mod-caps-CabinetIV.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o CEO.so Click.cc dsp/polynomials.cc plugins/mod-caps-CEO.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o ChorusI.so Chorus.cc dsp/polynomials.cc plugins/mod-caps-ChorusI.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Click.so Click.cc dsp/polynomials.cc plugins/mod-caps-Click.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Compress.so Compress.cc dsp/polynomials.cc plugins/mod-caps-Compress.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o CompressX2.so Compress.cc dsp/polynomials.cc plugins/mod-caps-CompressX2.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Eq10.so Eq.cc dsp/polynomials.cc plugins/mod-caps-Eq10.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Eq10X2.so Eq.cc dsp/polynomials.cc plugins/mod-caps-Eq10X2.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Eq4p.so Eq.cc dsp/polynomials.cc plugins/mod-caps-Eq4p.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o EqFA4p.so Eq.cc dsp/polynomials.cc plugins/mod-caps-EqFA4p.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Fractal.so Fractals.cc dsp/polynomials.cc plugins/mod-caps-Fractal.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Narrower.so Pan.cc dsp/polynomials.cc plugins/mod-caps-Narrower.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Noisegate.so Noisegate.cc dsp/polynomials.cc plugins/mod-caps-Noisegate.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o PhaserII.so Phaser.cc dsp/polynomials.cc plugins/mod-caps-PhaserII.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Plate.so Reverb.cc dsp/polynomials.cc plugins/mod-caps-Plate.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o PlateX2.so Reverb.cc dsp/polynomials.cc plugins/mod-caps-PlateX2.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Saturate.so Saturate.cc dsp/polynomials.cc plugins/mod-caps-Saturate.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Scape.so Scape.cc dsp/polynomials.cc plugins/mod-caps-Scape.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Sin.so Sin.cc dsp/polynomials.cc plugins/mod-caps-Sin.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Spice.so Saturate.cc dsp/polynomials.cc plugins/mod-caps-Spice.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o SpiceX2.so Saturate.cc dsp/polynomials.cc plugins/mod-caps-SpiceX2.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o ToneStack.so ToneStack.cc dsp/polynomials.cc plugins/mod-caps-ToneStack.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o White.so White.cc dsp/polynomials.cc plugins/mod-caps-White.lv2/interface.cc
+	${CXX} ${LDFLAGS} ${CXXFLAGS} -I. -Iwaves -Idsp -fPIC -DPIC -shared -Wl,--no-undefined -o Wider.so Pan.cc dsp/polynomials.cc plugins/mod-caps-Wider.lv2/interface.cc
 }
 
 do_install() {
