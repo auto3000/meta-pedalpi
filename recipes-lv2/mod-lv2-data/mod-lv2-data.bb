@@ -56,7 +56,6 @@ do_install() {
 	install -d ${D}${libdir}/lv2/Harmless.lv2
 	install -d ${D}${libdir}/lv2/gx_mole.lv2
 	install -d ${D}${libdir}/lv2/gx_gcb_95.lv2
-	install -d ${D}${libdir}/lv2/artyfx.lv2
 	install -d ${D}${libdir}/lv2/gx_muff.lv2
 	install -d ${D}${libdir}/lv2/fomp.lv2
 	install -d ${D}${libdir}/lv2/Shiroverb.lv2
@@ -67,7 +66,6 @@ do_install() {
 	cp -R ${S}/plugins-fixed/Harmless.lv2/modgui ${S}/plugins-fixed/Harmless.lv2/modgui.ttl ${D}/${libdir}/lv2/Harmless.lv2/
 	cp -R ${S}/plugins-fixed/gx_mole.lv2/modgui ${S}/plugins-fixed/gx_mole.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_mole.lv2/
 	cp -R ${S}/plugins-fixed/gx_gcb_95.lv2/modgui ${S}/plugins-fixed/gx_gcb_95.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_gcb_95.lv2/
-	cp -R ${S}/plugins-fixed/artyfx.lv2/modgui ${S}/plugins-fixed/artyfx.lv2/modguis.ttl ${D}/${libdir}/lv2/artyfx.lv2/
 	cp -R ${S}/plugins-fixed/gx_muff.lv2/modgui ${S}/plugins-fixed/gx_muff.lv2/modgui.ttl ${D}/${libdir}/lv2/gx_muff.lv2/
 	cp -R ${S}/plugins-fixed/fomp.lv2/modgui ${S}/plugins-fixed/fomp.lv2/modguis.ttl ${D}/${libdir}/lv2/fomp.lv2/
 	cp -R ${S}/plugins-fixed/Shiroverb.lv2/modgui ${S}/plugins-fixed/Shiroverb.lv2/modgui.ttl ${D}/${libdir}/lv2/Shiroverb.lv2/
