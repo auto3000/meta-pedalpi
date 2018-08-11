@@ -7,7 +7,10 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 DEPENDS = "lv2"
 
 SRCREV = "072e2feb5c09d0fb51300e688b7e4f32b75e9c89"
-SRC_URI = "git://github.com/moddevices/caps-lv2"
+SRC_URI = "git://github.com/moddevices/caps-lv2 \
+           file://0001-plugins-update-TTL-and-modgui-resources.patch \
+           file://0001-plugins-update-TTL-and-modgui-resources.tgz \
+           "
 
 S = "${WORKDIR}/git"
 
