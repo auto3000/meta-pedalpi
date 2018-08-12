@@ -18,6 +18,7 @@ RDEPENDS_${PN} += "\
 	jack-server \
 	mod-sdk \
 	mod-utilities \
+	lv2bm \
 	serd \
 	sord \
 	sratom \
