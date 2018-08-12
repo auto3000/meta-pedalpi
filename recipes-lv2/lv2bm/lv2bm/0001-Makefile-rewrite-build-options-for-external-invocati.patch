@@ -1,0 +1,64 @@
+From 4afeafcaf6a50e296a3dd6654b1fe0412690b034 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 12 Aug 2018 08:55:40 +0200
+Subject: [PATCH] Makefile: rewrite build options for external invocation
+
+---
+ Makefile | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 6311be7..df68972 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,8 +1,5 @@
+ # compiler
+-CC = g++
+-
+-# linker
+-LD = g++
++CXX ?= g++
+ 
+ # language file extension
+ EXT = cpp
+@@ -19,20 +16,8 @@ INSTALL_PATH = $(PREFIX)/bin
+ MANDIR = $(PREFIX)/share/man/man1/
+ 
+ # default compiler and linker flags
+-CFLAGS = -O3 -Wall -Wextra -c
+-LDFLAGS = -s
+-
+-# debug mode compiler and linker flags
+-ifeq ($(DEBUG), 1)
+-   CFLAGS = -O0 -g -Wall -Wextra -c -DDEBUG
+-   LDFLAGS =
+-endif
+-
+-# library links
+-LIBS = -lpthread -lrt `pkg-config --libs lilv-0` `pkg-config --libs glib-2.0` -lsndfile
+-
+-# additional include paths
+-INCS = `pkg-config --cflags lilv-0` `pkg-config --cflags glib-2.0`
++CXXFLAGS += `pkg-config --cflags lilv-0` `pkg-config --cflags glib-2.0` `pkg-config --cflags sndfile`
++LDFLAGS += -lpthread -lrt `pkg-config --libs lilv-0` `pkg-config --libs glib-2.0` `pkg-config --libs sndfile`
+ 
+ # remove command
+ RM = rm -f
+@@ -43,13 +28,9 @@ OBJ = $(SRC:.$(EXT)=.o)
+ 
+ # linking rule
+ $(PROG): get_info $(OBJ)
+-	$(LD) $(LDFLAGS) $(OBJ) -o $(PROG) $(LIBS)
++	$(CXX) $(OBJ) $(LDFLAGS) -o $(PROG)
+ 	@rm src/info.h
+ 
+-# meta-rule to generate the object files
+-%.o: %.$(EXT)
+-	$(CC) $(CFLAGS) $(INCS) -o $@ $<
+-
+ # install rule
+ install:
+ 	install -d $(INSTALL_PATH)
+-- 
+2.7.4
+
