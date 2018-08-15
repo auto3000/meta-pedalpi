@@ -1,0 +1,3379 @@
+From f5ead8f5dfb48de92fc01e989443151317148f3d Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Wed, 15 Aug 2018 10:09:32 +0200
+Subject: [PATCH] rdf: update TTL and modgui resources
+
+These resources have been backported from updates found from
+https://github.com/moddevices/mod-lv2-data at commit
+bc731ed68c44227530625592fb3ca7a687531771.
+
+Signed-off-by: auto3000 <auto3000@users.noreply.github.com>
+---
+ Makefile               |   2 +-
+ rdf/default-preset.ttl | 224 ++++++++++++++++
+ rdf/inv_compressor.ttl | 146 ++++-------
+ rdf/inv_delay.ttl      | 168 +++++-------
+ rdf/inv_erreverb.ttl   | 170 +++++-------
+ rdf/inv_filter.ttl     | 255 +++++++-----------
+ rdf/inv_input.ttl      |  84 ++----
+ rdf/inv_meter.ttl      | 165 ++----------
+ rdf/inv_phaser.ttl     | 255 +++++++-----------
+ rdf/inv_testtone.ttl   |  55 ++--
+ rdf/inv_tube.ttl       | 117 +++------
+ rdf/manifest.ttl       | 144 +++++++----
+ rdf/modguis.ttl        | 682 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 13 files changed, 1469 insertions(+), 998 deletions(-)
+ create mode 100644 rdf/default-preset.ttl
+ create mode 100644 rdf/modguis.ttl
+
+diff --git a/Makefile b/Makefile
+index d5654a7..95fe765 100644
+--- a/Makefile
++++ b/Makefile
+@@ -70,7 +70,7 @@ install-sys:
+ 	@echo "=================================="; 
+ 	-mkdir -p		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+ 	cp plugin/*.so 		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+-	cp rdf/*.ttl 		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
++	cp -R rdf/* 		$(DESTDIR)$(INSTALL_SYS_PLUGINS_DIR)/$(INSTALL_BUNDLE_DIR)
+ 	@echo ""
+ 
+ install-user: 
+diff --git a/rdf/default-preset.ttl b/rdf/default-preset.ttl
+new file mode 100644
+index 0000000..a2c38e2
+--- /dev/null
++++ b/rdf/default-preset.ttl
+@@ -0,0 +1,224 @@
++@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
++@prefix pset:  <http://lv2plug.in/ns/ext/presets#> .
++@prefix state: <http://lv2plug.in/ns/ext/state#> .
++
++<default-preset>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/delay/mono> ;
++	lv2:port [
++		lv2:symbol "LFOcycle" ;
++		pset:value 20.0
++	] , [
++		lv2:symbol "LFOdepth" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "delay1" ;
++		pset:value 0.30000001
++	] , [
++		lv2:symbol "delay2" ;
++		pset:value 0.2
++	] , [
++		lv2:symbol "fb1" ;
++		pset:value 50.0
++	] , [
++		lv2:symbol "fb2" ;
++		pset:value 50.0
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "munge" ;
++		pset:value 50.0
++	] , [
++		lv2:symbol "mungemode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "pan1" ;
++		pset:value -0.69999999
++	] , [
++		lv2:symbol "pan2" ;
++		pset:value 0.69999999
++	] , [
++		lv2:symbol "vol1" ;
++		pset:value 100.0
++	] , [
++		lv2:symbol "vol2" ;
++		pset:value 100.0
++	] .
++
++<default-preset_1>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/delay/sum> ;
++	lv2:port [
++		lv2:symbol "LFOcycle" ;
++		pset:value 20.0
++	] , [
++		lv2:symbol "LFOdepth" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "delay1" ;
++		pset:value 0.30000001
++	] , [
++		lv2:symbol "delay2" ;
++		pset:value 0.2
++	] , [
++		lv2:symbol "fb1" ;
++		pset:value 50.0
++	] , [
++		lv2:symbol "fb2" ;
++		pset:value 50.0
++	] , [
++		lv2:symbol "mode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "munge" ;
++		pset:value 50.0
++	] , [
++		lv2:symbol "mungemode" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "pan1" ;
++		pset:value -0.69999999
++	] , [
++		lv2:symbol "pan2" ;
++		pset:value 0.69999999
++	] , [
++		lv2:symbol "vol1" ;
++		pset:value 100.0
++	] , [
++		lv2:symbol "vol2" ;
++		pset:value 100.0
++	] .
++
++<default-preset_2>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/phaser/mono> ;
++	lv2:port [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "cycle" ;
++		pset:value 25.0
++	] , [
++		lv2:symbol "depth" ;
++		pset:value 75.01000214
++	] , [
++		lv2:symbol "noClip" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "phase" ;
++		pset:value 45.0
++	] , [
++		lv2:symbol "width" ;
++		pset:value 8.0
++	] .
++
++<default-preset_3>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
++	lv2:port [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "cycle" ;
++		pset:value 25.0
++	] , [
++		lv2:symbol "depth" ;
++		pset:value 75.01000214
++	] , [
++		lv2:symbol "noClip" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "phase" ;
++		pset:value 45.0
++	] , [
++		lv2:symbol "width" ;
++		pset:value 8.0
++	] .
++
++<default-preset_4>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/phaser/sum> ;
++	lv2:port [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "cycle" ;
++		pset:value 25.0
++	] , [
++		lv2:symbol "depth" ;
++		pset:value 75.01000214
++	] , [
++		lv2:symbol "noClip" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "phase" ;
++		pset:value 45.0
++	] , [
++		lv2:symbol "width" ;
++		pset:value 8.0
++	] .
++
++<default-preset_5>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/compressor/mono> ;
++	lv2:port [
++		lv2:symbol "attack" ;
++		pset:value 0.015
++	] , [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "gain" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "noClip" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "ratio" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "release" ;
++		pset:value 0.05
++	] , [
++		lv2:symbol "rms" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "threshold" ;
++		pset:value 0.0
++	] .
++
++<default-preset_6>
++	a pset:Preset ;
++	lv2:appliesTo <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
++	lv2:port [
++		lv2:symbol "attack" ;
++		pset:value 0.015
++	] , [
++		lv2:symbol "bypass" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "gain" ;
++		pset:value 0.0
++	] , [
++		lv2:symbol "noClip" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "ratio" ;
++		pset:value 1.0
++	] , [
++		lv2:symbol "release" ;
++		pset:value 0.05
++	] , [
++		lv2:symbol "rms" ;
++		pset:value 0.5
++	] , [
++		lv2:symbol "threshold" ;
++		pset:value 0.0
++	] .
+diff --git a/rdf/inv_compressor.ttl b/rdf/inv_compressor.ttl
+index 47bb8de..5d97bd3 100644
+--- a/rdf/inv_compressor.ttl
++++ b/rdf/inv_compressor.ttl
+@@ -1,71 +1,27 @@
+-@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix epp:   <http://lv2plug.in/ns/dev/extportinfo#> .
+-@prefix dc:    <http://dublincore.org/documents/dcmi-namespace/> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix foaf:   <http://xmlns.com/foaf/spec/> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
++@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
++@prefix dct:    <http://purl.org/dc/terms/> .
++@prefix pg:     <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:    <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/compressor/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_compressor_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/mono> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/mono> ;
+-        uiext:portIndex 9 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/mono> ;
+-        uiext:portIndex 10 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/mono> ;
+-        uiext:portIndex 11 ;
+-    ] ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
+-        uiext:portIndex 9 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
+-        uiext:portIndex 10 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
+-        uiext:portIndex 11 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
+-        uiext:portIndex 15 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/compressor/mono> 
++<http://invadarecords.com/plugins/lv2/compressor/mono>
+     a lv2:Plugin, lv2:CompressorPlugin ;
+     doap:name "Invada Compressor (mono)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Compressor M" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++An easy to use high-quality compressor.
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/compressor/gui> ;
+-    dc:replaces <urn:ladspa:3308> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3308> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -93,7 +49,7 @@
+ 	lv2:minimum 0.00001 ;
+ 	lv2:maximum 0.750 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 3 ;
+@@ -103,7 +59,7 @@
+ 	lv2:minimum 0.001 ;
+ 	lv2:maximum 5.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 4 ;
+@@ -186,33 +142,32 @@
+ 	lv2:name "Out" ;
+     ] .
+ 
+-<http://invadarecords.com/plugins/lv2/compressor/stereo#in> 
++<http://invadarecords.com/plugins/lv2/compressor/stereo#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
++    lv2:name "In";
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/compressor/stereo#out> 
++
++<http://invadarecords.com/plugins/lv2/compressor/stereo#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
++    lv2:name "Out" ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/compressor/stereo> 
++<http://invadarecords.com/plugins/lv2/compressor/stereo>
+     a lv2:Plugin, lv2:CompressorPlugin ;
+     doap:name "Invada Compressor (stereo)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Compressor St" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++An easy to use high-quality compressor. 
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/compressor/gui> ;
+-    dc:replaces <urn:ladspa:3309> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3309> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -240,7 +195,7 @@
+ 	lv2:minimum 0.00001 ;
+ 	lv2:maximum 0.750 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 3 ;
+@@ -250,7 +205,7 @@
+ 	lv2:minimum 0.001 ;
+ 	lv2:maximum 5.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 4 ;
+@@ -326,15 +281,15 @@
+ 	lv2:index 12 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "In L" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 13 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "Out L" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 14 ;
+@@ -358,19 +313,14 @@
+ 	lv2:index 16 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "In R" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 17 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "Out R" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
++	lv2:designation pg:right ;
+     ]
+ .
+-
+-
+-
+-
+-	
+diff --git a/rdf/inv_delay.ttl b/rdf/inv_delay.ttl
+index 71f0c06..22eabf3 100644
+--- a/rdf/inv_delay.ttl
++++ b/rdf/inv_delay.ttl
+@@ -1,67 +1,30 @@
+-@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix epp:   <http://lv2plug.in/ns/dev/extportinfo#> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
++@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
++@prefix pg:     <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:    <http://moddevices.com/ns/mod#> .
+ 
+-<http://invadarecords.com/plugins/lv2/delay/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_delay_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/mono> ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/mono> ;
+-        uiext:portIndex 15 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/mono> ;
+-        uiext:portIndex 16 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/mono> ;
+-        uiext:portIndex 17 ;
+-    ] ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/sum> ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/sum> ;
+-        uiext:portIndex 15 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/sum> ;
+-        uiext:portIndex 16 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/delay/sum> ;
+-        uiext:portIndex 17 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/delay/mono#out> 
++<http://invadarecords.com/plugins/lv2/delay/mono#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/delay/mono> 
++<http://invadarecords.com/plugins/lv2/delay/mono>
+     a lv2:Plugin, lv2:DelayPlugin ;
+     doap:name "Invada Delay Munge (mono in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Delay Munge" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++A wet only delay with munged delays, the pitch can be modulated by a lfo.
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/delay/gui>;
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -104,11 +67,13 @@
+ 	lv2:index 4 ;
+ 	lv2:symbol "LFOcycle" ;
+ 	lv2:name "LFO" ;
++	lv2:shortName "Rate" ;
++	lv2:portProperty mod:tapTempo;
+ 	lv2:default 20.0 ;
+ 	lv2:minimum 2.0 ;
+ 	lv2:maximum 200.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 5 ;
+@@ -123,18 +88,20 @@
+ 	lv2:index 6 ;
+ 	lv2:symbol "delay1" ;
+ 	lv2:name "Delay 1" ;
++	lv2:shortName "Time 1" ;
++	lv2:portProperty mod:tapTempo;
+ 	lv2:default 0.3 ;
+ 	lv2:minimum 0.02 ;
+-	lv2:maximum 2 ;
++	lv2:maximum 2.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 7 ;
+ 	lv2:symbol "fb1" ;
+ 	lv2:name "Feedback 1" ;
+ 	lv2:default 50.0 ;
+-	lv2:minimum 0 ;
++	lv2:minimum 0.0 ;
+ 	lv2:maximum 133.3333333333 ;
+ 	units:unit units:pc ;
+     ] , [
+@@ -159,18 +126,20 @@
+ 	lv2:index 10 ;
+ 	lv2:symbol "delay2" ;
+ 	lv2:name "Delay 2" ;
++	lv2:shortName "Time 2" ;
++	lv2:portProperty mod:tapTempo;
+ 	lv2:default 0.2 ;
+ 	lv2:minimum 0.02 ;
+-	lv2:maximum 2 ;
++	lv2:maximum 2.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 11 ;
+ 	lv2:symbol "fb2" ;
+ 	lv2:name "Feedback 2" ;
+ 	lv2:default 50.0 ;
+-	lv2:minimum 0 ;
++	lv2:minimum 0.0 ;
+ 	lv2:maximum 133.3333333333 ;
+ 	units:unit units:pc ;
+     ] , [
+@@ -235,43 +204,40 @@
+ 	lv2:index 19 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/delay/mono#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/delay/mono#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 20 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/delay/mono#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/delay/mono#out> ;
++	lv2:designation pg:right ;
+     ] .
+ 
+-<http://invadarecords.com/plugins/lv2/delay/sum#in> 
++<http://invadarecords.com/plugins/lv2/delay/sum#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/delay/sum#out> 
++
++<http://invadarecords.com/plugins/lv2/delay/sum#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/delay/sum> 
++<http://invadarecords.com/plugins/lv2/delay/sum>
+     a lv2:Plugin, lv2:DelayPlugin ;
+     doap:name "Invada Delay Munge (sum L+R in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Delay Munge ST" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++A wet only delay with munged delays, the pitch can be modulated by a lfo.
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/delay/gui>;
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -314,11 +280,13 @@
+ 	lv2:index 4 ;
+ 	lv2:symbol "LFOcycle" ;
+ 	lv2:name "LFO" ;
++	lv2:shortName "Rate" ;
++	lv2:portProperty mod:tapTempo;
+ 	lv2:default 20.0 ;
+ 	lv2:minimum 2.0 ;
+ 	lv2:maximum 200.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 5 ;
+@@ -333,18 +301,20 @@
+ 	lv2:index 6 ;
+ 	lv2:symbol "delay1" ;
+ 	lv2:name "Delay 1" ;
++	lv2:shortName "Time 1" ;
++	lv2:portProperty mod:tapTempo;
+ 	lv2:default 0.3 ;
+ 	lv2:minimum 0.02 ;
+-	lv2:maximum 2 ;
++	lv2:maximum 2.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 7 ;
+ 	lv2:symbol "fb1" ;
+ 	lv2:name "Feedback 1" ;
+ 	lv2:default 50.0 ;
+-	lv2:minimum 0 ;
++	lv2:minimum 0.0 ;
+ 	lv2:maximum 133.3333333333 ;
+ 	units:unit units:pc ;
+     ] , [
+@@ -369,18 +339,20 @@
+ 	lv2:index 10 ;
+ 	lv2:symbol "delay2" ;
+ 	lv2:name "Delay 2" ;
++	lv2:shortName "Time 2" ;
++	lv2:portProperty mod:tapTempo;
+ 	lv2:default 0.2 ;
+ 	lv2:minimum 0.02 ;
+-	lv2:maximum 2 ;
++	lv2:maximum 2.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 11 ;
+ 	lv2:symbol "fb2" ;
+ 	lv2:name "Feedback 2" ;
+ 	lv2:default 50.0 ;
+-	lv2:minimum 0 ;
++	lv2:minimum 0.0 ;
+ 	lv2:maximum 133.3333333333 ;
+ 	units:unit units:pc ;
+     ] , [
+@@ -440,27 +412,27 @@
+ 	lv2:index 18 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "In L" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/delay/sum#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/delay/sum#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 19 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/delay/sum#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/delay/sum#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 20 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/delay/sum#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/delay/sum#out> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:InputPort, lv2:AudioPort ;
+ 	lv2:index 21 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "In R" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/delay/sum#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/delay/sum#in> ;
++	lv2:designation pg:right ;
+     ] .
+diff --git a/rdf/inv_erreverb.ttl b/rdf/inv_erreverb.ttl
+index d294e56..83cbff4 100644
+--- a/rdf/inv_erreverb.ttl
++++ b/rdf/inv_erreverb.ttl
+@@ -1,64 +1,32 @@
+-@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix epp:   <http://lv2plug.in/ns/dev/extportinfo#> .
+-@prefix dc:    <http://dublincore.org/documents/dcmi-namespace/> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
++@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
++@prefix dct:    <http://purl.org/dc/terms/> .
++@prefix pg:     <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:    <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/erreverb/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_erreverb_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/erreverb/mono> ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/erreverb/mono> ;
+-        uiext:portIndex 15 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/erreverb/mono> ;
+-        uiext:portIndex 16 ;
+-    ] ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/erreverb/sum> ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/erreverb/sum> ;
+-        uiext:portIndex 15 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/erreverb/sum> ;
+-        uiext:portIndex 16 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/erreverb/mono#out> 
++<http://invadarecords.com/plugins/lv2/erreverb/mono#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/erreverb/mono> 
++<http://invadarecords.com/plugins/lv2/erreverb/mono>
+     a lv2:Plugin, lv2:ReverbPlugin ;
+     doap:name "Invada Early Reflection Reverb (mono in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "ER Reverb M" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++    A Room simulator wich let you set the height, width and length of the room.
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/erreverb/gui> ;
+-    dc:replaces <urn:ladspa:3311> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3311> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -74,27 +42,27 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "roomLength" ;
+ 	lv2:name "Room Length" ;
+-	lv2:default 25 ;
+-	lv2:minimum 3 ;
+-	lv2:maximum 100 ;
++	lv2:default 25.0 ;
++	lv2:minimum 3.0 ;
++	lv2:maximum 100.0 ;
+ 	units:unit units:m ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+ 	lv2:symbol "roomWidth" ;
+ 	lv2:name "Room Width" ;
+-	lv2:default 30 ;
+-	lv2:minimum 3 ;
+-	lv2:maximum 100 ;
++	lv2:default 30.0 ;
++	lv2:minimum 3.0 ;
++	lv2:maximum 100.0 ;
+ 	units:unit units:m ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 3 ;
+ 	lv2:symbol "roomHeight" ;
+ 	lv2:name "Room Height" ;
+-	lv2:default 10 ;
+-	lv2:minimum 3 ;
+-	lv2:maximum 30 ;
++	lv2:default 10.0 ;
++	lv2:minimum 3.0 ;
++	lv2:maximum 30.0 ;
+ 	units:unit units:m ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -137,7 +105,7 @@
+ 	lv2:minimum 20.0 ;
+ 	lv2:maximum 2000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 9 ;
+@@ -161,15 +129,15 @@
+ 	lv2:index 11 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/erreverb/mono#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/erreverb/mono#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 12 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/erreverb/mono#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/erreverb/mono#out> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:InputPort, lv2:AudioPort ;
+ 	lv2:index 13 ;
+@@ -205,33 +173,30 @@
+     ]
+ .
+ 
+-<http://invadarecords.com/plugins/lv2/erreverb/sum#in> 
++<http://invadarecords.com/plugins/lv2/erreverb/sum#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/erreverb/sum#out> 
++
++<http://invadarecords.com/plugins/lv2/erreverb/sum#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/erreverb/sum> 
++<http://invadarecords.com/plugins/lv2/erreverb/sum>
+     a lv2:Plugin, lv2:ReverbPlugin ;
+     doap:name "Invada Early Reflection Reverb (sum L+R in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "ER Reverb LR" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++    A Room simulator wich let you set the height, width and length of the room.
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/erreverb/gui> ;
+-    dc:replaces <urn:ladspa:3312> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3312> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -247,27 +212,27 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "roomLength" ;
+ 	lv2:name "Room Length" ;
+-	lv2:default 25 ;
+-	lv2:minimum 3 ;
+-	lv2:maximum 100 ;
++	lv2:default 25.0 ;
++	lv2:minimum 3.0 ;
++	lv2:maximum 100.0 ;
+ 	units:unit units:m ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+ 	lv2:symbol "roomWidth" ;
+ 	lv2:name "Room Width" ;
+-	lv2:default 30 ;
+-	lv2:minimum 3 ;
+-	lv2:maximum 100 ;
++	lv2:default 30.0 ;
++	lv2:minimum 3.0 ;
++	lv2:maximum 100.0 ;
+ 	units:unit units:m ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 3 ;
+ 	lv2:symbol "roomHeight" ;
+ 	lv2:name "Room Height" ;
+-	lv2:default 10 ;
+-	lv2:minimum 3 ;
+-	lv2:maximum 30 ;
++	lv2:default 10.0 ;
++	lv2:minimum 3.0 ;
++	lv2:maximum 30.0 ;
+ 	units:unit units:m ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -310,7 +275,7 @@
+ 	lv2:minimum 20.0 ;
+ 	lv2:maximum 2000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 9 ;
+@@ -334,22 +299,22 @@
+ 	lv2:index 11 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/erreverb/sum#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/erreverb/sum#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 12 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/erreverb/sum#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/erreverb/sum#out> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:InputPort, lv2:AudioPort ;
+ 	lv2:index 13 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "L In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/erreverb/sum#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/erreverb/sum#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 14 ;
+@@ -382,7 +347,6 @@
+ 	lv2:index 17 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "R In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/erreverb/sum#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/erreverb/sum#in> ;
++	lv2:designation pg:right ;
+     ] .
+-
+diff --git a/rdf/inv_filter.ttl b/rdf/inv_filter.ttl
+index 33d4cce..c56a32c 100644
+--- a/rdf/inv_filter.ttl
++++ b/rdf/inv_filter.ttl
+@@ -1,95 +1,27 @@
+-@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix epp:   <http://lv2plug.in/ns/dev/extportinfo#> .
+-@prefix dc:    <http://dublincore.org/documents/dcmi-namespace/> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
++@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
++@prefix dct:    <http://purl.org/dc/terms/> .
++@prefix pg:     <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:    <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/filter/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_filter_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/mono> ;
+-        uiext:portIndex 4 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/mono> ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/mono> ;
+-        uiext:portIndex 8 ;
+-    ] ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/mono> ;
+-        uiext:portIndex 4 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/mono> ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/mono> ;
+-        uiext:portIndex 8 ;
+-    ] ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/stereo> ;
+-        uiext:portIndex 4 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/stereo> ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/stereo> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/stereo> ;
+-        uiext:portIndex 9 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/lpf/stereo> ;
+-        uiext:portIndex 10 ;
+-    ] ;
+-
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/stereo> ;
+-        uiext:portIndex 4 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/stereo> ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/stereo> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/stereo> ;
+-        uiext:portIndex 9 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/filter/hpf/stereo> ;
+-        uiext:portIndex 10 ;
+-    ] .
+-
+-
+-<http://invadarecords.com/plugins/lv2/filter/lpf/mono> 
++<http://invadarecords.com/plugins/lv2/filter/lpf/mono>
+     a lv2:Plugin, lv2:LowpassPlugin ;
+     doap:name "Invada Low Pass Filter (mono)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Low-Pass Fltr M" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Simple filter whitout resonance
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/filter/gui> ;
+-    dc:replaces <urn:ladspa:3302> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3302> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -105,11 +37,11 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "freq" ;
+ 	lv2:name "Frequency" ;
+-	lv2:default 1000 ;
+-	lv2:minimum 20 ;
+-	lv2:maximum 20000 ;
++	lv2:default 1000.0 ;
++	lv2:minimum 20.0 ;
++	lv2:maximum 20000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+@@ -166,12 +98,12 @@
+ 	lv2:maximum 10.0 ;
+    ] .
+ 
+-<http://invadarecords.com/plugins/lv2/filter/lpf/stereo#in> 
++<http://invadarecords.com/plugins/lv2/filter/lpf/stereo#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/filter/lpf/stereo#out> 
++
++<http://invadarecords.com/plugins/lv2/filter/lpf/stereo#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+@@ -179,20 +111,17 @@
+ <http://invadarecords.com/plugins/lv2/filter/lpf/stereo>
+     a lv2:Plugin, lv2:LowpassPlugin ;
+     doap:name "Invada Low Pass Filter (stereo)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Low-Pass Fltr St" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Simple filter whitout resonance
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/filter/gui> ;
+-    dc:replaces <urn:ladspa:3304> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3304> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -208,11 +137,11 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "freq" ;
+ 	lv2:name "Frequency" ;
+-	lv2:default 1000 ;
+-	lv2:minimum 20 ;
+-	lv2:maximum 20000 ;
++  lv2:default 1000.0 ;
++	lv2:minimum 20.0 ;
++	lv2:maximum 20000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+@@ -254,15 +183,15 @@
+ 	lv2:index 6 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "L In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 7 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#out> ;
++	lv2:designation pg:left ;
+    ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 8 ;
+@@ -294,34 +223,31 @@
+ 	lv2:index 11 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "R In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 12 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/lpf/stereo#out> ;
++	lv2:designation pg:right ;
+     ] .
+ 
+ <http://invadarecords.com/plugins/lv2/filter/hpf/mono>
+     a lv2:Plugin, lv2:HighpassPlugin ;
+     doap:name "Invada High Pass Filter (mono)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "High-Pass Fltr M" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Simple filter whitout resonance
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/filter/gui> ;
+-    dc:replaces <urn:ladspa:3303> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3303> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -337,11 +263,11 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "freq" ;
+ 	lv2:name "Frequency" ;
+-	lv2:default 1000 ;
+-	lv2:minimum 20 ;
+-	lv2:maximum 20000 ;
++  lv2:default 1000.0 ;
++	lv2:minimum 20.0 ;
++	lv2:maximum 20000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+@@ -398,12 +324,12 @@
+ 	lv2:maximum 10.0 ;
+    ] .
+ 
+-<http://invadarecords.com/plugins/lv2/filter/hpf/stereo#in> 
++<http://invadarecords.com/plugins/lv2/filter/hpf/stereo#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/filter/hpf/stereo#out> 
++
++<http://invadarecords.com/plugins/lv2/filter/hpf/stereo#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+@@ -411,20 +337,18 @@
+ <http://invadarecords.com/plugins/lv2/filter/hpf/stereo>
+     a lv2:Plugin, lv2:HighpassPlugin ;
+     doap:name "Invada High Pass Filter (stereo)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "High-Pass Fltr S" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Simple filter whitout resonance
++""";
++
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/filter/gui> ;
+-    dc:replaces <urn:ladspa:3305> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3305> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -440,11 +364,11 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "freq" ;
+ 	lv2:name "Frequency" ;
+-	lv2:default 1000 ;
+-	lv2:minimum 20 ;
+-	lv2:maximum 20000 ;
++  lv2:default 1000.0 ;
++	lv2:minimum 20.0 ;
++	lv2:maximum 20000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+@@ -486,15 +410,15 @@
+ 	lv2:index 6 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "L In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 7 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#out> ;
++	lv2:designation pg:left ;
+    ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 8 ;
+@@ -526,14 +450,13 @@
+ 	lv2:index 11 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "R In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 12 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/filter/hpf/stereo#out> ;
++	lv2:designation pg:right ;
+     ] .
+-
+diff --git a/rdf/inv_input.ttl b/rdf/inv_input.ttl
+index af9e9e2..0396bed 100644
+--- a/rdf/inv_input.ttl
++++ b/rdf/inv_input.ttl
+@@ -2,65 +2,35 @@
+ @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+ @prefix doap:  <http://usefulinc.com/ns/doap#> .
+ @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix dc:    <http://dublincore.org/documents/dcmi-namespace/> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix units: <http://lv2plug.in/ns/extensions/units#> .
++@prefix dct:   <http://purl.org/dc/terms/> .
++@prefix pg:    <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:   <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/input/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_input_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/input>  ;
+-        uiext:portIndex 11 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/input>  ;
+-        uiext:portIndex 12 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/input>  ;
+-        uiext:portIndex 13 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/input>  ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/input>  ;
+-        uiext:portIndex 15 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/input>  ;
+-        uiext:portIndex 16 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/input#in> 
++<http://invadarecords.com/plugins/lv2/input#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/input#out> 
++
++<http://invadarecords.com/plugins/lv2/input#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/input> 
++<http://invadarecords.com/plugins/lv2/input>
+     a lv2:Plugin, lv2:UtilityPlugin ;
+     doap:name "Invada Input Module" ;
++    mod:brand "Invada" ;
++    mod:label "Input Module" ;
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/input/gui> ;
+-    dc:replaces <urn:ladspa:3301> ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++    Lets you modify the basics of a stereo signal, such as stereo width, panning and phase
++""";
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3301> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -128,29 +98,29 @@
+ 	lv2:index 7 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "L In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/input#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/input#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:InputPort, lv2:AudioPort ;
+ 	lv2:index 8 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "R In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/input#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/input#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 9 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/input#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/input#out> ;
++	lv2:designation pg:left ;
+    ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 10 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/input#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/input#out> ;
++	lv2:designation pg:right ;
+    ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 11 ;
+@@ -204,5 +174,3 @@
+ 	lv2:minimum 0.0 ;
+ 	lv2:maximum 10.0 ;
+    ] .
+-
+-	
+diff --git a/rdf/inv_meter.ttl b/rdf/inv_meter.ttl
+index ef3aeb0..68ff97c 100644
+--- a/rdf/inv_meter.ttl
++++ b/rdf/inv_meter.ttl
+@@ -2,153 +2,28 @@
+ @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+ @prefix doap:  <http://usefulinc.com/ns/doap#> .
+ @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix units: <http://lv2plug.in/ns/extensions/units#> .
++@prefix pg:    <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:   <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/meter/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_meter_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 6 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 7 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 9 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 10 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 11 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 12 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 13 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 15 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 16 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 17 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 18 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 19 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 20 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 21 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 22 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 23 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 24 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 25 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 26 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 27 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 28 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 29 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 30 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 31 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 32 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 33 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 34 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 35 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 36 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 37 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 38 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 39 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/meter>  ;
+-        uiext:portIndex 40 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/meter#in> 
++<http://invadarecords.com/plugins/lv2/meter#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/meter#out> 
++
++<http://invadarecords.com/plugins/lv2/meter#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/meter> 
++<http://invadarecords.com/plugins/lv2/meter>
+     a lv2:Plugin, lv2:AnalyserPlugin ;
+     doap:name "Invada Meter" ;
++    mod:brand "Invada" ;
++    mod:label "Meter" ;
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/meter/gui>;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -164,29 +39,29 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "L In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:InputPort, lv2:AudioPort ;
+ 	lv2:index 2 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "R In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 3 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
++	lv2:designation pg:left ;
+    ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 4 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#out> ;
++	lv2:designation pg:right ;
+    ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 5 ;
+@@ -511,5 +386,3 @@
+ 	lv2:maximum 12.0 ;
+ 	units:unit units:db ;
+    ] .
+-
+-	
+diff --git a/rdf/inv_phaser.ttl b/rdf/inv_phaser.ttl
+index c6b3036..46d9eb7 100644
+--- a/rdf/inv_phaser.ttl
++++ b/rdf/inv_phaser.ttl
+@@ -1,111 +1,37 @@
+-@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix epp:   <http://lv2plug.in/ns/dev/extportinfo#> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
++@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
++@prefix pg:     <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:    <http://moddevices.com/ns/mod#> .
+ 
+-<http://invadarecords.com/plugins/lv2/phaser/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_phaser_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/mono> ;
+-        uiext:portIndex 6 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/mono> ;
+-        uiext:portIndex 7 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/mono> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/mono> ;
+-        uiext:portIndex 11 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/mono> ;
+-        uiext:portIndex 12 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/mono> ;
+-        uiext:portIndex 14 ;
+-    ] ;
+-
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 6 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 7 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 11 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 12 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 14 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
+-        uiext:portIndex 16 ;
+-    ] ;
+-
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/sum> ;
+-        uiext:portIndex 6 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/sum> ;
+-        uiext:portIndex 7 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/sum> ;
+-        uiext:portIndex 8 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/sum> ;
+-        uiext:portIndex 11 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/sum> ;
+-        uiext:portIndex 12 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/phaser/sum> ;
+-        uiext:portIndex 14 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/phaser/mono#out> 
++<http://invadarecords.com/plugins/lv2/phaser/mono#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/phaser/mono> 
++<http://invadarecords.com/plugins/lv2/phaser/mono>
+     a lv2:Plugin, lv2:PhaserPlugin ;
+     doap:name "Invada Stereo Phaser (mono in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "SPhaser Mono" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Subtle phaser with a very large LFO range
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/phaser/gui>;
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 0 ;
+ 	lv2:symbol "bypass" ;
+ 	lv2:name "Bypass" ;
+-	lv2:portProperty lv2:toggled ;
++	lv2:portProperty pprops:notOnGUI ;
+ 	lv2:default 0.0 ;
+ 	lv2:minimum 0.0 ;
+ 	lv2:maximum 1.0 ;
+@@ -114,19 +40,20 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "cycle" ;
+ 	lv2:name "Period" ;
+-	lv2:default 25 ;
++	lv2:portProperty mod:tapTempo;
++	lv2:default 6.0 ;
+ 	lv2:minimum 0.5 ;
+-	lv2:maximum 500 ;
++	lv2:maximum 20.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++      lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+ 	lv2:symbol "phase" ;
+ 	lv2:name "Phase Offset" ;
+-	lv2:default 45 ;
+-	lv2:minimum -180 ;
+-	lv2:maximum 180 ;
++	lv2:default 45.0 ;
++	lv2:minimum -180.0 ;
++	lv2:maximum 180.0 ;
+ 	units:unit units:degree ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -184,15 +111,15 @@
+ 	lv2:index 9 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/mono#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/mono#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 10 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/mono#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/mono#out> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 11 ;
+@@ -227,39 +154,36 @@
+ 	units:unit units:db ;
+     ] .
+ 
+-<http://invadarecords.com/plugins/lv2/phaser/stereo#in> 
++<http://invadarecords.com/plugins/lv2/phaser/stereo#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/phaser/stereo#out> 
++
++<http://invadarecords.com/plugins/lv2/phaser/stereo#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/phaser/stereo> 
++<http://invadarecords.com/plugins/lv2/phaser/stereo>
+     a lv2:Plugin, lv2:PhaserPlugin ;
+     doap:name "Invada Stereo Phaser (stereo in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "SPhaser Stereo" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Subtle phaser with a very large LFO range
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/phaser/gui>;
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 0 ;
+ 	lv2:symbol "bypass" ;
+ 	lv2:name "Bypass" ;
+-	lv2:portProperty lv2:toggled ;
++	lv2:portProperty pprops:notOnGUI ;
+ 	lv2:default 0.0 ;
+ 	lv2:minimum 0.0 ;
+ 	lv2:maximum 1.0 ;
+@@ -268,19 +192,20 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "cycle" ;
+ 	lv2:name "Period" ;
+-	lv2:default 25 ;
++	lv2:portProperty mod:tapTempo;
++	lv2:default 6.0 ;
+ 	lv2:minimum 0.5 ;
+-	lv2:maximum 500 ;
++	lv2:maximum 20.0 ;
+ 	units:unit units:s ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+ 	lv2:symbol "phase" ;
+ 	lv2:name "Phase Offset" ;
+-	lv2:default 45 ;
+-	lv2:minimum -180 ;
+-	lv2:maximum 180 ;
++	lv2:default 45.0 ;
++	lv2:minimum -180.0 ;
++	lv2:maximum 180.0 ;
+ 	units:unit units:degree ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -338,15 +263,15 @@
+ 	lv2:index 9 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/stereo#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/stereo#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 10 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/stereo#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/stereo#out> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 11 ;
+@@ -370,8 +295,8 @@
+ 	lv2:index 13 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "InL" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 14 ;
+@@ -386,8 +311,8 @@
+ 	lv2:index 15 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "In R" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/compressor/stereo#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 16 ;
+@@ -399,39 +324,37 @@
+ 	units:unit units:db ;
+     ] .
+ 
+-<http://invadarecords.com/plugins/lv2/phaser/sum#in> 
++<http://invadarecords.com/plugins/lv2/phaser/sum#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/phaser/sum#out> 
++
++<http://invadarecords.com/plugins/lv2/phaser/sum#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/phaser/sum> 
++<http://invadarecords.com/plugins/lv2/phaser/sum>
+     a lv2:Plugin, lv2:PhaserPlugin ;
+     doap:name "Invada Stereo Phaser (sum L+R in)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "SPhaser Sum" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Subtle phaser with a very large LFO range
++""";
++
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/phaser/gui>;
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 0 ;
+ 	lv2:symbol "bypass" ;
+ 	lv2:name "Bypass" ;
+-	lv2:portProperty lv2:toggled ;
++	lv2:portProperty pprops:notOnGUI ;
+ 	lv2:default 0.0 ;
+ 	lv2:minimum 0.0 ;
+ 	lv2:maximum 1.0 ;
+@@ -440,18 +363,20 @@
+ 	lv2:index 1 ;
+ 	lv2:symbol "cycle" ;
+ 	lv2:name "Period" ;
+-	lv2:default 25 ;
++	lv2:portProperty mod:tapTempo;
++	lv2:default 6.0 ;
+ 	lv2:minimum 0.5 ;
+-	lv2:maximum 500 ;
++	lv2:maximum 20.0 ;
+ 	units:unit units:s ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+ 	lv2:symbol "phase" ;
+ 	lv2:name "Phase Offset" ;
+-	lv2:default 45 ;
+-	lv2:minimum -180 ;
+-	lv2:maximum 180 ;
++	lv2:default 45.0 ;
++	lv2:minimum -180.0 ;
++	lv2:maximum 180.0 ;
+ 	units:unit units:degree ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -509,15 +434,15 @@
+ 	lv2:index 9 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/sum#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/sum#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:AudioPort ;
+ 	lv2:index 10 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/sum#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/sum#out> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 11 ;
+@@ -541,8 +466,8 @@
+ 	lv2:index 13 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "In L" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/sum#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/sum#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 14 ;
+@@ -557,6 +482,6 @@
+ 	lv2:index 15 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "In R" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/phaser/sum#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/phaser/sum#in> ;
++	lv2:designation pg:right ;
+     ] .
+diff --git a/rdf/inv_testtone.ttl b/rdf/inv_testtone.ttl
+index d58759a..8b9f7f7 100644
+--- a/rdf/inv_testtone.ttl
++++ b/rdf/inv_testtone.ttl
+@@ -1,40 +1,25 @@
+-@prefix lv2:   <http://lv2plug.in/ns/lv2core#> .
+-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+-@prefix doap:  <http://usefulinc.com/ns/doap#> .
+-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix epp:   <http://lv2plug.in/ns/dev/extportinfo#> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
++@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
++@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
++@prefix pg:     <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:    <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/testtone/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_testtone_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/testtone>  ;
+-        uiext:portIndex 4 ;
+-    ] .
+-
+-<http://invadarecords.com/plugins/lv2/testtone> 
++<http://invadarecords.com/plugins/lv2/testtone>
+     a lv2:Plugin, lv2:OscillatorPlugin ;
+     doap:name "Invada Test Tones" ;
++    mod:brand "Invada" ;
++    mod:label "Test Tones" ;
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/testtone/gui> ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++    A sine generator to test connections
++""";
++    lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -54,7 +39,7 @@
+ 	lv2:minimum 20.0 ;
+ 	lv2:maximum 20000.0 ;
+ 	units:unit units:hz ;
+-        lv2:portProperty epp:logarithmic ;
++        lv2:portProperty pprops:logarithmic ;
+     ] , [
+ 	a lv2:InputPort, lv2:ControlPort ;
+ 	lv2:index 2 ;
+@@ -79,5 +64,3 @@
+ 	lv2:maximum 6.0 ;
+ 	units:unit units:db ;
+    ] .
+-
+-	
+diff --git a/rdf/inv_tube.ttl b/rdf/inv_tube.ttl
+index 3f26ece..e5df6c0 100644
+--- a/rdf/inv_tube.ttl
++++ b/rdf/inv_tube.ttl
+@@ -2,64 +2,25 @@
+ @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+ @prefix doap:  <http://usefulinc.com/ns/doap#> .
+ @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+-@prefix units: <http://lv2plug.in/ns/extension/units#> .
+-@prefix uiext: <http://lv2plug.in/ns/extensions/ui#> .
+-@prefix dc:    <http://dublincore.org/documents/dcmi-namespace/> .
+-@prefix pg:    <http://lv2plug.in/ns/dev/port-groups#> .
++@prefix units: <http://lv2plug.in/ns/extensions/units#> .
++@prefix dct:   <http://purl.org/dc/terms/> .
++@prefix pg:    <http://lv2plug.in/ns/ext/port-groups#> .
++@prefix mod:   <http://moddevices.com/ns/mod#> .
+ 
+-
+-<http://invadarecords.com/plugins/lv2/tube/gui>
+-    a uiext:GtkUI;
+-    uiext:binary <inv_tube_gui.so>;
+-    uiext:requiredFeature uiext:makeResident ;
+-    uiext:optionalFeature uiext:noUserResize ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/mono> ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/mono> ;
+-        uiext:portIndex 6 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/mono> ;
+-        uiext:portIndex 7 ;
+-    ] ;
+-
+-    uiext:portNotification [ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/stereo> ;
+-        uiext:portIndex 5 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/stereo> ;
+-        uiext:portIndex 6 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/stereo> ;
+-        uiext:portIndex 7 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/stereo> ;
+-        uiext:portIndex 10 ;
+-    ],[ 
+-	uiext:plugin <http://invadarecords.com/plugins/lv2/tube/stereo> ;
+-        uiext:portIndex 11 ;
+-    ] .
+-
+-
+-<http://invadarecords.com/plugins/lv2/tube/mono> 
++<http://invadarecords.com/plugins/lv2/tube/mono>
+     a lv2:Plugin, lv2:DistortionPlugin ;
+     doap:name "Invada Tube Distortion (mono)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Tube Dist. M" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Tube distortion, with a DC offset options
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/tube/gui> ;
+-    dc:replaces <urn:ladspa:3306> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3306> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -144,33 +105,30 @@
+     ]
+ .
+ 
+-<http://invadarecords.com/plugins/lv2/tube/stereo#in> 
++<http://invadarecords.com/plugins/lv2/tube/stereo#in>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "in" .
+-  
+-<http://invadarecords.com/plugins/lv2/tube/stereo#out> 
++
++<http://invadarecords.com/plugins/lv2/tube/stereo#out>
+     a pg:Group ;
+     a pg:StereoGroup ;
+     lv2:symbol "out" .
+ 
+-<http://invadarecords.com/plugins/lv2/tube/stereo> 
++<http://invadarecords.com/plugins/lv2/tube/stereo>
+     a lv2:Plugin, lv2:DistortionPlugin ;
+     doap:name "Invada Tube Distortion (stereo)" ;
+-    doap:developer [
+-	foaf:name "Fraser Stuart";
+-	foaf:homepage <https://launchpad.net/invada-studio> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
+-    doap:maintainer [
+-	foaf:name "Invada";
+-	foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
+-	foaf:mbox <mailto:fraser@arkhostings.com> ;
+-    ] ;
++    mod:brand "Invada" ;
++    mod:label "Tube Dist. St" ;
++    lv2:project <http://invadarecords.com/plugins/lv2/> ;
++    lv2:minorVersion 2;
++    lv2:microVersion 1;
++    rdfs:comment """
++Tube distortion, with a DC offset options
++""";
+     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+-    lv2:optionalFeature lv2:hardRtCapable ;
+-    uiext:ui <http://invadarecords.com/plugins/lv2/tube/gui> ;
+-    dc:replaces <urn:ladspa:3307> ;
++    lv2:optionalFeature lv2:hardRTCapable ;
++    dct:replaces <urn:ladspa:3307> ;
+ 
+     lv2:port [
+ 	a lv2:InputPort, lv2:ControlPort ;
+@@ -247,15 +205,15 @@
+ 	lv2:index 8 ;
+ 	lv2:symbol "inL" ;
+ 	lv2:name "L In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/tube/stereo#in> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/tube/stereo#in> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort,  lv2:AudioPort ;
+ 	lv2:index 9 ;
+ 	lv2:symbol "outL" ;
+ 	lv2:name "L Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/tube/stereo#out> ;
+-	pg:role pg:leftChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/tube/stereo#out> ;
++	lv2:designation pg:left ;
+     ] , [
+ 	a lv2:OutputPort, lv2:ControlPort ;
+ 	lv2:index 10 ;
+@@ -279,15 +237,14 @@
+ 	lv2:index 12 ;
+ 	lv2:symbol "inR" ;
+ 	lv2:name "R In" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/tube/stereo#in> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/tube/stereo#in> ;
++	lv2:designation pg:right ;
+     ] , [
+ 	a lv2:OutputPort,  lv2:AudioPort ;
+ 	lv2:index 13 ;
+ 	lv2:symbol "outR" ;
+ 	lv2:name "R Out" ;
+-	pg:inGroup <http://invadarecords.com/plugins/lv2/tube/stereo#out> ;
+-	pg:role pg:rightChannel ;
++	pg:group <http://invadarecords.com/plugins/lv2/tube/stereo#out> ;
++	lv2:designation pg:right ;
+     ]
+ .
+-	
+diff --git a/rdf/manifest.ttl b/rdf/manifest.ttl
+index c353c14..5365b6b 100644
+--- a/rdf/manifest.ttl
++++ b/rdf/manifest.ttl
+@@ -1,77 +1,127 @@
+ @prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
++@prefix doap:   <http://usefulinc.com/ns/doap#> .
++@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
+ @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+ 
++<http://invadarecords.com/plugins/lv2/>
++    a doap:Project ;
++doap:developer [
++foaf:name "Fraser Stuart";
++foaf:homepage <https://launchpad.net/invada-studio> ;
++] ;
++doap:maintainer [
++foaf:name "Invada";
++foaf:homepage <http://www.invadarecords.com/Downloads.php?ID=00000264> ;
++foaf:mbox <mailto:fraser@arkhostings.com> ;
++] .
++
+ <http://invadarecords.com/plugins/lv2/compressor/mono> a lv2:Plugin ;
+                                         lv2:binary <inv_compressor.so> ;
+-                                        rdfs:seeAlso <inv_compressor.ttl> .
++                                        rdfs:seeAlso <inv_compressor.ttl> , <modguis.ttl> .
+ 
+ <http://invadarecords.com/plugins/lv2/compressor/stereo> a lv2:Plugin ;
+                                         lv2:binary <inv_compressor.so> ;
+-                                        rdfs:seeAlso <inv_compressor.ttl> .
++                                        rdfs:seeAlso <inv_compressor.ttl> , <modguis.ttl> .
+ 
+ <http://invadarecords.com/plugins/lv2/delay/mono> a lv2:Plugin ;
+                                         lv2:binary <inv_delay.so> ;
+-                                        rdfs:seeAlso <inv_delay.ttl> .
++                                        rdfs:seeAlso <inv_delay.ttl> , <modguis.ttl> .
+ 
+ <http://invadarecords.com/plugins/lv2/delay/sum> a lv2:Plugin ;
+                                         lv2:binary <inv_delay.so> ;
+-                                        rdfs:seeAlso <inv_delay.ttl> .
+-
+-<http://invadarecords.com/plugins/lv2/erreverb/mono> a lv2:Plugin ;
+-                                        lv2:binary <inv_erreverb.so> ;
+-                                        rdfs:seeAlso <inv_erreverb.ttl> .
++                                        rdfs:seeAlso <inv_delay.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/erreverb/sum> a lv2:Plugin ;
+-                                        lv2:binary <inv_erreverb.so> ;
+-                                        rdfs:seeAlso <inv_erreverb.ttl> .
++# <http://invadarecords.com/plugins/lv2/erreverb/mono> a lv2:Plugin ;
++#                                         lv2:binary <inv_erreverb.so> ;
++#                                         rdfs:seeAlso <inv_erreverb.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/filter/lpf/mono> a lv2:Plugin ;
+-                                        lv2:binary <inv_filter.so> ;
+-                                        rdfs:seeAlso <inv_filter.ttl> .
++# <http://invadarecords.com/plugins/lv2/erreverb/sum> a lv2:Plugin ;
++#                                         lv2:binary <inv_erreverb.so> ;
++#                                         rdfs:seeAlso <inv_erreverb.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/filter/lpf/stereo> a lv2:Plugin ;
+-                                        lv2:binary <inv_filter.so> ;
+-                                        rdfs:seeAlso <inv_filter.ttl> .
++# <http://invadarecords.com/plugins/lv2/filter/lpf/mono> a lv2:Plugin ;
++#                                         lv2:binary <inv_filter.so> ;
++#                                         rdfs:seeAlso <inv_filter.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/filter/hpf/mono> a lv2:Plugin ;
+-                                        lv2:binary <inv_filter.so> ;
+-                                        rdfs:seeAlso <inv_filter.ttl> .
++# <http://invadarecords.com/plugins/lv2/filter/lpf/stereo> a lv2:Plugin ;
++#                                         lv2:binary <inv_filter.so> ;
++#                                         rdfs:seeAlso <inv_filter.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/filter/hpf/stereo> a lv2:Plugin ;
+-                                        lv2:binary <inv_filter.so> ;
+-                                        rdfs:seeAlso <inv_filter.ttl> .
++# <http://invadarecords.com/plugins/lv2/filter/hpf/mono> a lv2:Plugin ;
++#                                         lv2:binary <inv_filter.so> ;
++#                                         rdfs:seeAlso <inv_filter.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/input> a lv2:Plugin ;
+-                                        lv2:binary <inv_input.so> ;
+-                                        rdfs:seeAlso <inv_input.ttl> .
++# <http://invadarecords.com/plugins/lv2/filter/hpf/stereo> a lv2:Plugin ;
++#                                         lv2:binary <inv_filter.so> ;
++#                                         rdfs:seeAlso <inv_filter.ttl> , <modguis.ttl> .
+ 
+-<http://invadarecords.com/plugins/lv2/meter> a lv2:Plugin ;
+-                                        lv2:binary <inv_meter.so> ;
+-                                        rdfs:seeAlso <inv_meter.ttl> .
++# <http://invadarecords.com/plugins/lv2/input> a lv2:Plugin ;
++#                                         lv2:binary <inv_input.so> ;
++#                                         rdfs:seeAlso <inv_input.ttl> , <modguis.ttl> .
+ 
+ <http://invadarecords.com/plugins/lv2/phaser/mono> a lv2:Plugin ;
+                                         lv2:binary <inv_phaser.so> ;
+-                                        rdfs:seeAlso <inv_phaser.ttl> .
++                                        rdfs:seeAlso <inv_phaser.ttl> , <modguis.ttl> .
+ 
+ <http://invadarecords.com/plugins/lv2/phaser/stereo> a lv2:Plugin ;
+                                         lv2:binary <inv_phaser.so> ;
+-                                        rdfs:seeAlso <inv_phaser.ttl> .
++                                        rdfs:seeAlso <inv_phaser.ttl> , <modguis.ttl> .
+ 
+ <http://invadarecords.com/plugins/lv2/phaser/sum> a lv2:Plugin ;
+                                         lv2:binary <inv_phaser.so> ;
+-                                        rdfs:seeAlso <inv_phaser.ttl> .
+-
+-<http://invadarecords.com/plugins/lv2/testtone> a lv2:Plugin ;
+-                                        lv2:binary <inv_testtone.so> ;
+-                                        rdfs:seeAlso <inv_testtone.ttl> .
+-
+-<http://invadarecords.com/plugins/lv2/tube/mono> a lv2:Plugin ;
+-                                        lv2:binary <inv_tube.so> ;
+-                                        rdfs:seeAlso <inv_tube.ttl> .
+-
+-<http://invadarecords.com/plugins/lv2/tube/stereo> a lv2:Plugin ;
+-                                        lv2:binary <inv_tube.so> ;
+-                                        rdfs:seeAlso <inv_tube.ttl> .
+-
+-
+-
++                                        rdfs:seeAlso <inv_phaser.ttl> , <modguis.ttl> .
++
++#<http://invadarecords.com/plugins/lv2/testtone> a lv2:Plugin ;
++#                                        lv2:binary <inv_testtone.so> ;
++#                                        rdfs:seeAlso <inv_testtone.ttl> , <modguis.ttl> .
++
++#<http://invadarecords.com/plugins/lv2/tube/mono> a lv2:Plugin ;
++#                                        lv2:binary <inv_tube.so> ;
++#                                        rdfs:seeAlso <inv_tube.ttl> , <modguis.ttl> .
++
++# <http://invadarecords.com/plugins/lv2/tube/stereo> a lv2:Plugin ;
++#                                         lv2:binary <inv_tube.so> ;
++#                                         rdfs:seeAlso <inv_tube.ttl> , <modguis.ttl> .
++
++
++<default-preset>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/delay/mono> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
++
++<default-preset_1>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/delay/sum> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
++
++<default-preset_2>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/phaser/mono> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
++
++<default-preset_3>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/phaser/stereo> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
++
++<default-preset_4>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/phaser/sum> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
++
++<default-preset_5>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/compressor/mono> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
++
++<default-preset_6>
++    a <http://lv2plug.in/ns/ext/presets#Preset> ;
++    <http://lv2plug.in/ns/lv2core#appliesTo> <http://invadarecords.com/plugins/lv2/compressor/stereo> ;
++    <http://www.w3.org/2000/01/rdf-schema#label> "Default" ;
++    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <default-preset.ttl> .
+diff --git a/rdf/modguis.ttl b/rdf/modguis.ttl
+new file mode 100644
+index 0000000..c3429e1
+--- /dev/null
++++ b/rdf/modguis.ttl
+@@ -0,0 +1,682 @@
++@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
++@prefix modgui: <http://moddevices.com/ns/modgui#> .
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/compressor/mono
++
++<http://invadarecords.com/plugins/lv2/compressor/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-compressor-mono.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-compressor-mono.css> ;
++        modgui:screenshot <modgui/screenshot-invada-compressor-mono.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-compressor-mono.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Compressor" ;
++        modgui:model "japanese" ;
++        modgui:panel "7-a-knobs" ;
++        modgui:color "darkblue" ;
++        modgui:knob "white" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "threshold" ;
++            lv2:name "Thresh" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "ratio" ;
++            lv2:name "Ratio" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "rms" ;
++            lv2:name "RMS" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "attack" ;
++            lv2:name "Attack" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "release" ;
++            lv2:name "Release" ;
++        ] , [
++            lv2:index 5 ;
++            lv2:symbol "gain" ;
++            lv2:name "Makeup" ;
++        ] ;
++    ] .
++## END http://invadarecords.com/plugins/lv2/compressor/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/compressor/stereo
++
++<http://invadarecords.com/plugins/lv2/compressor/stereo>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-compressor-stereo.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-compressor-stereo.css> ;
++        modgui:screenshot <modgui/screenshot-invada-compressor-stereo.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-compressor-stereo.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Compressor" ;
++        modgui:model "japanese" ;
++        modgui:panel "7-a-knobs" ;
++        modgui:color "darkblue" ;
++        modgui:knob "white" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "threshold" ;
++            lv2:name "Thresh" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "ratio" ;
++            lv2:name "Ratio" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "rms" ;
++            lv2:name "RMS" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "attack" ;
++            lv2:name "Attack" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "release" ;
++            lv2:name "Release" ;
++        ] , [
++            lv2:index 5 ;
++            lv2:symbol "gain" ;
++            lv2:name "Makeup" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/compressor/stereo
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/delay/mono
++
++
++<http://invadarecords.com/plugins/lv2/delay/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-delay-munge-mono-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-delay-munge-mono-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-delay-munge-mono-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-delay-munge-mono-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Delay Munge" ;
++        modgui:model "japanese" ;
++        modgui:panel "7-a-knobs" ;
++        modgui:color "red" ;
++        modgui:knob "yellow" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "delay1" ;
++            lv2:name "Time 1" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "fb1" ;
++            lv2:name "Feedb 1" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "munge" ;
++            lv2:name "Munge" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "delay2" ;
++            lv2:name "Time 2" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "fb2" ;
++            lv2:name "Feedb 2" ;
++        ] , [
++            lv2:index 5 ;
++            lv2:symbol "LFOdepth" ;
++            lv2:name "Depth" ;
++        ] , [
++            lv2:index 6 ;
++            lv2:symbol "LFOcycle" ;
++            lv2:name "Rate" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/delay/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/delay/sum
++
++
++<http://invadarecords.com/plugins/lv2/delay/sum>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-delay-munge-sum-lr-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-delay-munge-sum-lr-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-delay-munge-sum-lr-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-delay-munge-sum-lr-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Delay Munge" ;
++        modgui:model "japanese" ;
++        modgui:panel "7-a-knobs" ;
++        modgui:color "red" ;
++        modgui:knob "yellow" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "delay1" ;
++            lv2:name "Time 1" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "fb1" ;
++            lv2:name "Feedb 1" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "munge" ;
++            lv2:name "Munge" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "delay2" ;
++            lv2:name "Time 2" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "fb2" ;
++            lv2:name "Feedb 2" ;
++        ] , [
++            lv2:index 5 ;
++            lv2:symbol "LFOdepth" ;
++            lv2:name "Depth" ;
++        ] , [
++            lv2:index 6 ;
++            lv2:symbol "LFOcycle" ;
++            lv2:name "Rate" ;
++        ] ;
++    ] .
++    
++## END http://invadarecords.com/plugins/lv2/delay/sum
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/erreverb/mono
++
++
++<http://invadarecords.com/plugins/lv2/erreverb/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-early-reflection-reverb-mono-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-early-reflection-reverb-mono-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-early-reflection-reverb-mono-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-early-reflection-reverb-mono-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Early Reflection" ;
++        modgui:model "japanese" ;
++        modgui:panel "8-knobs" ;
++        modgui:color "gray" ;
++        modgui:knob "black" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "diffusion" ;
++            lv2:name "Diffusion" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "warmth" ;
++            lv2:name "Warmth" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "hpf" ;
++            lv2:name "HPF" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "listFB" ;
++            lv2:name "Listener (F/B)" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "roomLength" ;
++            lv2:name "Length" ;
++        ] , [
++            lv2:index 5 ;
++            lv2:symbol "roomWidth" ;
++            lv2:name "Width" ;
++        ] , [
++            lv2:index 6 ;
++            lv2:symbol "roomHeight" ;
++            lv2:name "Height" ;
++        ] , [
++            lv2:index 7 ;
++            lv2:symbol "sourceFB" ;
++            lv2:name "Source (F/B)" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/erreverb/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/erreverb/sum
++
++
++<http://invadarecords.com/plugins/lv2/erreverb/sum>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-early-reflection-reverb-sum-lr-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-early-reflection-reverb-sum-lr-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-early-reflection-reverb-sum-lr-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-early-reflection-reverb-sum-lr-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Early Reflection" ;
++        modgui:model "japanese" ;
++        modgui:panel "8-knobs" ;
++        modgui:color "gray" ;
++        modgui:knob "black" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "diffusion" ;
++            lv2:name "Diffusion" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "warmth" ;
++            lv2:name "Warmth" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "hpf" ;
++            lv2:name "HPF" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "listFB" ;
++            lv2:name "Listener (F/B)" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "roomLength" ;
++            lv2:name "Length" ;
++        ] , [
++            lv2:index 5 ;
++            lv2:symbol "roomWidth" ;
++            lv2:name "Width" ;
++        ] , [
++            lv2:index 6 ;
++            lv2:symbol "roomHeight" ;
++            lv2:name "Height" ;
++        ] , [
++            lv2:index 7 ;
++            lv2:symbol "sourceFB" ;
++            lv2:name "Source (F/B)" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/erreverb/sum
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/filter/hpf/mono
++
++<http://invadarecords.com/plugins/lv2/filter/hpf/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-high-pass-filter-mono.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-high-pass-filter-mono.css> ;
++        modgui:screenshot <modgui/screenshot-invada-high-pass-filter-mono.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-high-pass-filter-mono.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Highpass Mono" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "white" ;
++        modgui:knob "blue" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "freq" ;
++            lv2:name "Freq" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "gain" ;
++            lv2:name "Level" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/filter/hpf/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/filter/hpf/stereo
++
++<http://invadarecords.com/plugins/lv2/filter/hpf/stereo>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-high-pass-filter-stereo.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-high-pass-filter-stereo.css> ;
++        modgui:screenshot <modgui/screenshot-invada-high-pass-filter-stereo.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-high-pass-filter-stereo.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Highpass Stereo" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "white" ;
++        modgui:knob "blue" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "freq" ;
++            lv2:name "Freq" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "gain" ;
++            lv2:name "Level" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/filter/hpf/stereo
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/input
++
++<http://invadarecords.com/plugins/lv2/input>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-input-module.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-input-module.css> ;
++        modgui:screenshot <modgui/screenshot-invada-input-module.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-input-module.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Input Module" ;
++        modgui:model "japanese" ;
++        modgui:panel "5-knobs" ;
++        modgui:color "racing" ;
++        modgui:knob "white" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "phaseL" ;
++            lv2:name "Phase (L)" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "phaseR" ;
++            lv2:name "Phase (R)" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "width" ;
++            lv2:name "Width" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "gain" ;
++            lv2:name "Level" ;
++        ] , [
++            lv2:index 4 ;
++            lv2:symbol "pan" ;
++            lv2:name "Panning" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/input
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/filter/lpf/mono
++
++<http://invadarecords.com/plugins/lv2/filter/lpf/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-low-pass-filter-mono.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-low-pass-filter-mono.css> ;
++        modgui:screenshot <modgui/screenshot-invada-low-pass-filter-mono.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-low-pass-filter-mono.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Lowpass Mono" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "white" ;
++        modgui:knob "red" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "freq" ;
++            lv2:name "Freq" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "gain" ;
++            lv2:name "Level" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/filter/lpf/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/filter/lpf/stereo
++
++<http://invadarecords.com/plugins/lv2/filter/lpf/stereo>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-low-pass-filter-stereo.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-low-pass-filter-stereo.css> ;
++        modgui:screenshot <modgui/screenshot-invada-low-pass-filter-stereo.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-low-pass-filter-stereo.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Lowpass Stereo" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "white" ;
++        modgui:knob "red" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "freq" ;
++            lv2:name "Freq" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "gain" ;
++            lv2:name "Level" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/filter/lpf/stereo
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/phaser/mono
++
++<http://invadarecords.com/plugins/lv2/phaser/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-stereo-phaser-mono-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-stereo-phaser-mono-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-stereo-phaser-mono-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-stereo-phaser-mono-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "SPhaser Mono" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "green" ;
++        modgui:knob "green" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "depth" ;
++            lv2:name "Depth" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "cycle" ;
++            lv2:name "Period" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "phase" ;
++            lv2:name "Offset" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "width" ;
++            lv2:name "Width" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/phaser/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/phaser/stereo
++
++<http://invadarecords.com/plugins/lv2/phaser/stereo>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-stereo-phaser-stereo-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-stereo-phaser-stereo-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-stereo-phaser-stereo-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-stereo-phaser-stereo-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "SPhaser Stereo" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "green" ;
++        modgui:knob "green" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "depth" ;
++            lv2:name "Depth" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "cycle" ;
++            lv2:name "Period" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "phase" ;
++            lv2:name "Offset" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "width" ;
++            lv2:name "Width" ;
++        ] ;
++    ] .
++## END http://invadarecords.com/plugins/lv2/phaser/stereo
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/phaser/sum
++
++<http://invadarecords.com/plugins/lv2/phaser/sum>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-stereo-phaser-sum-lr-in.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-stereo-phaser-sum-lr-in.css> ;
++        modgui:screenshot <modgui/screenshot-invada-stereo-phaser-sum-lr-in.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-stereo-phaser-sum-lr-in.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "SPhaser Sum" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "green" ;
++        modgui:knob "green" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "depth" ;
++            lv2:name "Depth" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "cycle" ;
++            lv2:name "Period" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "phase" ;
++            lv2:name "Offset" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "width" ;
++            lv2:name "Width" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/phaser/sum
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/testtone
++
++<http://invadarecords.com/plugins/lv2/testtone>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-test-tones.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-test-tones.css> ;
++        modgui:screenshot <modgui/screenshot-invada-test-tones.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-test-tones.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Test Tones" ;
++        modgui:model "boxy" ;
++        modgui:panel "2-knobs" ;
++        modgui:color "pink" ;
++        modgui:knob "black" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "frequency" ;
++            lv2:name "Frequency" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "trim" ;
++            lv2:name "Level" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/testtone
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/tube/mono
++
++<http://invadarecords.com/plugins/lv2/tube/mono>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-tube-distortion-mono.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-tube-distortion-mono.css> ;
++        modgui:screenshot <modgui/screenshot-invada-tube-distortion-mono.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-tube-distortion-mono.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Tube Distortion" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "yellow" ;
++        modgui:knob "white" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "drive" ;
++            lv2:name "Drive" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "dcoffset" ;
++            lv2:name "DC Offset" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "phase" ;
++            lv2:name "Phase" ;
++        ] , [
++            lv2:index 3 ;
++            lv2:symbol "mix" ;
++            lv2:name "Mix" ;
++        ] ;
++    ] .
++
++## END http://invadarecords.com/plugins/lv2/tube/mono
++###############################################################################
++
++###############################################################################
++## START http://invadarecords.com/plugins/lv2/tube/stereo
++
++<http://invadarecords.com/plugins/lv2/tube/stereo>
++    modgui:gui [
++        modgui:resourcesDirectory <modgui> ;
++        modgui:iconTemplate <modgui/icon-invada-tube-distortion-stereo.html> ;
++        modgui:stylesheet <modgui/stylesheet-invada-tube-distortion-stereo.css> ;
++        modgui:screenshot <modgui/screenshot-invada-tube-distortion-stereo.png> ;
++        modgui:thumbnail <modgui/thumbnail-invada-tube-distortion-stereo.png> ;
++        modgui:brand "Invada" ;
++        modgui:label "Tube Distortion" ;
++        modgui:model "japanese" ;
++        modgui:panel "4-knobs" ;
++        modgui:color "yellow" ;
++        modgui:knob "white" ;
++        modgui:port [
++            lv2:index 0 ;
++            lv2:symbol "drive" ;
++            lv2:name "Drive" ;
++        ] , [
++            lv2:index 1 ;
++            lv2:symbol "dcoffset" ;
++            lv2:name "DC Offset" ;
++        ] , [
++            lv2:index 2 ;
++            lv2:symbol "mix" ;
++            lv2:name "Mix" ;
++        ] ;
++    ] .
++    
++## END http://invadarecords.com/plugins/lv2/tube/stereo
++###############################################################################
+-- 
+2.14.1
+

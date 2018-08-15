@@ -1,7 +1,9 @@
 DESCRIPTION = "Invada Studio plugins LV2."
 SRC_URI = "https://launchpad.net/invada-studio/lv2/1.2/+download/invada-studio-plugins-lv2_1.2.0-nopkg.tgz \
-	file://0001-build-fix-Makefile-to-enable-yocto-cross-build.patch"
-SRCREV = "c724d33aa66fa8c45310664e594945bd0c84137c"
+           file://0001-build-fix-Makefile-to-enable-yocto-cross-build.patch \
+           file://0002-rdf-update-TTL-and-modgui-resources.patch \
+           file://0002-rdf-update-TTL-and-modgui-resources.tgz \
+           "
 LICENSE = "GPLv2" 
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
