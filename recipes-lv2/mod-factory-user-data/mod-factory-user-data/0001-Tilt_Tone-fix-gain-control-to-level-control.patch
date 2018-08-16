@@ -1,0 +1,34 @@
+From a0d519c1ab1643a5f8462a13ce7b905114e40266 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Thu, 16 Aug 2018 09:40:18 +0200
+Subject: [PATCH] Tilt_Tone: fix 'gain' control to 'level' control
+
+---
+ modduo/.pedalboards/Tilt_Tone.pedalboard/Tilt_Tone.ttl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/modduo/.pedalboards/Tilt_Tone.pedalboard/Tilt_Tone.ttl b/modduo/.pedalboards/Tilt_Tone.pedalboard/Tilt_Tone.ttl
+index ee303c8..5615645 100644
+--- a/modduo/.pedalboards/Tilt_Tone.pedalboard/Tilt_Tone.ttl
++++ b/modduo/.pedalboards/Tilt_Tone.pedalboard/Tilt_Tone.ttl
+@@ -142,7 +142,7 @@ _:b6
+     lv2:port <tilttone/in> ,
+              <tilttone/out> ,
+              <tilttone/drive> ,
+-             <tilttone/gain> ,
++             <tilttone/level> ,
+              <tilttone/tone> ,
+              <tilttone/:bypass> ;
+     lv2:prototype <http://guitarix.sourceforge.net/plugins/gxtilttone#tilttone> ;
+@@ -167,7 +167,7 @@ _:b6
+     a lv2:ControlPort ,
+         lv2:InputPort .
+ 
+-<tilttone/gain>
++<tilttone/level>
+     ingen:value 14.375000 ;
+     a lv2:ControlPort ,
+         lv2:InputPort .
+-- 
+2.7.4
+

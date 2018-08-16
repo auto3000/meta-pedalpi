@@ -5,7 +5,9 @@ LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293b95dea7b07891"
 
 SRCREV = "4b2b9307f8254a86a91ae5cf60390d9570dbeaf9"
-SRC_URI = "git://github.com/moddevices/mod-factory-user-data.git"
+SRC_URI = "git://github.com/moddevices/mod-factory-user-data.git \
+           file://0001-Tilt_Tone-fix-gain-control-to-level-control.patch \
+           "
 
 S = "${WORKDIR}/git"
 
