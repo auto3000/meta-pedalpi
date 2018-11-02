@@ -1,6 +1,5 @@
 DESCRIPTION = "Convolution library by Fons Adriaensen."
-SRC_URI = "http://kokkinizita.linuxaudio.org/linuxaudio/downloads/zita-convolver-3.1.0.tar.bz2" 
-SRCREV = "c724d33aa66fa8c45310664e594945bd0c84137c"
+SRC_URI = "http://ftp.debian.org/debian/pool/main/z/zita-convolver/zita-convolver_3.1.0.orig.tar.bz2"
 LICENSE = "GPLv3" 
 
 LIC_FILES_CHKSUM = "file://../COPYING;md5=d32239bcb673463ab874e80d47fae504"
