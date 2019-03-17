@@ -8,19 +8,17 @@ DEPENDS = "xz-native libxml2-native libxslt-native pkgconfig-native ruby-native 
 S = "${WORKDIR}"
 
 do_install() {
+        set -x
         CC=${BUILD_CC} CXX=${BUILD_CXX} gem install --local nokogiri --no-ri --no-rdoc -- --use-system-libraries     --enable-cross-build \
-                --with-xml2-lib=${STAGING_DIR_NATIVE}/usr/lib \
-                --with-xml2-include=${STAGING_DIR_NATIVE}/usr/include/libxml2 \
-                --with-xml2-dir=${STAGING_DIR_NATIVE}/usr \
-                --with-xslt-lib=${STAGING_DIR_NATIVE}/usr/lib \
-                --with-xslt-include=${STAGING_DIR_NATIVE}/usr/include/libxslt \
-                --with-xslt-dir=${STAGING_DIR_NATIVE}/usr \
                 --with-zlib-lib=${STAGING_DIR_NATIVE}/usr/lib \
                 --with-zlib-include=${STAGING_DIR_NATIVE}/usr/include \
                 --with-zlib-dir=${STAGING_DIR_NATIVE}/usr \
                 --with-opt-lib=${STAGING_DIR_NATIVE}/usr/lib \
                 --with-opt-include=${STAGING_DIR_NATIVE}/usr/include \
-                --with-opt-dir=${STAGING_DIR_NATIVE}/usr
+                --with-opt-dir=${STAGING_DIR_NATIVE}/usr \
+                --with-xml2-config=$PSEUDO_PREFIX \
+                --with-xslt-config=$PSEUDO_PREFIX
+        gem install linkeddata --no-ri --no-rdoc --local
         gem install rdf --no-ri --no-rdoc --local
 }
 
@@ -46,7 +44,7 @@ SRC_URI = " \
     file://ld-patch-0.3.3.gem \
     file://linkeddata-3.0.1.gem \
     file://link_header-0.0.8.gem \
-    file://mini_portile2-2.4.0.gem \
+    file://mini_portile2-2.3.0.gem \
     file://minitest-5.4.3.gem \
     file://multi_json-1.13.1.gem \
     file://net-http-persistent-3.0.0.gem \
