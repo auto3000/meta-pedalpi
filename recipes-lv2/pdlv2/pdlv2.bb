@@ -19,7 +19,8 @@ FILES_${PN} = " ${libdir}/lv2 "
 EXTRA_OEMAKE = " INSTALL_DIR=${D}${libdir}/lv2 LV2_INCLUDE_DIR=${STAGING_INCDIR}/lv2 INSTALL_DIR=${D}${libdir}/lv2 LIBPD_FLAGS="install prefix=${S}" "
 
 do_configure_prepend() {
-	CC=${BUILD_CC} CXX=${BUILD_CXX} gem install linkeddata --no-ri --no-rdoc --source http://rubygems.org/ -- --use-system-libraries     --enable-cross-build \
+	gem install i18n -v 1.4.0 --no-ri --no-rdoc --source http://rubygems.org/
+	CC=${BUILD_CC} CXX=${BUILD_CXX} gem install nokogiri -v 1.8.5 --no-ri --no-rdoc --source http://rubygems.org/ -- --use-system-libraries     --enable-cross-build \
 		--with-xml2-lib=${STAGING_DIR_NATIVE}/usr/lib \
 		--with-xml2-include=${STAGING_DIR_NATIVE}/usr/include/libxml2 \
 		--with-xml2-dir=${STAGING_DIR_NATIVE}/usr \
@@ -32,6 +33,7 @@ do_configure_prepend() {
 		--with-opt-lib=${STAGING_DIR_NATIVE}/usr/lib \
 		--with-opt-include=${STAGING_DIR_NATIVE}/usr/include \
 		--with-opt-dir=${STAGING_DIR_NATIVE}/usr
+	gem install linkeddata --no-ri --no-rdoc --source http://rubygems.org/
 	gem install rdf --no-ri --no-rdoc --source http://rubygems.org/
 }
 
