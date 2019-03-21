@@ -9,6 +9,7 @@ S = "${WORKDIR}"
 
 do_install() {
         set -x
+        gem install pkg-config --no-ri --no-rdoc --local
         CC=${BUILD_CC} CXX=${BUILD_CXX} gem install --local nokogiri --no-ri --no-rdoc -- --use-system-libraries     --enable-cross-build \
                 --with-zlib-lib=${STAGING_DIR_NATIVE}/usr/lib \
                 --with-zlib-include=${STAGING_DIR_NATIVE}/usr/include \
@@ -53,6 +54,7 @@ SRC_URI = " \
     file://power_assert-0.2.2.gem \
     file://psych-2.0.8.gem \
     file://public_suffix-3.0.3.gem \
+    file://pkg-config-1.3.7.gem \
     file://rake-10.4.2.gem \
     file://rdf-3.0.10.gem \
     file://rdf-aggregate-repo-2.2.1.gem \
