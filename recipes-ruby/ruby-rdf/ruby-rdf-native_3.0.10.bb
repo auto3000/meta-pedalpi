@@ -7,18 +7,11 @@ SECTION = "devel/ruby"
 DEPENDS = "xz-native libxml2-native libxslt-native pkgconfig-native ruby-native bundler-native"
 S = "${WORKDIR}"
 
-do_install() {
-        set -x
+inherit native
+
+do_compile() {
         gem install pkg-config --no-ri --no-rdoc --local
-        CC=${BUILD_CC} CXX=${BUILD_CXX} gem install --local nokogiri --no-ri --no-rdoc -- --use-system-libraries     --enable-cross-build \
-                --with-zlib-lib=${STAGING_DIR_NATIVE}/usr/lib \
-                --with-zlib-include=${STAGING_DIR_NATIVE}/usr/include \
-                --with-zlib-dir=${STAGING_DIR_NATIVE}/usr \
-                --with-opt-lib=${STAGING_DIR_NATIVE}/usr/lib \
-                --with-opt-include=${STAGING_DIR_NATIVE}/usr/include \
-                --with-opt-dir=${STAGING_DIR_NATIVE}/usr \
-                --with-xml2-config=$PSEUDO_PREFIX \
-                --with-xslt-config=$PSEUDO_PREFIX
+        gem install --local nokogiri --no-ri --no-rdoc -- --use-system-libraries
         gem install linkeddata --no-ri --no-rdoc --local
         gem install rdf --no-ri --no-rdoc --local
 }
