@@ -7,7 +7,6 @@ SRC_URI = "https://github.com/python-pillow/Pillow/archive/${PV}.tar.gz;download
 SRC_URI[md5sum] = "04d2b1d1ce8b9f6831e33fb85b34316d"
 SRC_URI[sha256sum] = "de34dfb23981fd94fa8b4b3b5fd3641082de9e618b2a8bbd66ce846d09eba9a0"
 
-inherit distutils3 python3-dir setuptools3
 
 S = "${WORKDIR}/Pillow-${PV}"
 
@@ -15,6 +14,8 @@ DEPENDS = "lcms freetype libpng jpeg zlib tiff python3-cython-native libwebp"
 DEPENDS += "python3-dateutil python3-six \
             python3-jinja2 python3-markupsafe python3-docutils \
             python3-requests olefile "
+
+inherit distutils3 python3-dir setuptools3
 
 # python3-pytz  python3-pyflakes  python3-pep8
 
