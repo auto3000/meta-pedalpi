@@ -25,8 +25,8 @@ FILES_${PN} = " /usr/bin/mod-host /usr/lib/jack/ "
 S = "${WORKDIR}/git"
 
 EXTRA_OEMAKE = " PREFIX=/usr DESTDIR=${D} "
-EXTRA_OEMAKE_armv7 += " HAVE_NE10=true "
-EXTRA_OEMAKE_aarch64 += " HAVE_NE10=true "
+EXTRA_OEMAKE_armv7 += " PREFIX=/usr DESTDIR=${D} HAVE_NE10=true "
+EXTRA_OEMAKE_aarch64 += " PREFIX=/usr DESTDIR=${D} HAVE_NE10=true "
 
 do_install() {
         oe_runmake install
