@@ -42,5 +42,5 @@ do_install() {
 }
 
 do_compile()  {
-	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf build --top ${S} ${@get_waf_parallel_make(d)} --destdir=${D} ${EXTRA_OECONF}
+	PYTHON="/usr/bin/python3" PYTHON_CONFIG="python3-config" PYTHONDIR="${PYTHON_SITEPACKAGES_DIR}" ${S}/waf build --top ${S} ${@oe.utils.parallel_make_argument(d, '-j%d', limit=64)} --destdir=${D} ${EXTRA_OECONF}
 }
