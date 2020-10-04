@@ -10,7 +10,9 @@ This layer provides:
 
 ## Baseline
 
-This branch is based on the Yocto 'morty' release and you can find its latest version at [morty branch](https://github.com/auto3000/meta-pedalpi/tree/morty).
+This branch is based on the Yocto 'zeus' release and you can find its latest version at [zeus branch](https://github.com/auto3000/meta-pedalpi/tree/master).
+
+You can also find 'morty' baseline at [morty branch](https://github.com/auto3000/meta-pedalpi/tree/morty).
 
 For info on available baselines, please refer to [master branch](https://github.com/auto3000/meta-pedalpi/tree/master) of this repository.
 
@@ -19,11 +21,11 @@ For info on available baselines, please refer to [master branch](https://github.
 This layer depends on:
 
   URI: git://git.yoctoproject.org/poky
-  branch: morty
+  branch: zeus
  
   URI: git://git.openembedded.org/meta-openembedded
-  branch: morty
+  branch: zeus
 
   URI: git://github.com/meta-qt5/meta-qt5
-  branch: morty
+  branch: zeus
 
