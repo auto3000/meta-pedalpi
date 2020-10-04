@@ -67,7 +67,6 @@ RDEPENDS_${PN} += "\
 	openav-artyfx \
 	shiro-plugins \
 	tap-lv2 \
-	pdlv2 \
 	setbfree \
 	ams-lv2 \
 	beatslash-lv2 \
