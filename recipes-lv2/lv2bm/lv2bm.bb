@@ -18,3 +18,5 @@ EXTRA_OEMAKE = " PREFIX=${D}/${prefix}  "
 do_install() {
         oe_runmake install ${EXTRA_OEMAKE}
 }
+
+inherit pkgconfig
