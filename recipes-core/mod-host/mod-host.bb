@@ -32,5 +32,5 @@ do_install() {
         oe_runmake install
 }
 
-
+inherit pkgconfig
 
