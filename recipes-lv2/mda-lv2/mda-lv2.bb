@@ -9,7 +9,7 @@ FILES_${PN} = "${libdir}/lv2/"
 
 S = "${WORKDIR}/git/"
 
-inherit waf
+inherit waf pkgconfig
 
 # Fix installation issue on parallel builds
 waf_do_install() {
