@@ -11,7 +11,7 @@ SRCREV = "82b9f14974124c7c016af96ac12e08c703286769"
 S = "${WORKDIR}/git/"
 
 
-inherit waf
+inherit waf pkgconfig
 
 FILES_${PN} += "${libdir}/lv2/fomp.lv2/*"
 
