@@ -5,8 +5,8 @@ LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS = "jack lilv readline fftwf "
-DEPENDS_armv7 += " ne10 "
-DEPENDS_aarch64 += " ne10 "
+DEPENDS_armv7 = " jack lilv readline fftwf ne10 "
+DEPENDS_aarch64 = " jack lilv readline fftwf ne10 "
 RDEPENDS_${PN} = " jack-utils lilv "
 
 SRCREV = "1726ad06b11323da7e1aaed690ff8aef91f702b5"
