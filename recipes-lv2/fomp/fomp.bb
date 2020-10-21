@@ -10,6 +10,7 @@ SRCREV = "82b9f14974124c7c016af96ac12e08c703286769"
 
 S = "${WORKDIR}/git/"
 
+DEPENDS = " lv2 "
 
 inherit waf pkgconfig
 
