@@ -9,6 +9,8 @@ FILES_${PN} = "${libdir}/lv2/"
 
 S = "${WORKDIR}/git/"
 
+DEPENDS = " lv2 "
+
 inherit waf pkgconfig
 
 # Fix installation issue on parallel builds
