@@ -13,6 +13,8 @@ SRC_URI[sha256sum] = "c6cac7c32effc6b3052e3b017133244f385ef8e053147859d88eae6fac
 
 S = "${WORKDIR}/invada-studio-plugins-lv2-1.2.0/"
 
+DEPENDS = " lv2 "
+
 FILES_${PN} = " ${libdir}/lv2/invada.lv2 "
 
 EXTRA_OEMAKE = " DESTDIR=${D}${libdir}/ INSTALL_SYS_PLUGINS_DIR=lv2 "
