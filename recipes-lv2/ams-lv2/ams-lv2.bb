@@ -17,7 +17,7 @@ FILES_${PN} = "\
 
 DEPENDS = " lv2 lvtk fftwf "
 
-inherit waf
+inherit waf pkgconfig
 
 do_install_append() {
 	rm ${D}${libdir}/lv2/ams.lv2/*_gui.so
