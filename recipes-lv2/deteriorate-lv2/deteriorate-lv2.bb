@@ -13,8 +13,9 @@ FILES_${PN} = "\
 
 DEPENDS = " lv2 lvtk "
 
-inherit waf
-
 do_install_append() {
 	rm ${D}${libdir}/lv2/deteriorate.lv2/*_gui.so
 }
+
+inherit waf pkgconfig
+
