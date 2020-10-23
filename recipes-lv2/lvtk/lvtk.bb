@@ -9,5 +9,8 @@ S = "${WORKDIR}/git/"
 
 DEPENDS = " gtkmm lv2 "
 
-inherit waf pkgconfig
+do_install_prepend() {
+    cp -R ../build/ ${S}/
+}
 
+inherit waf pkgconfig
