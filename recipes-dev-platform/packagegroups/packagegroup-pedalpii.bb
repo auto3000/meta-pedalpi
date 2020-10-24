@@ -12,9 +12,11 @@ RDEPENDS_${PN} += "\
 	jack-mod-pedalpii-initscripts-jackd \
 	jack-mod-pedalpii-initscripts-mod-host \
 	jack-mod-pedalpii-initscripts-mod-ui \
+	jack-mod-pedalpii-initscripts-mod-sdk \
 	jack-mod-pedalpii-initscripts-pedalpii \
 	pedalpii \
 	jack-server \
+	mod-sdk \
 	mod-utilities \
 	lv2bm \
 	serd \
@@ -24,6 +26,7 @@ RDEPENDS_${PN} += "\
 	mod-ui \
 	mod-host \
 	rakarrack-lv2 \
+	caps-lv2 \
 	balance-lv2 \
 	controlfilter-lv2 \
 	fat1-lv2 \
@@ -35,10 +38,12 @@ RDEPENDS_${PN} += "\
 	midigen-lv2 \
 	midifilter-lv2 \ 
 	mtc-lv2 \
+	vocproc \
 	onsettrigger-lv2 \
 	stereoroute-lv2 \
 	tuna-lv2 \
 	swh-lv2 \
+	guitarix \
 	mclk-lv2 \
 	mod-distortion \
 	mod-pitchshifter \
@@ -47,18 +52,26 @@ RDEPENDS_${PN} += "\
 	gxvfm \
 	gxvoxtb \
 	xfade-lv2 \
+	fomp \
 	dpf-plugins \
 	kxstudio-lv2-extensions \
+	invada-studio-plugins-lv2 \
 	calf-studio-gear \
 	mod-lv2-data \
 	convo-lv2 \
 	lv2 \
 	lv2-plugins \
+	mda-lv2 \
 	sooperlooper-lv2-plugin \
 	mod-factory-user-data \
 	openav-artyfx \
 	shiro-plugins \
 	tap-lv2 \
 	setbfree \
+	ams-lv2 \
+	beatslash-lv2 \
+	deteriorate-lv2 \
+	fontconfig \
+	liberation-fonts \
 	"
 
