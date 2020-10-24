@@ -1,0 +1,22 @@
+From 42ebb93a6bd5a7fa54096b66ab25f5a7e4530f8c Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 24 Oct 2020 19:27:21 +0200
+Subject: [PATCH] setup.py: fix prefix path
+
+---
+ setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index a4ede63..d76fe76 100644
+--- a/setup.py
++++ b/setup.py
+@@ -37,7 +37,7 @@ def data_dir(prefix, dirname):
+     return [ (os.path.join(prefix, dirname), html_files) ] + data_files
+ 
+ open(MANIFEST, 'w').write('include screenshot.js\n')
+-share = os.path.join(sys.prefix, 'share', 'mod-sdk')
++share = os.path.join('share', 'mod-sdk')
+ data_files = data_dir(share, 'html')
+ data_files += [(share, ['screenshot.js'])]
+ 
