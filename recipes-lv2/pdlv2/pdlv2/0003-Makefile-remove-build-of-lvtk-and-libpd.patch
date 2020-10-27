@@ -1,0 +1,54 @@
+From db9bf140a8e1bae41b34d1f070f322d8b5303c57 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sun, 25 Oct 2020 12:01:20 +0100
+Subject: [PATCH] Makefile: remove build of lvtk and libpd
+
+---
+ Makefile | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 3e25d13..e6315f8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -6,11 +6,8 @@ BUILD_DIRS = $(addsuffix .lv2, $(addprefix $(BUILD_DIR)/pdlv2-, $(notdir $(SOURC
+ HEADERS = $(addsuffix /plugin.h, $(BUILD_DIRS))
+ PLUGINS = $(addsuffix /pdlv2.so, $(BUILD_DIRS))
+ 
+-LVTKLIB = lvtk/build/src/liblvtk_plugin2.a
+-CXXFLAGS += -Wl,--no-as-needed -Wno-narrowing -shared -fPIC -DPIC -Isrc/ -std=c++11 -Ilvtk/
+-
+-LIBPD_FLAGS = UTIL=true EXTRA=true
+-LIBPD_SO = libpd/libs/libpd.so
++LVTKLIB = $(shell pkg-config lvtk-plugin-2 --cflags)
++CXXFLAGS += -Wl,--no-as-needed -Wno-narrowing -shared -fPIC -DPIC -Isrc/ -std=c++11 $(shell pkg-config lvtk-plugin-2 --cflags) -lpd
+ 
+ RUBY = ruby
+ 
+@@ -20,19 +17,15 @@ RUBY = ruby
+ 
+ all: $(PLUGINS)
+ 
+-$(BUILD_DIR)/pdlv2-%.lv2/pdlv2.so: $(BUILD_DIR)/pdlv2-%.lv2/plugin.h src/plugin.cpp $(LVTKLIB)
++$(BUILD_DIR)/pdlv2-%.lv2/pdlv2.so: $(BUILD_DIR)/pdlv2-%.lv2/plugin.h src/plugin.cpp
+ 	$(CXX) $(CXXFLAGS) src/plugin.cpp -I$(dir $<) -Iinclude -o $@ $(LDFLAGS) -ldl ${LVTKLIB}
+ 
+-$(BUILD_DIR)/pdlv2-%.lv2/plugin.h: plugins/%/plugin.pd src/process.rb src/host.pd $(LIBPD_SO)
++$(BUILD_DIR)/pdlv2-%.lv2/plugin.h: plugins/%/plugin.pd src/process.rb src/host.pd
+ 	$(RUBY) src/process.rb $< $(dir $@)
+-	cp -r $(LIBPD_SO) $(dir $<)/* $(dir $@)
+ 
+ $(LVTKLIB):
+ 	cd lvtk/ && ./waf configure && ./waf
+ 
+-$(LIBPD_SO):
+-	cd libpd/ && make libpd $(LIBPD_FLAGS)
+-
+ install: $(PLUGINS)
+ 	mkdir -p $(INSTALL_DIR)
+ 	cp -r $(BUILD_DIR)/* $(INSTALL_DIR)
+@@ -44,4 +37,3 @@ test: install
+ 
+ clean:
+ 	rm -rf build
+-	cd libpd/ && make clobber
