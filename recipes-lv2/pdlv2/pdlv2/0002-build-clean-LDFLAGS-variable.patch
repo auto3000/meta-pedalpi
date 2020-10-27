@@ -1,4 +1,4 @@
-From 0582e7cd871fd971d2f9b20ef06735d61c536fef Mon Sep 17 00:00:00 2001
+From 4e73930815c511ee4af04fdbf40d92c59190e618 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Wed, 28 Jun 2017 11:47:15 +0200
 Subject: [PATCH] build: clean LDFLAGS variable
@@ -8,7 +8,7 @@ Subject: [PATCH] build: clean LDFLAGS variable
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 383a33d..af2df8e 100644
+index 383a33d..3e25d13 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -7,7 +7,6 @@ HEADERS = $(addsuffix /plugin.h, $(BUILD_DIRS))
@@ -28,6 +28,3 @@ index 383a33d..af2df8e 100644
  
  $(BUILD_DIR)/pdlv2-%.lv2/plugin.h: plugins/%/plugin.pd src/process.rb src/host.pd $(LIBPD_SO)
  	$(RUBY) src/process.rb $< $(dir $@)
--- 
-2.7.4
-
