@@ -12,11 +12,9 @@ RDEPENDS_${PN} += "\
 	jack-mod-pedalpii-initscripts-jackd \
 	jack-mod-pedalpii-initscripts-mod-host \
 	jack-mod-pedalpii-initscripts-mod-ui \
-	jack-mod-pedalpii-initscripts-mod-sdk \
 	jack-mod-pedalpii-initscripts-pedalpii \
 	pedalpii \
 	jack-server \
-	mod-sdk \
 	mod-utilities \
 	lv2bm \
 	serd \
