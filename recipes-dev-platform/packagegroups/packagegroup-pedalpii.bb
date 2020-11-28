@@ -45,9 +45,8 @@ RDEPENDS_${PN} += "\
 	mclk-lv2 \
 	mod-distortion \
 	mod-pitchshifter \
-	gxslowgear \
 	gxswitchlesswah \
-	gxvfm \
+	gxplugins.lv2 \
 	gxvoxtb \
 	xfade-lv2 \
 	fomp \
