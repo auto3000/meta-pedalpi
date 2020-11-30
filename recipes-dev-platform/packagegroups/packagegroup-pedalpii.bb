@@ -67,6 +67,8 @@ RDEPENDS_${PN} += "\
 	pdlv2 \
 	setbfree \
 	ams-lv2 \
+	bolliedelay-lv2 \
+	bolliedelayxt-lv2 \
 	beatslash-lv2 \
 	deteriorate-lv2 \
 	fontconfig \
