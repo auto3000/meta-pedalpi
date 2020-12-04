@@ -65,6 +65,7 @@ RDEPENDS_${PN} += "\
 	shiro-plugins \
 	tap-lv2 \
 	pdlv2 \
+	fluidplug \
 	setbfree \
 	ams-lv2 \
 	bolliedelay-lv2 \
