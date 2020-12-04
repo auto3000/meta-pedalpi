@@ -30,11 +30,6 @@ SRCREV = "8457f1036c5f7d4437febe2a4ea4f0ad263e0f88"
 S = "${WORKDIR}/git"
 
 FILES_${PN} = "${libdir}/lv2"
-FILES_${PN}-blakpearl-license = "${libdir}/lv2/Black_Pearl_5.lv2/License.pdf"
-FILES_${PN}-avl-drumkits-license = "${libdir}/lv2/AVL_Drumkits_Perc.lv2/License.pdf"
-FILES_${PN}-black-pearl4b-license = "${libdir}/lv2/Black_Pearl_4B.lv2/License.pdf"
-FILES_${PN}-black-pearl4a-license = "${libdir}/lv2/Black_Pearl_4A.lv2/License.pdf"
-FILES_${PN}-red-zeppelin-5-license = "${libdir}/lv2/Red_Zeppelin_5.lv2/License.pdf"
 
 inherit pkgconfig
 
