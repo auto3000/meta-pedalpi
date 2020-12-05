@@ -6,8 +6,8 @@ SRC_URI = "git://github.com/blablack/ams-lv2.git;protocol=https \
            file://0001-build-remove-msse-optimization.patch \
            "
 
-# point to version 1.1.5
-SRCREV = "2a5f1bc1e2cfd1c303eda94a177691c14f8f40ff"
+PV="1.2.0"
+SRCREV = "d98cc0e343c53e4ab1329c58287873255f88f57f"
 
 S = "${WORKDIR}/git/"
 
