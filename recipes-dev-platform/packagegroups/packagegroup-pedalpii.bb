@@ -74,5 +74,6 @@ RDEPENDS_${PN} += "\
 	bolliedelay-lv2 \
 	bolliedelayxt-lv2 \
 	rakarrack-plugins \
+	fluidplug \
 	"
 
