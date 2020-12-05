@@ -6,7 +6,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293
 
 DEPENDS = "lv2 fftwf fftwf-native armadillo"
 
-SRCREV = "d404edc4d79fb59ee77bb9e87ce51de050e70a88"
+SRCREV = "067479a6a494f7fe0a268b62d9fefe6ac4b89539"
+#SRCREV = "d404edc4d79fb59ee77bb9e87ce51de050e70a88"
 SRC_URI = "git://github.com/moddevices/mod-pitchshifter.git;protocol=https \
 	file://0001-build-remove-object-stripping.patch \
 	"

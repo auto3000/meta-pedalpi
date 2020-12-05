@@ -14,10 +14,10 @@ IMAGE_ROOTFS_SIZE ?= "8192"
 IMAGE_ROOTFS_EXTRA_SPACE_append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "" ,d)}"
 
 # Set default password for 'root' user
-inherit extrausers
-ROOTPASSWORD = "root"
-ROOTUSERNAME = "root"
-EXTRA_USERS_PARAMS ?= "usermod -P ${ROOTPASSWORD} ${ROOTUSERNAME};"
+#inherit extrausers
+#ROOTPASSWORD = "root"
+#ROOTUSERNAME = "root"
+#EXTRA_USERS_PARAMS ?= "usermod -P ${ROOTPASSWORD} ${ROOTUSERNAME};"
 
 PV ?= "snapshot+${DATE}"
 

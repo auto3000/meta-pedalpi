@@ -1,0 +1,31 @@
+# Recipe created by recipetool
+# This is the basis of a recipe and may need further editing in order to be fully functional.
+# (Feel free to remove these comments when editing.)
+
+# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is
+# your responsibility to verify that the values are complete and correct.
+LICENSE = "GPLv3"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=84dcc94da3adb52b53ae4fa38fe49e5d"
+
+SRC_URI = "git://github.com/MrBollie/bolliedelayxt.lv2;protocol=https"
+
+# Modify these as desired
+PV = "1.0+git${SRCPV}"
+SRCREV = "4f6b8aafd9ed4f20f0cc6750977dcdc57d1fc493"
+
+S = "${WORKDIR}/git"
+
+DEPENDS = "lv2"
+
+FILES_${PN} = "${libdir}/lv2"
+
+EXTRA_OEMAKE = " LINK_FLAGS='${LDFLAGS}' DESTDIR=${D} PREFIX=/usr " 
+
+do_compile () {
+	oe_runmake 
+}
+
+do_install() {
+	oe_runmake install
+}
+

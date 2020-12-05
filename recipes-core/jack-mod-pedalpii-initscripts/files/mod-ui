@@ -17,14 +17,14 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/bin/mod-ui
 OPTIONS=""
 START_DAEMON=yes
-export MOD_DATA_DIR=/home/root/data
-export MOD_APP=1
-export MOD_LIVE_ISO=1
-export MOD_DEV_ENVIRONMENT=0
-export MOD_LOG=1
-export MOD_DEVICE_WEBSERVER_PORT=80
-export HOME=/home/root
-DELAY_BEFORE_START=0
+MOD_DATA_DIR=/home/root/data
+MOD_APP=1
+MOD_LIVE_ISO=1
+MOD_DEV_ENVIRONMENT=0
+MOD_LOG=1
+MOD_DEVICE_WEBSERVER_PORT=80
+HOME=/home/root
+DELAY_BEFORE_START=2
 PIDFILE="/var/run/mod-ui.pid"
 test -f /etc/default/mod-ui && . /etc/default/mod-ui
 

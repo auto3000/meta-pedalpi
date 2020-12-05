@@ -45,9 +45,7 @@ RDEPENDS_${PN} += "\
 	mclk-lv2 \
 	mod-distortion \
 	mod-pitchshifter \
-	gxslowgear \
 	gxswitchlesswah \
-	gxvfm \
 	gxvoxtb \
 	xfade-lv2 \
 	fomp \
@@ -72,5 +70,9 @@ RDEPENDS_${PN} += "\
 	deteriorate-lv2 \
 	fontconfig \
 	liberation-fonts \
+	gxplugins.lv2 \
+	bolliedelay-lv2 \
+	bolliedelayxt-lv2 \
+	rakarrack-plugins \
 	"
 

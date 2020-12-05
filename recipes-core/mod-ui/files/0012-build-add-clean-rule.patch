@@ -18,7 +18,7 @@ index 75c6243..ac4f6fc 100644
 +        os.system("make -C utils clean")
          os.system("make -C utils")
  
- class mod_utils_installer(install):
+ class mod_utils_builder(build):
 -- 
 2.7.4
 

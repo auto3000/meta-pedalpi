@@ -29,7 +29,7 @@ diff --git a/mod/development.py b/mod/development.py
 index 3608cdb..3f0acc1 100644
 --- a/mod/development.py
 +++ b/mod/development.py
-@@ -67,6 +67,7 @@ class FakeHost(Host):
+@@ -73,6 +73,7 @@ class FakeHost(Host):
  
      # send data to host, set modified flag to true
      def send_modified(self, msg, callback=None, datatype='int'):
@@ -41,24 +41,21 @@ diff --git a/mod/host.py b/mod/host.py
 index c33334c..ed12dcf 100644
 --- a/mod/host.py
 +++ b/mod/host.py
-@@ -135,6 +135,7 @@ class Host(object):
-             from mod.hmi import HMI
-             hmi = HMI()
- 
+@@ -290,6 +290,7 @@ class Host(object):
 +        print ( "JFD 5555 xxxx ")
          self.hmi = hmi
          self.prefs = prefs
  
-@@ -641,7 +642,7 @@ class Host(object):
-                 self._idle = True
- 
+@@ -1001,7 +1002,7 @@ class Host(object):
          self._idle = False
+         self._queue = []
+
 -
 +        print ( "JFD Main socket, used for sending messages ")
          # Main socket, used for sending messages
          self.writesock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
          self.writesock.set_close_callback(self.writer_connection_closed)
-@@ -1019,6 +1020,7 @@ class Host(object):
+@@ -1576,6 +1577,7 @@ class Host(object):
  
      # send data to host, set modified flag to true
      def send_modified(self, msg, callback=None, datatype='int'):
@@ -66,7 +63,7 @@ index c33334c..ed12dcf 100644
          self.pedalboard_modified = True
          self._queue.append((msg, callback, datatype))
          if self._idle:
-@@ -1787,6 +1789,7 @@ class Host(object):
+@@ -2752,6 +2754,7 @@ class Host(object):
          return "effect_%d:%s" % (instance_id, portsymbol)
  
      def connect(self, port_from, port_to, callback):
@@ -79,7 +76,7 @@ index 9ff3919..c628a0f 100644
 --- a/mod/session.py
 +++ b/mod/session.py
 @@ -36,6 +36,9 @@ elif HOST_CARLA:
-     from mod.host_carla import CarlaHost as Host
+     Host = FakeHost
  else:
      from mod.host import Host
 +    print("JFD start Host session.py");
@@ -88,7 +85,7 @@ index 9ff3919..c628a0f 100644
  
  class UserPreferences(object):
      def __init__(self):
-@@ -147,10 +150,12 @@ class Session(object):
+@@ -183,10 +186,12 @@ class Session(object):
  
      # Connect 2 ports
      def web_connect(self, port_from, port_to, callback):
@@ -105,15 +102,7 @@ diff --git a/mod/webserver.py b/mod/webserver.py
 index 56e0fb9..e886750 100644
 --- a/mod/webserver.py
 +++ b/mod/webserver.py
-@@ -1880,6 +1880,7 @@ def prepare(isModApp = False):
-     if LOG:
-         from tornado.log import enable_pretty_logging
-         enable_pretty_logging()
-+        print( "JFD enable_pretty_logging");
- 
-     def checkhost():
-         if SESSION.host.readsock is None or SESSION.host.writesock is None:
-@@ -1894,6 +1895,7 @@ def prepare(isModApp = False):
+@@ -2318,6 +2319,7 @@ def prepare(isModApp = False):
      ioinstance.add_callback(checkhost)
  
  def start():
@@ -125,7 +114,7 @@ diff --git a/modtools/utils.py b/modtools/utils.py
 index f6d5a71..b4482e8 100644
 --- a/modtools/utils.py
 +++ b/modtools/utils.py
-@@ -712,6 +712,7 @@ def get_jack_hardware_ports(isAudio, isOutput):
+@@ -817,6 +817,7 @@ def get_jack_hardware_ports(isAudio, isOutput):
      return charPtrPtrToStringList(utils.get_jack_hardware_ports(isAudio, isOutput))
  
  def connect_jack_ports(port1, port2):

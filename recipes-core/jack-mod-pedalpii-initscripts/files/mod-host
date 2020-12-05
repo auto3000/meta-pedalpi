@@ -18,9 +18,17 @@ DAEMON=/usr/bin/mod-host
 OPTIONS=" -n -v "
 START_DAEMON=yes
 PIDFILE="/var/run/mod-host.pid"
-export HOME=/home/root
+MOD_DATA_DIR=/home/root/data
+MOD_APP=1
+MOD_LIVE_ISO=1
+MOD_DEV_ENVIRONMENT=0
+MOD_LOG=1
+MOD_DEVICE_WEBSERVER_PORT=80
+HOME=/home/root
 DELAY_BEFORE_START=1
 test -f /etc/default/mod-host && . /etc/default/mod-host
+# mod-monitor:in_1, mod-monitor:in_2 have to be loaded
+jack_load mod-monitor
 
 
 if [ ! "x$START_DAEMON" = "xyes" -a ! "$1" = "stop" ]; then

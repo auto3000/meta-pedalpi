@@ -7,9 +7,13 @@ SRC_URI = "git://github.com/blablack/ams-lv2.git;protocol=https \
            "
 
 # point to version 1.1.5
-SRCREV = "2a5f1bc1e2cfd1c303eda94a177691c14f8f40ff"
+#SRCREV = "2a5f1bc1e2cfd1c303eda94a177691c14f8f40ff"
+# point to version 1.2.0
+SRCREV = "d98cc0e343c53e4ab1329c58287873255f88f57f"
 
 S = "${WORKDIR}/git/"
+
+PV="1.1.5"
 
 FILES_${PN} = "\
 	${libdir}/lv2/ams.lv2 \

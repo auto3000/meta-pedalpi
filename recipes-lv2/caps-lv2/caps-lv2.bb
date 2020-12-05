@@ -6,11 +6,12 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS = "lv2"
 
-SRCREV = "e0e9397d7f5c8c96599eceeebc63c0df655713ea"
+SRCREV = "5d52a0c6e8863c058c2aab2dea9f901a90d96eb9"
+#SRCREV = "e0e9397d7f5c8c96599eceeebc63c0df655713ea"
 SRC_URI = "git://github.com/moddevices/caps-lv2 \
-           file://0001-plugins-update-TTL-and-modgui-resources.patch \
-           file://0001-plugins-update-TTL-and-modgui-resources.tgz \
            "
+#           file://0001-plugins-update-TTL-and-modgui-resources.patch 
+#           file://0001-plugins-update-TTL-and-modgui-resources.tgz 
 
 S = "${WORKDIR}/git"
 

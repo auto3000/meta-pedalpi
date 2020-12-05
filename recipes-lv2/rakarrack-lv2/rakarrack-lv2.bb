@@ -17,6 +17,10 @@ S = "${WORKDIR}/git/"
 
 inherit cmake
 
+do_install_prepend() {
+	rm ${S}/lv2/ttl/manifest.ttl
+}
 do_install_append() {
 	rm -R ${D}${datadir}
+#	rm ${D}${libdir}/lv2/rkr.lv2/manifest.ttl
 }

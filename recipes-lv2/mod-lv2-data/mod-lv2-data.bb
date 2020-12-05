@@ -4,7 +4,8 @@ SECTION = "multimedia"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293b95dea7b07891"
 
-SRCREV = "bc731ed68c44227530625592fb3ca7a687531771"
+SRCREV = "499b98e5520e970dc06bf683851d11f9c2360e05"
+#SRCREV = "bc731ed68c44227530625592fb3ca7a687531771"
 SRC_URI = "git://github.com/moddevices/mod-lv2-data.git"
 
 S = "${WORKDIR}/git"
@@ -30,6 +31,8 @@ do_install() {
 	install -d ${D}${libdir}/lv2/AmplitudeImposer.lv2
 	install -d ${D}${libdir}/lv2/3BandEQ.lv2/
 	install -d ${D}${libdir}/lv2/MaFreeverb.lv2
+#	install -d ${D}${libdir}/lv2/Red_Zeppelin_5.lv2
+	install -d ${D}${libdir}/lv2/rkr.lv2
 	cp ${S}/plugins-fixed/Kars.lv2/manifest.ttl ${S}/plugins-fixed/Kars.lv2/Kars_dsp.ttl ${S}/plugins-fixed/Kars.lv2/default-preset.ttl ${D}/${libdir}/lv2/Kars.lv2
 	cp ${S}/plugins-fixed/MVerb.lv2/manifest.ttl ${S}/plugins-fixed/MVerb.lv2/MVerb_dsp.ttl ${S}/plugins-fixed/MVerb.lv2/default-preset.ttl ${S}/plugins-fixed/MVerb.lv2/presets.ttl ${D}/${libdir}/lv2/MVerb.lv2
 	cp ${S}/plugins-fixed/Nekobi.lv2/manifest.ttl ${S}/plugins-fixed/Nekobi.lv2/Nekobi_dsp.ttl ${S}/plugins-fixed/Nekobi.lv2/default-preset.ttl ${D}/${libdir}/lv2/Nekobi.lv2
@@ -43,6 +46,9 @@ do_install() {
         cp ${S}/plugins/AmplitudeImposer.lv2/manifest.ttl ${S}/plugins/AmplitudeImposer.lv2/AmplitudeImposer_dsp.ttl ${S}/plugins/AmplitudeImposer.lv2/default-preset.ttl ${S}/plugins/AmplitudeImposer.lv2/presets.ttl ${D}/${libdir}/lv2/AmplitudeImposer.lv2
         cp ${S}/plugins/3BandEQ.lv2/manifest.ttl ${S}/plugins/3BandEQ.lv2/3BandEQ_dsp.ttl ${S}/plugins/3BandEQ.lv2/default-preset.ttl ${S}/plugins/3BandEQ.lv2/presets.ttl ${D}/${libdir}/lv2/3BandEQ.lv2
         cp ${S}/plugins/MaFreeverb.lv2/manifest.ttl ${S}/plugins/MaFreeverb.lv2/MaFreeverb_dsp.ttl ${S}/plugins/MaFreeverb.lv2/default-preset.ttl ${D}/${libdir}/lv2/MaFreeverb.lv2
+#	cp ${S}/plugins-fixed/Red_Zeppelin_5.lv2/manifest.ttl ${S}/plugins-fixed/Red_Zeppelin_5.lv2/FluidPlug.ttl ${S}/plugins-fixed/Red_Zeppelin_5.lv2/default-preset.ttl ${D}/${libdir}/lv2/Red_Zeppelin_5.lv2
+#	cp -R ${S}/plugins-fixed/Red_Zeppelin_5.lv2/modgui ${S}/plugins-fixed/Red_Zeppelin_5.lv2/modgui.ttl ${D}/${libdir}/lv2/Red_Zeppelin_5.lv2/
+#	cp -R ${S}/plugins-fixed/rkr.lv2/modgui ${S}/plugins-fixed/rkr.lv2/modguis.ttl ${S}/plugins-fixed/rkr.lv2/manifest.ttl ${D}/${libdir}/lv2/rkr.lv2/
 
 	install -d ${D}${libdir}/lv2/Larynx.lv2
 	install -d ${D}${libdir}/lv2/Modulay.lv2
