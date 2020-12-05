@@ -1,4 +1,4 @@
-re bollie.inc
+require bollie.inc
 
 SUMMARY = "Bollie Delay"
 

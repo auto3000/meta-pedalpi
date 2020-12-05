@@ -1,4 +1,4 @@
-ECTION = "multimedia"
+SECTION = "multimedia"
 
 S = "${WORKDIR}/git"
 
