@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://../COPYING;md5=94d55d512a9ba36caa9b7df079bae19f"
 
 DEPENDS = "lv2"
 
-SRCREV = "39c81b5e3996b3f10b89e333dab3a194b9ea5011"
+SRCREV = "d3e80029ce4f6ef62b3758e95c5b889cab1db740"
 SRC_URI = "git://github.com/moddevices/sooperlooper-lv2-plugin.git"
 
 S = "${WORKDIR}/git/sooperlooper"
