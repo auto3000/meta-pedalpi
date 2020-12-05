@@ -72,5 +72,13 @@ RDEPENDS_${PN} += "\
 	deteriorate-lv2 \
 	fontconfig \
 	liberation-fonts \
+<<<<<<< Updated upstream
+=======
+	gxplugins.lv2 \
+	bolliedelay-lv2 \
+	bolliedelayxt-lv2 \
+	rakarrack-plugins \
+	fluidplug \
+>>>>>>> Stashed changes
 	"
 
