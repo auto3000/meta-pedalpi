@@ -14,5 +14,6 @@ do_install_append() {
 	do
 		rm -R ${D}${libdir}/lv2/$i
 	done
+	rm -R ${D}${libdir}/lv2/eg-metro.lv2/manifest.ttl
 }
 

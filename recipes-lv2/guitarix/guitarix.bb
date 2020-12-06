@@ -18,3 +18,8 @@ EXTRA_OECONF = " --no-standalone --no-faust --no-desktop-update --disable-nls --
 inherit waf pkgconfig
 
 INSANE_SKIP_${PN} = "already-stripped"
+do_install_append () {
+        rm -R ${D}${libdir}/lv2/gx_gcb_95.lv2/manifest.ttl
+        rm -R ${D}${libdir}/lv2/gx_mole.lv2/manifest.ttl
+        rm -R ${D}${libdir}/lv2/gx_muff.lv2/manifest.ttl
+}
