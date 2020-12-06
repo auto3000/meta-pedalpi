@@ -27,5 +27,6 @@ do_install_append() {
         # --without-gui configuration option does not properly work, consequently we
         # built useless files that we are removing now
         rm -R ${D}/usr/share
+        rm -R ${D}${libdir}/lv2/calf.lv2/manifest.ttl
 }
 
