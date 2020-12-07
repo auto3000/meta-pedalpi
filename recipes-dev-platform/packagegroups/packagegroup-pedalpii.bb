@@ -75,5 +75,6 @@ RDEPENDS_${PN} += "\
 	bolliedelayxt-lv2 \
 	rakarrack-plugins \
 	fluidplug \
+	freaked \
 	"
 
