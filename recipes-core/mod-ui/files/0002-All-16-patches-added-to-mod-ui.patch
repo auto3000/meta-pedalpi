@@ -1,0 +1,1278 @@
+From cb088a7e029967759b980cbaa385f50dca3e5a4e Mon Sep 17 00:00:00 2001
+From: rezzonics <delacruz@Piloto2.localdomain>
+Date: Thu, 10 Dec 2020 23:30:11 +0100
+Subject: [PATCH] All 16 patches added to mod-ui
+
+---
+ host_debug.py        |   2 +-
+ html/js/desktop.js   |   4 +-
+ mod/__init__.py      |  10 +++-
+ mod/addressings.py   |   7 ++-
+ mod/development.py   |   8 ++-
+ mod/hmi.py           |  34 ++++++++++---
+ mod/hmisocket.py     |  81 ++++++++++++++++++++++++++++++
+ mod/host.py          | 117 +++++++++++++++++++++----------------------
+ mod/session.py       |  22 +++++---
+ mod/settings.py      |   1 +
+ mod/webserver.py     |  72 +++++++++++++++++++-------
+ modtools/utils.py    |   7 +++
+ requirements.txt     |   1 +
+ setup.py             |   1 +
+ utils/Makefile       |   6 +--
+ utils/utils_lilv.cpp |  11 ++++
+ 16 files changed, 286 insertions(+), 98 deletions(-)
+ create mode 100644 mod/hmisocket.py
+
+diff --git a/host_debug.py b/host_debug.py
+index 99ba4a25..aa3e3cca 100755
+--- a/host_debug.py
++++ b/host_debug.py
+@@ -22,7 +22,7 @@ for line in fh:
+ 
+ 
+ if len(queue) == 0:
+-    print "Nothing to send"
++    print ('Nothing to send')
+     sys.exit(1)
+ 
+ for msg in queue:
+diff --git a/html/js/desktop.js b/html/js/desktop.js
+index 39500ae3..25c10605 100644
+--- a/html/js/desktop.js
++++ b/html/js/desktop.js
+@@ -1651,7 +1651,7 @@ Desktop.prototype.makePedalboardBox = function (el, trigger) {
+                     callback()
+                 },
+                 error: function () {
+-                    new Bug("Couldn't remove pedalboard")
++                    new Bug("Couldn't remove pedalboard in makePedalboardBox()")
+                 },
+                 cache: false
+             })
+@@ -1678,7 +1678,7 @@ Desktop.prototype.makePedalboardBox = function (el, trigger) {
+                     })
+                 },
+                 error: function () {
+-                    new Bug("Couldn't load pedalboard")
++                    new Bug("Couldn't load pedalboard in loadPedalboard()")
+                 },
+                 cache: false
+             })
+diff --git a/mod/__init__.py b/mod/__init__.py
+index 564ac18f..9392b4fa 100644
+--- a/mod/__init__.py
++++ b/mod/__init__.py
+@@ -163,7 +163,15 @@ def get_hardware_descriptor():
+ 
+ 
+ def get_hardware_actuators():
+-    return get_hardware_descriptor().get('actuators', [])
++#    return get_hardware_descriptor().get('actuators', [])
++    return [ { 'uri': '/hmi/knob1' },
++            { 'uri': '/hmi/knob2' },
++            { 'uri': '/hmi/knob3' },
++            { 'uri': '/hmi/knob4' },
++            { 'uri': '/hmi/footswitch1' },
++            { 'uri': '/hmi/footswitch2' },
++            { 'uri': '/hmi/footswitch3' },
++            { 'uri': '/hmi/footswitch4' } ]
+ 
+ 
+ def read_file_contents(fh, fallback):
+diff --git a/mod/addressings.py b/mod/addressings.py
+index cd60242e..03a9b178 100644
+--- a/mod/addressings.py
++++ b/mod/addressings.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python3
++#i/usr/bin/env python3
+ # -*- coding: utf-8 -*-
+ 
+ import json
+@@ -1036,9 +1036,14 @@ class Addressings(object):
+         self.hmi_load_current(actuator_uri, callback)
+ 
+     def hmi_load_next_hw(self, hw_id):
++        print (actuator_hmi)
++        print(self.hmi_hw2uri_map)
+         actuator_uri    = self.hmi_hw2uri_map[hw_id]
++        print(actuator_uri)
++        print(self.hmi_addressings)
+         addressings     = self.hmi_addressings[actuator_uri]
+         addressings_len = len(addressings['addrs'])
++        print(addressings)
+ 
+         if addressings_len == 0:
+             print("ERROR: hmi_load_next_hw failed, empty list")
+diff --git a/mod/development.py b/mod/development.py
+index 7df89c5c..881150d9 100644
+--- a/mod/development.py
++++ b/mod/development.py
+@@ -23,6 +23,11 @@ from mod.host import Host
+ class FakeHMI(HMI):
+     def __init__(self, init_cb):
+         HMI.__init__(self, 0, 0, 0, init_cb, None)
++#    def __init__(self):
++#        self.sp = None
++#        self.queue = []
++#        self.queue_idle = True
++#        self.initialized = False
+ 
+     def isFake(self):
+         return True
+@@ -31,7 +36,7 @@ class FakeHMI(HMI):
+         IOLoop.instance().add_callback(callback)
+ 
+     def send(self, msg, callback=None, datatype='int'):
+-        logging.info(msg)
++        logging.info('fake send msg='+msg)
+         if callback is None:
+             return
+         if datatype == 'boolean':
+@@ -73,6 +78,7 @@ class FakeHost(Host):
+ 
+     # send data to host, set modified flag to true
+     def send_modified(self, msg, callback=None, datatype='int'):
++        print("FakeHMI send_modified %s" % msg )
+         self.pedalboard_modified = True
+         if callback is not None:
+             callback(True)
+diff --git a/mod/hmi.py b/mod/hmi.py
+index 6507cd00..a3513990 100644
+--- a/mod/hmi.py
++++ b/mod/hmi.py
+@@ -19,6 +19,7 @@
+ from datetime import timedelta
+ from tornado.iostream import BaseIOStream, StreamClosedError
+ from tornado.ioloop import IOLoop
++from tornado import gen
+ 
+ from mod import get_hardware_actuators, get_hardware_descriptor, get_nearest_valid_scalepoint_value
+ from mod.protocol import Protocol, ProtocolError, process_resp
+@@ -60,6 +61,7 @@ from mod.mod_protocol import (
+ import logging
+ import serial
+ import time
++import sys
+ 
+ class SerialIOStream(BaseIOStream):
+     def __init__(self, sp):
+@@ -73,16 +75,22 @@ class SerialIOStream(BaseIOStream):
+         return self.sp.close()
+ 
+     def write_to_fd(self, data):
++        def no_callback1():
++            pass
+         try:
+-            return self.sp.write(data)
++            return self.sp.write(data, no_callback1)
+         except serial.SerialTimeoutException:
+             return 0
+ 
+     def read_from_fd(self):
+         try:
+-            r = self.sp.read(self.read_chunk_size)
+-        except:
+-            print("SerialIOStream: failed to read from HMI serial")
++            if hasattr(self.sp, 'read'):
++                r = self.sp.read(self.read_chunk_size)
++            else:
++                r = self.sp.read_bytes(self.read_chunk_size)
++        except Exception as inst:
++            print ('SerialIOStream: failed to read from HMI serial ', inst)
++            logging.error('SerialIOStream: failed to read from HMI serial ' + inst)
+             return None
+         if r == '':
+             return None
+@@ -124,6 +132,7 @@ class HMI(object):
+             sp.flushOutput()
+         except Exception as e:
+             print("ERROR: Failed to open HMI serial port, error was:\n%s" % e)
++            logging.error("Failed to open HMI serial port, error was:\n%s" % e)
+             return
+ 
+         self.sp = SerialIOStream(sp)
+@@ -156,6 +165,7 @@ class HMI(object):
+         self.checker()
+ 
+     def checker(self, data=None):
++        logging.info("[hmi] enter checker ")
+         ioloop = IOLoop.instance()
+ 
+         if data is not None and data != b'\0':
+@@ -210,9 +220,13 @@ class HMI(object):
+             self.flush_io = ioloop.call_later(self.timeout/2, self.flush)
+ 
+         try:
++            logging.error("wait read_until "
+             self.sp.read_until(b'\0', self.checker)
++            logging.error("continue read_until ")
+         except serial.SerialException as e:
+             logging.error("[hmi] error while reading %s", e)
++        except:
++            logging.error("[hmi] error while reading", exc_info=True)
+ 
+     def flush(self, forced = False):
+         prev_queue = self.need_flush
+@@ -246,7 +260,10 @@ class HMI(object):
+ 
+     def process_queue(self):
+         if self.sp is None:
++            logging.error("[hmi] process_queue: self.sp is None")
+             return
++        def no_callback():
++            pass
+ 
+         try:
+             msg, callback, datatype = self.queue[0] # fist msg on the queue
+@@ -257,7 +274,7 @@ class HMI(object):
+         else:
+             logging.debug("[hmi] sending -> %s", msg)
+             try:
+-                self.sp.write(msg.encode('utf-8') + b'\0')
++                self.sp.write(msg.encode('utf-8') + b'\0'i, no_callback)
+             except StreamClosedError as e:
+                 logging.exception(e)
+                 self.sp = None
+@@ -270,6 +287,7 @@ class HMI(object):
+         self.send("{} -1".format(CMD_RESPONSE), None)
+ 
+     def send(self, msg, callback, datatype='int'):
++        logging.error('send msg=' + msg)
+         if self.sp is None:
+             return
+ 
+@@ -297,8 +315,12 @@ class HMI(object):
+                 self.process_queue()
+             return
+ 
++        def no_callback2():
++            logging.error('send: no_callback2')
++            pass
++
+         # is resp, just send
+-        self.sp.write(msg.encode('utf-8') + b'\0')
++        self.sp.write(msg.encode('utf-8') + b'\0', no_callback2)
+ 
+     def send_reply(self, msg):
+         if self.sp is None:
+diff --git a/mod/hmisocket.py b/mod/hmisocket.py
+new file mode 100644
+index 00000000..97344d5a
+--- /dev/null
++++ b/mod/hmisocket.py
+@@ -0,0 +1,81 @@
++#Copyright 2017 pedalpII
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 3 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++import errno
++import functools
++import socket
++import functools
++import os, json, logging
++
++from tornado import ioloop, iostream
++from tornado.tcpserver import TCPServer
++from tornado.iostream import StreamClosedError
++from tornado import gen
++
++from mod.hmi import HMI, SerialIOStream
++from mod.development import FakeHMI
++import threading
++
++class EchoServer(TCPServer):
++    def __init__(self, my_ioloop, my_hmisocket, callback):
++        super().__init__(my_ioloop)
++        self.callback = callback
++        self.my_hmisocket = my_hmisocket
++
++    @gen.coroutine
++    def handle_stream(self, stream, address):
++        logging.info('[EchoServer] connection from %s' % repr(address))
++        yield self.my_hmisocket.handle_stream(stream, address)
++
++class HMISocket(HMI):
++
++    def __init__(self, port, callback):
++        logging.info("Launch HMISocket on port", port)
++        self.sp = None 
++        self.port = port
++        self.queue = []
++        self.queue_idle = True
++        self.initialized = False
++        self.ioloop = ioloop.IOLoop.instance()
++        self.callback = callback
++        self.init()
++
++    # overrides super class
++    def init(self):
++
++        try:
++            server = EchoServer(ioloop.IOLoop.instance(), self, self.callback)
++            server.listen(self.port)
++        except Exception as e:
++            logging.error("Failed to open HMI socket port, error was: %s" % e)
++            return
++
++    def handle_stream(self, stream, address):
++        def clear_callback(ok):
++            self.callback()
++
++        # calls ping until ok is received
++        def ping_callback(ok):
++            logging.error('[hmi_socket] ping_callback %s' % ok)
++            if ok:
++                self.clear(clear_callback)
++            else:
++                self.ioloop.add_timeout(timedelta(seconds=1), lambda:self.ping(self.ping_callback))
++
++        logging.info('[hmi_socket] connection from %s' % repr(address))
++        self.sp = stream
++        self.ping(ping_callback)
++        self.checker()
++
+diff --git a/mod/host.py b/mod/host.py
+index 54a8320f..7ed174ab 100644
+--- a/mod/host.py
++++ b/mod/host.py
+@@ -214,6 +214,7 @@ def get_all_good_and_bad_pedalboards():
+             "title": UNTITLED_PEDALBOARD_NAME,
+             "version": 0,
+         })
++    logging.info("get_all_good_pedalboards returns %i good pedalboards in a total of %i pedalboards." % (len(allpedals), len(goodpedals)) )
+ 
+     return goodpedals, badbundles
+ 
+@@ -287,6 +288,7 @@ class Host(object):
+     HMI_SNAPSHOTS_3      = 0 - (HMI_SNAPSHOTS_OFFSET + 2)
+ 
+     def __init__(self, hmi, prefs, msg_callback):
++	print ( "JFD 5555 xxxx ")
+         self.hmi = hmi
+         self.prefs = prefs
+         self.msg_callback = msg_callback
+@@ -623,7 +625,7 @@ class Host(object):
+                     optdataLen = len(optdata)
+ 
+                     if numBytesFree-optdataLen-2 < 0:
+-                        print("WARNING: Preventing sending too many options to addressing (stopped at %i)" % currentNum)
++                        logging.info("WARNING: Preventing sending too many options to addressing (stopped at %i)" % currentNum)
+                         if rvalue >= currentNum:
+                             rvalue = 0.0
+                         rmaximum = currentNum
+@@ -672,7 +674,7 @@ class Host(object):
+                                                                        data['operational_mode']
+                                                                        ), callback, datatype='boolean')
+ 
+-        print("ERROR: Invalid addressing requested for", actuator)
++        logging.error("ERROR: Invalid addressing requested for", actuator)
+         callback(False)
+         return
+ 
+@@ -700,7 +702,7 @@ class Host(object):
+                 callback(True)
+             return
+ 
+-        print("ERROR: Invalid unaddressing requested")
++        logging.error("ERROR: Invalid unaddressing requested")
+         callback(False)
+         return
+ 
+@@ -770,6 +772,9 @@ class Host(object):
+             if len(pluginData['mapPresets']) == 0 or not pluginData['preset']:
+                 return 0.0
+             return float(pluginData['mapPresets'].index(pluginData['preset']))
++        #print(json.dumps(pluginData))
++        #print(json.dumps(pluginData['ports']))
++        #print(json.dumps( pluginData['ports'][portsymbol]))
+ 
+         return pluginData['ports'][portsymbol]
+ 
+@@ -805,7 +810,7 @@ class Host(object):
+     def addr_task_set_available_pages(self, pages, callback):
+         if self.hmi.initialized:
+             return self.hmi.set_available_pages(pages, callback)
+-        print("WARNING: Trying to send available pages, HMI not initialized")
++        logging.info("WARNING: Trying to send available pages, HMI not initialized")
+         callback(False)
+         return
+ 
+@@ -846,13 +851,13 @@ class Host(object):
+ 
+     def wait_hmi_initialized(self, callback):
+         if (self.hmi.initialized and self.profile_applied) or self.hmi.isFake():
+-            print("HMI initialized right away")
++            logging.info("HMI initialized right away")
+             callback(True)
+             return
+ 
+         def retry():
+             if (self.hmi.initialized and self.profile_applied) or self._attemptNumber >= 20:
+-                print("HMI initialized FINAL", self._attemptNumber, self.hmi.initialized)
++                logging.info("HMI initialized FINAL", self._attemptNumber, self.hmi.initialized)
+                 del self._attemptNumber
+                 if HMI_TIMEOUT > 0:
+                     self.ping_hmi_start()
+@@ -860,7 +865,7 @@ class Host(object):
+             else:
+                 self._attemptNumber += 1
+                 IOLoop.instance().call_later(0.25, retry)
+-                print("HMI initialized waiting", self._attemptNumber)
++                logging.info("HMI initialized waiting", self._attemptNumber)
+ 
+         self._attemptNumber = 0
+         retry()
+@@ -983,9 +988,9 @@ class Host(object):
+ 
+         if self.readsock is None or self.writesock is None:
+             self._idle = False
+-            #self.open_host_connection(websocket)
++            self.open_host_connection(websocket)
+ 
+-        #def open_host_connection(self, websocket):
++        def open_host_connection(self, websocket):
+ 
+         def reader_check_response():
+             self.process_read_queue()
+@@ -1034,14 +1039,6 @@ class Host(object):
+ 
+     def writer_connection_closed(self):
+         self.writesock = None
+-        #self.crashed = True
+-        #self.connected = False
+-        #self.statstimer.stop()
+-
+-        #if self.memtimer is not None:
+-        #    self.memtimer.stop()
+-
+-        #self.msg_callback("stop")
+         logging.error("Writer connection is closed to address: " + str(self.addr));
+ 
+         while True:
+@@ -1309,7 +1306,7 @@ class Host(object):
+                     pluginData['bypassed'] = bool(value)
+ 
+                 elif portsymbol == ":presets":
+-                    print("presets changed by backend", value)
++                    logging.info("presets changed by backend", value)
+                     abort_catcher = self.abort_previous_loading_progress("process_read_message_body")
+                     value = int(value)
+                     if value < 0 or value >= len(pluginData['mapPresets']):
+@@ -1606,6 +1603,7 @@ class Host(object):
+ 
+     # send data to host, set modified flag to true
+     def send_modified(self, msg, callback=None, datatype='int'):
++	logging.info("send_modified %s" % msg )
+         self.pedalboard_modified = True
+ 
+         if self.crashed:
+@@ -1861,7 +1859,7 @@ class Host(object):
+ 
+     def add_bundle(self, bundlepath, callback):
+         if is_bundle_loaded(bundlepath):
+-            print("NOTE: Skipped add_bundle, already in world")
++            logging.info("NOTE: Skipped add_bundle, already in world")
+             callback((False, "Bundle already loaded"))
+             return
+ 
+@@ -1873,7 +1871,7 @@ class Host(object):
+ 
+     def remove_bundle(self, bundlepath, isPluginBundle, callback):
+         if not is_bundle_loaded(bundlepath):
+-            print("NOTE: Skipped remove_bundle, not in world")
++            logging.info("NOTE: Skipped remove_bundle, not in world")
+             callback((False, "Bundle not loaded"))
+             return
+ 
+@@ -1943,7 +1941,7 @@ class Host(object):
+         plugin_data = self.plugins.get(instance_id, None)
+ 
+         if plugin_data is None:
+-            print("ERROR: Trying to set param for non-existing plugin instance %i: '%s'" % (instance_id, instance))
++            logging.error("ERROR: Trying to set param for non-existing plugin instance %i: '%s'" % (instance_id, instance))
+             if callback is not None:
+                 callback(False)
+             return
+@@ -2264,7 +2262,7 @@ class Host(object):
+         pluginData  = self.plugins[instance_id]
+ 
+         if symbol in pluginData['designations']:
+-            print("ERROR: Trying to modify a specially designated port '%s', stop!" % symbol)
++            logging.error("ERROR: Trying to modify a specially designated port '%s', stop!" % symbol)
+             callback(False)
+             return
+ 
+@@ -2274,7 +2272,7 @@ class Host(object):
+     def patch_get(self, instance, uri, callback):
+         instance_id = self.mapper.get_id_without_creating(instance)
+ 
+-        print("mod-host sent param_get %d %s" % (instance_id, uri))
++        logging.info("mod-host sent param_get %d %s" % (instance_id, uri))
+         self.send_modified("param_get %d %s" % (instance_id, uri), callback, datatype='boolean')
+ 
+     def patch_set(self, instance, uri, value, callback):
+@@ -2320,15 +2318,15 @@ class Host(object):
+             callback(False)
+             return
+         if self.pedalboard_path != current_pedal:
+-            print("WARNING: Pedalboard changed during preset_load request")
++            logging.info("WARNING: Pedalboard changed during preset_load request")
+             callback(False)
+             return
+         if pluginData['nextPreset'] != uri:
+-            print("WARNING: Preset changed during preset_load request")
++            logging.info("WARNING: Preset changed during preset_load request")
+             callback(False)
+             return
+         if abort_catcher.get('abort', False):
+-            print("WARNING: Abort triggered during preset_load request, caller:", abort_catcher['caller'])
++            logging.info("WARNING: Abort triggered during preset_load request, caller:", abort_catcher['caller'])
+             callback(False)
+             return
+ 
+@@ -2343,15 +2341,15 @@ class Host(object):
+             callback(False)
+             return
+         if self.pedalboard_path != current_pedal:
+-            print("WARNING: Pedalboard changed during preset_show request")
++            logging.info("WARNING: Pedalboard changed during preset_show request")
+             callback(False)
+             return
+         if pluginData['nextPreset'] != uri:
+-            print("WARNING: Preset changed during preset_load request")
++            logging.info("WARNING: Preset changed during preset_load request")
+             callback(False)
+             return
+         if abort_catcher.get('abort', False):
+-            print("WARNING: Abort triggered during preset_load request, caller:", abort_catcher['caller'])
++            logging.info("WARNING: Abort triggered during preset_load request, caller:", abort_catcher['caller'])
+             callback(False)
+             return
+ 
+@@ -2366,10 +2364,10 @@ class Host(object):
+ 
+             minimum, maximum = pluginData['ranges'][symbol]
+             if value < minimum:
+-                print("ERROR: preset_load with value below minimum: symbol '%s', value %f" % (symbol, value))
++                logging.error("ERROR: preset_load with value below minimum: symbol '%s', value %f" % (symbol, value))
+                 value = minimum
+             elif value > maximum:
+-                print("ERROR: preset_load with value above maximum: symbol '%s', value %f" % (symbol, value))
++                logging.error("ERROR: preset_load with value above maximum: symbol '%s', value %f" % (symbol, value))
+                 value = maximum
+ 
+             pluginData['ports'][symbol] = value
+@@ -2602,7 +2600,7 @@ class Host(object):
+             is_hmi_snapshot = False
+ 
+             if snapshot is None:
+-                print("ERROR: Asked to load an invalid pedalboard preset, number", idx)
++                logging.error("ERROR: Asked to load an invalid pedalboard preset, number", idx)
+                 callback(False)
+                 return
+ 
+@@ -2613,7 +2611,7 @@ class Host(object):
+ 
+         for instance, data in snapshot['data'].items():
+             if abort_catcher.get('abort', False):
+-                print("WARNING: Abort triggered during snapshot_load request, caller:", abort_catcher['caller'])
++                logging.info("WARNING: Abort triggered during snapshot_load request, caller:", abort_catcher['caller'])
+                 callback(False)
+                 return
+ 
+@@ -2720,7 +2718,7 @@ class Host(object):
+     @gen.coroutine
+     def page_load(self, idx, abort_catcher, callback):
+         if not self.addressings.pages_cb:
+-            print("ERROR: hmi next page not supported")
++            logging.error("ERROR: hmi next page not supported")
+             callback(False)
+             return
+ 
+@@ -2730,7 +2728,7 @@ class Host(object):
+ 
+         for uri, addressings in self.addressings.hmi_addressings.items():
+             if abort_catcher.get('abort', False):
+-                print("WARNING: Abort triggered during page_load request, caller:", abort_catcher['caller'])
++                logging.info("WARNING: Abort triggered during page_load request, caller:", abort_catcher['caller'])
+                 callback(False)
+                 return
+ 
+@@ -2820,8 +2818,9 @@ class Host(object):
+         return "effect_%d:%s" % (instance_id, portsymbol)
+ 
+     def connect(self, port_from, port_to, callback):
++	logging.info("Connect host.py")
+         if (port_from, port_to) in self.connections:
+-            print("NOTE: Requested connection already exists")
++            logging.info("NOTE: Requested connection already exists")
+             callback(True)
+             return
+ 
+@@ -2831,7 +2830,7 @@ class Host(object):
+                 self.connections.append((port_from, port_to))
+                 self.msg_callback("connect %s %s" % (port_from, port_to))
+             else:
+-                print("ERROR: backend failed to connect ports: '%s' => '%s'" % (port_from, port_to))
++                logging.error("ERROR: backend failed to connect ports: '%s' => '%s'" % (port_from, port_to))
+ 
+         self.send_modified("connect %s %s" % (self._fix_host_connection_port(port_from),
+                                               self._fix_host_connection_port(port_to)),
+@@ -2844,14 +2843,14 @@ class Host(object):
+             self.msg_callback("disconnect %s %s" % (port_from, port_to))
+ 
+             if not ok:
+-                print("ERROR: disconnect '%s' => '%s' failed" % (port_from, port_to))
++                logging.error("ERROR: disconnect '%s' => '%s' failed" % (port_from, port_to))
+ 
+             self.pedalboard_modified = True
+ 
+             try:
+                 self.connections.remove((port_from, port_to))
+             except:
+-                print("NOTE: Requested '%s' => '%s' connection doesn't exist" % (port_from, port_to))
++                logging.info("NOTE: Requested '%s' => '%s' connection doesn't exist" % (port_from, port_to))
+ 
+         if len(self.connections) == 0:
+             return host_callback(False)
+@@ -2860,13 +2859,13 @@ class Host(object):
+         try:
+             port_from_2 = self._fix_host_connection_port(port_from)
+         except:
+-            print("NOTE: Requested '%s' source port doesn't exist, assume disconnected" % port_from)
++            logging.info("NOTE: Requested '%s' source port doesn't exist, assume disconnected" % port_from)
+             return host_callback(True)
+ 
+         try:
+             port_to_2 = self._fix_host_connection_port(port_to)
+         except:
+-            print("NOTE: Requested '%s' target port doesn't exist, assume disconnected" % port_to)
++            logging.info("NOTE: Requested '%s' target port doesn't exist, assume disconnected" % port_to)
+             return host_callback(True)
+ 
+         host_callback(disconnect_jack_ports(port_from_2, port_to_2))
+@@ -3056,7 +3055,7 @@ class Host(object):
+             self.set_transport_rolling(self.transport_rolling, False, True, False, False)
+ 
+         if abort_catcher is not None and abort_catcher.get('abort', False):
+-            print("WARNING: Abort triggered during PB load request 1, caller:", abort_catcher['caller'])
++            logging.info("WARNING: Abort triggered during PB load request 1, caller:", abort_catcher['caller'])
+             return
+ 
+         self.send_notmodified("transport %i %f %f" % (self.transport_rolling,
+@@ -3079,7 +3078,7 @@ class Host(object):
+             self.addressings.load(bundlepath, instances, skippedPortAddressings, abort_catcher)
+ 
+         if abort_catcher is not None and abort_catcher.get('abort', False):
+-            print("WARNING: Abort triggered during PB load request 2, caller:", abort_catcher['caller'])
++            logging.info("WARNING: Abort triggered during PB load request 2, caller:", abort_catcher['caller'])
+             return
+ 
+         self.addressings.add_cv_plugin_ports(self.msg_callback)
+@@ -3131,7 +3130,7 @@ class Host(object):
+             pdata = initial_snapshot.get(p['instance'], None)
+ 
+             if pdata is None:
+-                print("WARNING: Pedalboard preset missing data for instance name '%s'" % p['instance'])
++                logging.info("WARNING: Pedalboard preset missing data for instance name '%s'" % p['instance'])
+                 continue
+ 
+             p['bypassed'] = pdata['bypassed']
+@@ -3962,7 +3961,7 @@ _:b%i
+     @gen.coroutine
+     def set_link_enabled(self):
+         if self.plugins[PEDALBOARD_INSTANCE_ID]['addressings'].get(":bpm", None) is not None:
+-            print("ERROR: link enabled while BPM is still addressed")
++            logging.error("ERROR: link enabled while BPM is still addressed")
+ 
+         self.send_notmodified("transport_sync link")
+ 
+@@ -3978,7 +3977,7 @@ _:b%i
+     @gen.coroutine
+     def set_midi_clock_slave_enabled(self):
+         if self.plugins[PEDALBOARD_INSTANCE_ID]['addressings'].get(":bpm", None) is not None:
+-            print("ERROR: MIDI Clock Slave enabled while BPM is still addressed")
++            logging.error("ERROR: MIDI Clock Slave enabled while BPM is still addressed")
+ 
+         self.send_notmodified("transport_sync midi")
+ 
+@@ -4192,7 +4191,7 @@ _:b%i
+         operational_mode = extras.get('operational_mode', '=')
+ 
+         if pluginData is None:
+-            print("ERROR: Trying to address non-existing plugin instance %i: '%s'" % (instance_id, instance))
++            logging.error("ERROR: Trying to address non-existing plugin instance %i: '%s'" % (instance_id, instance))
+             callback(False)
+             return
+ 
+@@ -4294,7 +4293,7 @@ _:b%i
+         is_hmi_actuator = self.addressings.is_hmi_actuator(actuator_uri)
+ 
+         if is_hmi_actuator and not self.hmi.initialized:
+-            print("WARNING: Cannot address to HMI at this point")
++            logging.info("WARNING: Cannot address to HMI at this point")
+             callback(False)
+             return
+ 
+@@ -4576,7 +4575,7 @@ _:b%i
+         logging.debug("hmi load bank pedalboard")
+ 
+         if bank_id < 0 or bank_id > len(self.banks):
+-            print("ERROR: Trying to load pedalboard using out of bounds bank id %i" % (bank_id))
++            #logging.error("ERROR: Trying to load pedalboard using out of bounds bank id %i" % (bank_id))
+             logging.error("Trying to load pedalboard using out of bounds bank id %i len=%i" % (bank_id, len(self.banks)))
+             callback(False)
+             return
+@@ -4584,12 +4583,12 @@ _:b%i
+         try:
+             pedalboard_id = int(pedalboard_id)
+         except:
+-            print("ERROR: Trying to load pedalboard using invalid pedalboard_id '%s'" % (pedalboard_id))
++            logging.error("ERROR: Trying to load pedalboard using invalid pedalboard_id '%s'" % (pedalboard_id))
+             callback(False)
+             return
+ 
+         if self.next_hmi_pedalboard_to_load is not None:
+-            print("NOTE: Delaying loading of %i:%i" % (bank_id, pedalboard_id))
++            logging.info("NOTE: Delaying loading of %i:%i" % (bank_id, pedalboard_id))
+             self.next_hmi_pedalboard_to_load = (bank_id, pedalboard_id)
+             callback(True)
+             return
+@@ -4601,7 +4600,7 @@ _:b%i
+             pedalboards = bank['pedalboards']
+ 
+         if pedalboard_id < 0 or pedalboard_id >= len(pedalboards):
+-            print("ERROR: Trying to load pedalboard using out of bounds pedalboard id %i" % (pedalboard_id))
++            #logging.error("ERROR: Trying to load pedalboard using out of bounds pedalboard id %i" % (pedalboard_id))
+             logging.error("Trying to load pedalboard using out of bounds pedalboard id %i len=%i" % (pedalboard_id, len(pedalboards)))
+             callback(False)
+             return
+@@ -4617,9 +4616,9 @@ _:b%i
+             if self.next_hmi_pedalboard_to_load is None:
+                 return
+             if ok:
+-                print("NOTE: Delayed loading of %i:%i has started" % self.next_hmi_pedalboard_to_load)
++                logging.info("NOTE: Delayed loading of %i:%i has started" % self.next_hmi_pedalboard_to_load)
+             else:
+-                print("ERROR: Delayed loading of %i:%i failed!" % self.next_hmi_pedalboard_to_load)
++                logging.error("ERROR: Delayed loading of %i:%i failed!" % self.next_hmi_pedalboard_to_load)
+ 
+         def load_finish_callback(_):
+             self.processing_pending_flag = False
+@@ -4630,7 +4629,7 @@ _:b%i
+             self.hmi.set_snapshot_name(name, load_finish_callback)
+ 
+         def pb_host_loaded_callback(_):
+-            print("NOTE: Loading of %i:%i finished" % (bank_id, pedalboard_id))
++            logging.info("NOTE: Loading of %i:%i finished" % (bank_id, pedalboard_id))
+ 
+             next_pedalboard = self.next_hmi_pedalboard_to_load
+             self.next_hmi_pedalboard_to_load = None
+@@ -4717,7 +4716,7 @@ _:b%i
+         try:
+             instance = self.mapper.get_instance(instance_id)
+         except KeyError:
+-            print("WARNING: hmi_parameter_set requested for non-existing plugin")
++            logging.info("WARNING: hmi_parameter_set requested for non-existing plugin")
+             callback(False)
+             return
+ 
+@@ -4802,14 +4801,14 @@ _:b%i
+                     rolling = bool(value > 0.5)
+                     self.set_transport_rolling(rolling, True, False, True)
+             else:
+-                print("ERROR: Trying to set value for the wrong pedalboard port:", portsymbol)
++                logging.error("ERROR: Trying to set value for the wrong pedalboard port:", portsymbol)
+                 callback(False)
+                 return
+ 
+         else:
+             oldvalue = pluginData['ports'].get(portsymbol, None)
+             if oldvalue is None:
+-                print("WARNING: hmi_parameter_set requested for non-existing port", portsymbol)
++                logging.info("WARNING: hmi_parameter_set requested for non-existing port", portsymbol)
+                 callback(False)
+                 return
+ 
+@@ -5045,7 +5044,7 @@ _:b%i
+ 
+         for p in pb_values:
+             if abort_catcher.get('abort', False):
+-                print("WARNING: Abort triggered during reset_current_pedalboard request, caller:", abort_catcher['caller'])
++                logging.info("WARNING: Abort triggered during reset_current_pedalboard request, caller:", abort_catcher['caller'])
+                 callback(False)
+                 return
+ 
+diff --git a/mod/session.py b/mod/session.py
+index 166eab8a..d91e639b 100644
+--- a/mod/session.py
++++ b/mod/session.py
+@@ -30,12 +30,17 @@ from mod.screenshot import ScreenshotGenerator
+ from mod.settings import (LOG,
+                           DEV_ENVIRONMENT, DEV_HMI, DEV_HOST,
+                           HMI_SERIAL_PORT, HMI_BAUD_RATE, HMI_TIMEOUT,
++			  HMI_SOCKET_PORT,
+                           PREFERENCES_JSON_FILE, UNTITLED_PEDALBOARD_NAME)
+ 
++from mod.hmisocket import HMISocket
++
+ if DEV_HOST:
+     Host = FakeHost
+ else:
+     from mod.host import Host
++    logging.info("Start Host session.py");
++    logging.info("Start session.py");
+ 
+ class UserPreferences(object):
+     def __init__(self):
+@@ -81,15 +86,18 @@ class Session(object):
+         # Try to open real HMI
+         hmiOpened = False
+ 
+-        if not DEV_HMI:
++        if DEV_HMI:
+             self.hmi  = HMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, HMI_TIMEOUT, self.hmi_initialized_cb, self.hmi_reinit_cb)
+             hmiOpened = self.hmi.sp is not None
++        else:
++            self.hmi  = HMISocket(HMI_SOCKET_PORT, sel
++            hmiOpened = True #self.hmi.sp is not None
+ 
+-        #print("Using HMI =>", hmiOpened)
++        logging.info("Using HMI =>", hmiOpened)
+ 
+         if not hmiOpened:
+-            self.hmi = FakeHMI(self.hmi_initialized_cb)
+-            print("Using FakeHMI =>", self.hmi)
++            self.hmi = FakeHMI()
++            logging.info("Using FakeHMI =>", self.hmi)
+ 
+         self.host = Host(self.hmi, self.prefs, self.msg_callback)
+ 
+@@ -183,10 +191,12 @@ class Session(object):
+ 
+     # Connect 2 ports
+     def web_connect(self, port_from, port_to, callback):
++	logging.info("web_connect")
+         self.host.connect(port_from, port_to, callback)
+ 
+     # Disconnect 2 ports
+     def web_disconnect(self, port_from, port_to, callback):
++	logging.info("web_disconnect")
+         self.host.disconnect(port_from, port_to, callback)
+ 
+     # Save the current pedalboard
+@@ -320,13 +330,13 @@ class Session(object):
+     # LV2 patch support
+     def ws_patch_get(self, instance, uri, ws):
+         def resp(ok):
+-            print("host patch_get responded with", ok)
++            logging.info("host patch_get responded with", ok)
+ 
+         self.host.patch_get(instance, uri, resp)
+ 
+     def ws_patch_set(self, instance, uri, valuetype, valuedata, ws):
+         def resp(ok):
+-            print("host patch_set responded with", ok)
++            logging.info("host patch_set responded with", ok)
+ 
+         writable = self.host.patch_set(instance, uri, valuedata, resp)
+         self.msg_callback_broadcast("patch_set %s %d %s %c %s" % (instance,
+diff --git a/mod/settings.py b/mod/settings.py
+index 930259ad..a940ba28 100644
+--- a/mod/settings.py
++++ b/mod/settings.py
+@@ -65,6 +65,7 @@ LV2_PEDALBOARDS_DIR = os.path.expanduser("~/.pedalboards/")
+ HMI_BAUD_RATE = os.environ.get('MOD_HMI_BAUD_RATE', 10000000)
+ HMI_SERIAL_PORT = os.environ.get('MOD_HMI_SERIAL_PORT', "/dev/ttyUSB0")
+ HMI_TIMEOUT = int(os.environ.get('MOD_HMI_TIMEOUT', 0))
++HMI_SOCKET_PORT = os.environ.get('MOD_HMI_SOCKET_PORT', 9999)
+ 
+ MODEL_CPU = os.environ.get('MOD_MODEL_CPU', None)
+ MODEL_TYPE = os.environ.get('MOD_MODEL_TYPE', None)
+diff --git a/mod/webserver.py b/mod/webserver.py
+index 57e8ca8a..0b8428b1 100644
+--- a/mod/webserver.py
++++ b/mod/webserver.py
+@@ -32,6 +32,8 @@ from tornado.ioloop import IOLoop
+ from tornado.template import Loader
+ from tornado.util import unicode_type
+ from uuid import uuid4
++import logging
++import logging.handlers
+ 
+ from mod.profile import Profile
+ from mod.settings import (APP, LOG, DEV_API,
+@@ -69,6 +71,38 @@ class GlobalWebServerState(object):
+ gState = GlobalWebServerState()
+ gState.favorites = []
+ 
++def setupLogging():
++	access_log = logging.getLogger("tornado.access")
++	app_log = logging.getLogger("tornado.application")
++	gen_log = logging.getLogger("tornado.general")
++	logger = logging.getLogger("")
++	access_log.setLevel(logging.DEBUG)
++	app_log.setLevel(logging.DEBUG)
++	gen_log.setLevel(logging.DEBUG)
++	logger.setLevel(logging.DEBUG)
++
++	consoleHandler = logging.StreamHandler(sys.stdout)
++	consoleFormatter = logging.Formatter('%(name)s %(levelname)s %(funcName)s:%(lineno)d: %(message)s')
++	consoleHandler.formatter = consoleFormatter
++
++	syslogHandler = logging.handlers.SysLogHandler('/dev/log')
++	syslogFormatter = logging.Formatter('%(name)s %(levelname)s %(funcName)s:%(lineno)d: %(message)s')
++	syslogHandler.formatter = syslogFormatter
++
++	logger.addHandler(syslogHandler)
++	access_log.addHandler(syslogHandler)
++	app_log.addHandler(syslogHandler)
++	gen_log.addHandler(syslogHandler)
++
++	logger.addHandler(consoleHandler)
++	access_log.addHandler(consoleHandler)
++	app_log.addHandler(consoleHandler)
++	gen_log.addHandler(consoleHandler)
++
++	logger.info("Logging to syslog and console is ready.")
++	return
++
++
+ @gen.coroutine
+ def install_bundles_in_tmp_dir(callback):
+     error     = ""
+@@ -903,7 +937,7 @@ class EffectAdd(JsonRequestHandler):
+         try:
+             data = get_plugin_info(uri)
+         except:
+-            print("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
++            logging.error("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
+             raise web.HTTPError(404)
+ 
+         self.write(data)
+@@ -922,7 +956,7 @@ class EffectGet(CachedJsonRequestHandler):
+         try:
+             data = get_plugin_info(uri)
+         except:
+-            print("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
++            logging.error("ERROR in webserver.py: get_plugin_info for '%s' failed" % uri)
+             raise web.HTTPError(404)
+ 
+         self.write(data)
+@@ -934,7 +968,7 @@ class EffectGetNonCached(JsonRequestHandler):
+         try:
+             data = get_non_cached_plugin_info(uri)
+         except:
+-            print("ERROR in webserver.py: get_non_cached_plugin_info for '%s' failed" % uri)
++            logging.error("ERROR in webserver.py: get_non_cached_plugin_info for '%s' failed" % uri)
+             raise web.HTTPError(404)
+ 
+         self.write(data)
+@@ -961,7 +995,7 @@ class EffectParameterAddress(JsonRequestHandler):
+         uri  = data.get('uri', None)
+ 
+         if uri is None:
+-            print("ERROR in webserver.py: Attempting to address without an URI")
++            logging.error("ERROR in webserver.py: Attempting to address without an URI")
+             raise web.HTTPError(404)
+ 
+         label   = data.get('label', '---') or '---'
+@@ -1102,13 +1136,13 @@ class EffectPresetDelete(JsonRequestHandler):
+ class ServerWebSocket(websocket.WebSocketHandler):
+     @gen.coroutine
+     def open(self):
+-        print("websocket open")
++        logging.info("websocket open")
+         self.set_nodelay(True)
+         yield gen.Task(SESSION.websocket_opened, self)
+ 
+     @gen.coroutine
+     def on_close(self):
+-        print("websocket close")
++        logging.info("websocket close")
+         yield gen.Task(SESSION.websocket_closed, self)
+ 
+     def on_message(self, message):
+@@ -1173,7 +1207,7 @@ class ServerWebSocket(websocket.WebSocketHandler):
+             SESSION.host.set_transport_rolling(rolling, True, True, False)
+ 
+         else:
+-            print("Unexpected command received over websocket")
++            logging.info("Unexpected command received over websocket")
+ 
+ class PackageUninstall(JsonRequestHandler):
+     @web.asynchronous
+@@ -1183,7 +1217,7 @@ class PackageUninstall(JsonRequestHandler):
+         error   = ""
+         removed = []
+ 
+-        print("asked to remove these:", bundles)
++        logging.info("asked to remove these:", bundles)
+ 
+         for bundlepath in bundles:
+             if os.path.exists(bundlepath) and os.path.isdir(bundlepath):
+@@ -1200,7 +1234,7 @@ class PackageUninstall(JsonRequestHandler):
+                     error = data
+                     break
+             else:
+-                print("bundlepath is non-existent:", bundlepath)
++                logging.info("bundlepath is non-existent:", bundlepath)
+ 
+         if error:
+             resp = {
+@@ -1333,10 +1367,12 @@ class PedalboardLoadBundle(JsonRequestHandler):
+             isDefault = bool(int(self.get_argument("isDefault")))
+         except:
+             isDefault = False
++        logging.info("PedalboardLoadBundle: receive request bundlepath=%s isDefault=%s" % (self.get_argument("bundlepath"), isDefault))
+ 
+         if os.path.exists(bundlepath):
+             name = SESSION.load_pedalboard(bundlepath, isDefault)
+         else:
++            logging.error("ERROR: PedalboardLoadBundle path does not exist bundle=%s isDefault=%s" % (bundlepath, isDefault))
+             name = None
+ 
+         self.write({
+@@ -1715,7 +1751,7 @@ class TemplateHandler(TimelessRequestHandler):
+         try:
+             pedalboard = get_pedalboard_info(bundlepath)
+         except:
+-            print("ERROR in webserver.py: get_pedalboard_info failed")
++            logging.error("ERROR in webserver.py: get_pedalboard_info failed")
+             pedalboard = {
+                 'height': 0,
+                 'width': 0,
+@@ -1904,7 +1940,7 @@ class FavoritesAdd(JsonRequestHandler):
+ 
+         # safety check, no duplicates please
+         if uri in gState.favorites:
+-            print("ERROR: URI '%s' already in favorites" % uri)
++            logging.error("ERROR: URI '%s' already in favorites" % uri)
+             self.write(False)
+             return
+ 
+@@ -1922,7 +1958,7 @@ class FavoritesRemove(JsonRequestHandler):
+ 
+         # safety check
+         if uri not in gState.favorites:
+-            print("ERROR: URI '%s' not in favorites" % uri)
++            logging.error("ERROR: URI '%s' not in favorites" % uri)
+             self.write(False)
+             return
+ 
+@@ -2286,9 +2322,9 @@ def prepare(isModApp = False):
+                 gState.favorites.remove(uri)
+ 
+     if False:
+-        print("Scanning plugins, this may take a little...")
++        logging.info("Scanning plugins, this may take a little...")
+         get_all_plugins()
+-        print("Done!")
++        logging.info("Done!")
+ 
+     if not isModApp:
+         signal(SIGUSR1, signal_recv)
+@@ -2301,16 +2337,14 @@ def prepare(isModApp = False):
+         if SESSION.host.readsock is None or SESSION.host.writesock is None:
+ 
+             if SESSION.host.readsock is None:
+-                print("Readsock none")
++                logging.info("Readsock none")
+ 
+             if SESSION.host.writesock is None:
+-                print("Writesock none")
++                logging.info("Writesock none")
+ 
+-            #print("Host failed to initialize, is the backend running?")
+             logging.error("Host failed to initialize, is the backend running? Retry...")
+             SESSION.host.open_connection_if_needed(None)
+             ioinstance.call_later(3.0, checkhost)
+-
+             #SESSION.host.close_jack()
+             #if not isModApp:
+             #    sys.exit(1)
+@@ -2322,12 +2356,14 @@ def prepare(isModApp = False):
+     ioinstance.add_callback(checkhost)
+ 
+ def start():
++    logging.info("start instance")
+     IOLoop.instance().start()
+ 
+ def stop():
+     IOLoop.instance().stop()
+ 
+ def run():
++    setupLogging()
+     prepare()
+     start()
+ 
+diff --git a/modtools/utils.py b/modtools/utils.py
+index bd26ca30..53d5eb71 100644
+--- a/modtools/utils.py
++++ b/modtools/utils.py
+@@ -640,6 +640,7 @@ def get_all_plugins():
+ def get_plugin_info(uri):
+     info = utils.get_plugin_info(uri.encode("utf-8"))
+     if not info:
++        logging.error("get_plugin_info %s returns NULL" % (uri.encode("utf-8")));
+         raise Exception
+     return structToDict(info.contents)
+ 
+@@ -656,6 +657,7 @@ def get_non_cached_plugin_info(uri):
+ def get_plugin_gui(uri):
+     info = utils.get_plugin_gui(uri.encode("utf-8"))
+     if not info:
++        logging.error("get_plugin_gui %s returns NULL" % (uri.encode("utf-8")));
+         raise Exception
+     return structToDict(info.contents)
+ 
+@@ -664,6 +666,7 @@ def get_plugin_gui(uri):
+ def get_plugin_gui_mini(uri):
+     info = utils.get_plugin_gui_mini(uri.encode("utf-8"))
+     if not info:
++        logging.error("utils.get_plugin_gui_mini %s returns NULL" % (uri.encode("utf-8")));
+         raise Exception
+     return structToDict(info.contents)
+ 
+@@ -674,6 +677,7 @@ def get_plugin_control_inputs(uri):
+ def get_plugin_info_essentials(uri):
+     info = utils.get_plugin_info_essentials(uri.encode("utf-8"))
+     if not info:
++        logging.error("utils.get_plugin_info_essentials %s returns NULL" % (uri.encode("utf-8")));
+         return {
+             'error': True,
+             'controlInputs': [],
+@@ -723,6 +727,7 @@ def get_broken_pedalboards():
+ def get_pedalboard_info(bundle):
+     info = utils.get_pedalboard_info(bundle.encode("utf-8"))
+     if not info:
++        logging.error("utils.get_pedalboard_info %s returns NULL" % (bundle.encode("utf-8")));
+         raise Exception
+     return structToDict(info.contents)
+ 
+@@ -732,6 +737,7 @@ def get_pedalboard_info(bundle):
+ def get_pedalboard_size(bundle):
+     size = utils.get_pedalboard_size(bundle.encode("utf-8"))
+     if not size:
++        logging.error("utils.get_pedalboard_size %s returns NULL" % (bundle.encode("utf-8")));
+         raise Exception
+     width  = int(size[0])
+     height = int(size[1])
+@@ -817,6 +823,7 @@ def get_jack_hardware_ports(isAudio, isOutput):
+     return charPtrPtrToStringList(utils.get_jack_hardware_ports(isAudio, isOutput))
+ 
+ def connect_jack_ports(port1, port2):
++    logging.info("connect JACK ");
+     return bool(utils.connect_jack_ports(port1.encode("utf-8"), port2.encode("utf-8")))
+ 
+ def connect_jack_midi_output_ports(port):
+diff --git a/requirements.txt b/requirements.txt
+index cc83c40a..c03d3aa0 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -4,3 +4,4 @@ pystache==0.5.4
+ tornado==4.3
+ git+git://github.com/dlitz/pycrypto@master#egg=pycrypto
+ aggdraw==1.3.11
++RPi.GPIO==0.6.3
+diff --git a/setup.py b/setup.py
+index 9535b84c..70f7508f 100644
+--- a/setup.py
++++ b/setup.py
+@@ -11,6 +11,7 @@ import os
+ class mod_utils_builder(build):
+     def run(self):
+         build.run(self)
++        os.system("make -C utils clean")
+         os.system("make -C utils")
+ 
+ class mod_utils_installer(install):
+diff --git a/utils/Makefile b/utils/Makefile
+index d9b389bc..c16da4d9 100644
+--- a/utils/Makefile
++++ b/utils/Makefile
+@@ -2,9 +2,9 @@
+ CC  ?= gcc
+ CXX ?= g++
+ 
+-CFLAGS += -Wall -Wextra -std=c99 -fPIC -O3
+-CXXFLAGS += -Wall -Wextra -Wshadow -std=gnu++0x -fPIC -O3
+-LDFLAGS += -Wl,-O1 -Wl,--no-undefined -Wl,--strip-all
++CFLAGS += -Wall -Wextra -std=c99 -fPIC 
++CXXFLAGS += -Wall -Wextra -Wshadow -std=gnu++0x -fPIC 
++LDFLAGS += -Wl,--no-undefined 
+ 
+ ifeq ($(shell pkg-config --atleast-version=0.22.0 lilv-0 && echo true), true)
+ CXXFLAGS += -DHAVE_NEW_LILV
+diff --git a/utils/utils_lilv.cpp b/utils/utils_lilv.cpp
+index b4d5304c..8ea3b566 100644
+--- a/utils/utils_lilv.cpp
++++ b/utils/utils_lilv.cpp
+@@ -17,6 +17,7 @@
+ 
+ #include "utils.h"
+ 
++#include <syslog.h>
+ #include <libgen.h>
+ #include <limits.h>
+ #include <stdlib.h>
+@@ -2796,9 +2797,14 @@ bool _is_pedalboard_broken(const LilvPlugin* const p,
+ 
+                 if (PLUGNFO.count(uri) == 0)
+                 {
++                    syslog(LOG_INFO| LOG_LOCAL1, "broken=true missing plugin=%s... ",uri.c_str() );
+                     broken = true;
+                     break;
+                 }
++                else
++                {
++                  syslog(LOG_INFO| LOG_LOCAL1, "broken=false found plugin=%s... ",uri.c_str() );
++                }
+             }
+         }
+ 
+@@ -3490,6 +3496,8 @@ const char* const* add_bundle_to_lilv_world(const char* const bundle)
+             if (std::find(BLACKLIST.begin(), BLACKLIST.end(), uri) != BLACKLIST.end())
+                 continue;
+ 
++                syslog(LOG_INFO| LOG_LOCAL1, "Found plugin=%s... ",uri.c_str() );
++
+             // store new empty data
+             PLUGNFO[uri] = PluginInfo_Init;
+             PLUGNFO_Mini[uri] = PluginInfo_Mini_Init;
+@@ -4046,6 +4054,7 @@ const PedalboardInfo_Mini* const* get_all_pedalboards(void)
+         // get new info
+         const PedalboardInfo_Mini& info = _get_pedalboard_info_mini(p, w, versiontypenode, rdftypenode, ingenblocknode, lv2protonode);
+ 
++        syslog(LOG_INFO | LOG_LOCAL1,"get_all_pedalboards: x1 title=%s valid=%d",info.title, info.valid);
+         if (! info.valid)
+             continue;
+ 
+@@ -4107,6 +4116,7 @@ const char* const* get_broken_pedalboards(void)
+         {
+             const std::string pedalboard(lilv_node_as_uri(lilv_plugin_get_uri(p)));
+             brokenpedals.push_back(pedalboard);
++            syslog(LOG_INFO| LOG_LOCAL1, "brokenpedals add=%s... ",pedalboard.c_str() );
+         }
+     }
+ 
+@@ -4132,6 +4142,7 @@ const char* const* get_broken_pedalboards(void)
+ 
+         return _get_broken_pedals_ret;
+     }
++    syslog(LOG_INFO| LOG_LOCAL1, "No brokenpedals" );
+ 
+     return nullptr;
+ }

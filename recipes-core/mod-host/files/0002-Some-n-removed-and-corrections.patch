@@ -1,0 +1,162 @@
+From df1f0d9679eb245faf0ec25fd47c9bb85e235c46 Mon Sep 17 00:00:00 2001
+From: rezzonics <delacruz@Piloto2.localdomain>
+Date: Wed, 9 Dec 2020 22:49:51 +0100
+Subject: [PATCH] Some \n removed and corrections
+
+---
+ src/completer.c | 8 ++++----
+ src/effects.c   | 6 +++---
+ src/mod-host.c  | 6 +++---
+ src/protocol.c  | 8 ++++----
+ src/worker.c    | 2 +-
+ 5 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/src/completer.c b/src/completer.c
+index 02f992c..09b1216 100644
+--- a/src/completer.c
++++ b/src/completer.c
+@@ -201,7 +201,7 @@ static char *dupstr(const char *s)
+     if (!r)
+     {
+         fprintf(stderr, "malloc error\n");
+-        logger(LOG_ERR, "malloc error\n");
++        logger(LOG_ERR, "malloc error");
+         exit(EXIT_FAILURE);
+     }
+ 
+@@ -485,18 +485,18 @@ static char **completion(const char *text, int start, int end)
+ 
+                 printf("\ndef: %.03f, min: %.03f, max: %.03f, curr: %.03f\n",
+                        *g_param_range[0], *g_param_range[1], *g_param_range[2], *g_param_range[3]);
+-                logger(LOG_INFO, "\ndef: %.03f, min: %.03f, max: %.03f, curr: %.03f\n",
++                logger(LOG_INFO, "def: %.03f, min: %.03f, max: %.03f, curr: %.03f",
+                        *g_param_range[0], *g_param_range[1], *g_param_range[2], *g_param_range[3]);
+ 
+                 if (g_scale_points[0])
+                 {
+                     uint32_t i;
+                     printf("scale points:\n");
+-                    logger(LOG_INFO, "scale points:\n");
++                    logger(LOG_INFO, "scale points:");
+                     for (i = 0; g_scale_points[i]; i+=2)
+                     {
+                         printf("   %s: %s\n", g_scale_points[i], g_scale_points[i+1]);
+-                        logger(LOG_INFO, "   %s: %s\n", g_scale_points[i], g_scale_points[i+1]);
++                        logger(LOG_INFO, "   %s: %s", g_scale_points[i], g_scale_points[i+1]);
+                     }
+                 }
+ 
+diff --git a/src/effects.c b/src/effects.c
+index 69d5739..b8adfe0 100644
+--- a/src/effects.c
++++ b/src/effects.c
+@@ -3926,7 +3926,7 @@ int effects_add(const char *uri, int instance)
+ 
+             /* Jack port creation */
+             jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
+-            if (jack_port == NULL)
++            if (((long int) jack_port) <= 0)
+             {
+                 fprintf(stderr, "can't get jack port\n");
+                 logger(LOG_ERR, "%s: can't get jack port uri=%s", effect_name, uri);
+@@ -4085,7 +4085,7 @@ int effects_add(const char *uri, int instance)
+             if (jack_port == NULL)
+             {
+                 fprintf(stderr, "can't get jack port\n");
+-                logger(LOG_ERR, "%s: can't get jack port uri=%s", effect_name, uri);
++                logger(LOG_ERR, "%s: can't get jack port name uri=%s", effect_name, uri);
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+@@ -4189,7 +4189,7 @@ int effects_add(const char *uri, int instance)
+             if (jack_port == NULL)
+             {
+                 fprintf(stderr, "can't get jack port\n");
+-                logger(LOG_ERR, "%s: can't get jack port uri=%s", effect_name, uri);
++                logger(LOG_ERR, "%s: can't get jack MIDI port name uri=%s", effect_name, uri);
+                 error = ERR_JACK_PORT_REGISTER;
+                 goto error;
+             }
+diff --git a/src/mod-host.c b/src/mod-host.c
+index ce3217b..8861899 100644
+--- a/src/mod-host.c
++++ b/src/mod-host.c
+@@ -779,14 +779,14 @@ int main(int argc, char **argv)
+         pid = fork();
+         if (pid != 0)
+         {
+-            logger(LOG_INFO, "Forking... child PID: %d\n", pid);
++            logger(LOG_INFO, "Forking... child PID: %d", pid);
+ 
+             FILE *fd;
+             fd = fopen(PID_FILE, "w");
+             if (fd == NULL)
+             {
+                 fprintf(stderr, "can't open PID File\n");
+-                logger(LOG_ERR, "can't open PID File\n");
++                logger(LOG_ERR, "can't open PID File");
+             }
+             else
+             {
+@@ -829,7 +829,7 @@ int main(int argc, char **argv)
+     /* Report ready */
+     printf("mod-host ready!\n");
+     fflush(stdout);
+-    logger(LOG_INFO, "mod-host ready!\n");
++    logger(LOG_INFO, "mod-host ready!");
+ 
+     running = 1;
+     while (running) socket_run(interactive);
+diff --git a/src/protocol.c b/src/protocol.c
+index 5b2809c..70ee1ab 100644
+--- a/src/protocol.c
++++ b/src/protocol.c
+@@ -129,7 +129,7 @@ void protocol_parse(msg_t *msg)
+ 
+     if (g_verbose) {
+         printf("received: %s\n", msg->data);
+-        logger(LOG_INFO, "received: %s\n", msg->data);
++        logger(LOG_INFO, "received: %s", msg->data);
+     }
+ 
+     proto.list = strarr_split(msg->data);
+@@ -217,7 +217,7 @@ void protocol_parse(msg_t *msg)
+                 SEND_TO_SENDER(msg->sender_id, proto.response, proto.response_size);
+                 if (g_verbose) {
+                     printf("response: %s\n", proto.response);
+-                    logger(LOG_INFO, "response: %s\n", proto.response);
++                    logger(LOG_INFO, "response: %s", proto.response);
+ 		}
+ 
+                 FREE(proto.response);
+@@ -230,7 +230,7 @@ void protocol_parse(msg_t *msg)
+         SEND_TO_SENDER(msg->sender_id, g_error_messages[-index-1], strlen(g_error_messages[-index-1]));
+         if (g_verbose) {
+ 		printf("error: %s\n", g_error_messages[-index-1]);
+-		logger(LOG_INFO, "error: %s\n", g_error_messages[-index-1]);
++		logger(LOG_INFO, "error: %s", g_error_messages[-index-1]);
+ 	}
+     }
+ 
+@@ -243,7 +243,7 @@ void protocol_add_command(const char *command, void (*callback)(proto_t *proto))
+     if (g_command_count >= PROTOCOL_MAX_COMMANDS)
+     {
+         printf("error: PROTOCOL_MAX_COMMANDS reached (reconfigure it)\n");
+-        logger(LOG_INFO, "error: PROTOCOL_MAX_COMMANDS reached (reconfigure it)\n");
++        logger(LOG_INFO, "error: PROTOCOL_MAX_COMMANDS reached (reconfigure it)");
+         return;
+     }
+ 
+diff --git a/src/worker.c b/src/worker.c
+index f263fa6..c402dad 100644
+--- a/src/worker.c
++++ b/src/worker.c
+@@ -40,7 +40,7 @@ static void* worker_func(void* data)
+ 
+         if (!(buf = realloc(buf, size))) {
+             fprintf(stderr, "worker_func: realloc() failed\n");
+-            logger(LOG_ERR, "worker_func: realloc() failed\n");
++            logger(LOG_ERR, "worker_func: realloc() failed");
+             free(buf);
+             return NULL;
+         }
