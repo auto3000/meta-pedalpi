@@ -1,0 +1,183 @@
+From 17c7acd616fca861938327f0f0ede5978e0417d8 Mon Sep 17 00:00:00 2001
+From: rezzonics <delacruz@Piloto2.localdomain>
+Date: Sat, 12 Dec 2020 00:12:19 +0100
+Subject: [PATCH] Indentations and syntax errors corrected
+
+---
+ mod/hmi.py       |  4 ++--
+ mod/host.py      |  8 +++----
+ mod/session.py   | 11 ++++-----
+ mod/webserver.py | 58 ++++++++++++++++++++++++------------------------
+ 4 files changed, 41 insertions(+), 40 deletions(-)
+
+diff --git a/mod/hmi.py b/mod/hmi.py
+index a3513990..7c9201ae 100644
+--- a/mod/hmi.py
++++ b/mod/hmi.py
+@@ -220,7 +220,7 @@ class HMI(object):
+             self.flush_io = ioloop.call_later(self.timeout/2, self.flush)
+ 
+         try:
+-            logging.error("wait read_until "
++            logging.error("wait read_until ")
+             self.sp.read_until(b'\0', self.checker)
+             logging.error("continue read_until ")
+         except serial.SerialException as e:
+@@ -274,7 +274,7 @@ class HMI(object):
+         else:
+             logging.debug("[hmi] sending -> %s", msg)
+             try:
+-                self.sp.write(msg.encode('utf-8') + b'\0'i, no_callback)
++                self.sp.write(msg.encode('utf-8') + b'\0', no_callback)
+             except StreamClosedError as e:
+                 logging.exception(e)
+                 self.sp = None
+diff --git a/mod/host.py b/mod/host.py
+index 7ed174ab..b029ae38 100644
+--- a/mod/host.py
++++ b/mod/host.py
+@@ -288,7 +288,7 @@ class Host(object):
+     HMI_SNAPSHOTS_3      = 0 - (HMI_SNAPSHOTS_OFFSET + 2)
+ 
+     def __init__(self, hmi, prefs, msg_callback):
+-	print ( "JFD 5555 xxxx ")
++        print ( "JFD 5555 xxxx ")
+         self.hmi = hmi
+         self.prefs = prefs
+         self.msg_callback = msg_callback
+@@ -990,7 +990,7 @@ class Host(object):
+             self._idle = False
+             self.open_host_connection(websocket)
+ 
+-        def open_host_connection(self, websocket):
++    def open_host_connection(self, websocket):
+ 
+         def reader_check_response():
+             self.process_read_queue()
+@@ -1603,7 +1603,7 @@ class Host(object):
+ 
+     # send data to host, set modified flag to true
+     def send_modified(self, msg, callback=None, datatype='int'):
+-	logging.info("send_modified %s" % msg )
++        logging.info("send_modified %s" % msg )
+         self.pedalboard_modified = True
+ 
+         if self.crashed:
+@@ -2818,7 +2818,7 @@ class Host(object):
+         return "effect_%d:%s" % (instance_id, portsymbol)
+ 
+     def connect(self, port_from, port_to, callback):
+-	logging.info("Connect host.py")
++        logging.info("Connect host.py")
+         if (port_from, port_to) in self.connections:
+             logging.info("NOTE: Requested connection already exists")
+             callback(True)
+diff --git a/mod/session.py b/mod/session.py
+index d91e639b..6b8d7826 100644
+--- a/mod/session.py
++++ b/mod/session.py
+@@ -30,7 +30,7 @@ from mod.screenshot import ScreenshotGenerator
+ from mod.settings import (LOG,
+                           DEV_ENVIRONMENT, DEV_HMI, DEV_HOST,
+                           HMI_SERIAL_PORT, HMI_BAUD_RATE, HMI_TIMEOUT,
+-			  HMI_SOCKET_PORT,
++                          HMI_SOCKET_PORT,
+                           PREFERENCES_JSON_FILE, UNTITLED_PEDALBOARD_NAME)
+ 
+ from mod.hmisocket import HMISocket
+@@ -90,8 +90,9 @@ class Session(object):
+             self.hmi  = HMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, HMI_TIMEOUT, self.hmi_initialized_cb, self.hmi_reinit_cb)
+             hmiOpened = self.hmi.sp is not None
+         else:
+-            self.hmi  = HMISocket(HMI_SOCKET_PORT, sel
+-            hmiOpened = True #self.hmi.sp is not None
++            self.hmi  = HMISocket(HMI_SOCKET_PORT, self.hmi_initialized_cb)
++            hmiOpened = True
++            #self.hmi.sp is not None
+ 
+         logging.info("Using HMI =>", hmiOpened)
+ 
+@@ -191,12 +192,12 @@ class Session(object):
+ 
+     # Connect 2 ports
+     def web_connect(self, port_from, port_to, callback):
+-	logging.info("web_connect")
++        logging.info("web_connect")
+         self.host.connect(port_from, port_to, callback)
+ 
+     # Disconnect 2 ports
+     def web_disconnect(self, port_from, port_to, callback):
+-	logging.info("web_disconnect")
++        logging.info("web_disconnect")
+         self.host.disconnect(port_from, port_to, callback)
+ 
+     # Save the current pedalboard
+diff --git a/mod/webserver.py b/mod/webserver.py
+index 0b8428b1..10df76a4 100644
+--- a/mod/webserver.py
++++ b/mod/webserver.py
+@@ -72,35 +72,35 @@ gState = GlobalWebServerState()
+ gState.favorites = []
+ 
+ def setupLogging():
+-	access_log = logging.getLogger("tornado.access")
+-	app_log = logging.getLogger("tornado.application")
+-	gen_log = logging.getLogger("tornado.general")
+-	logger = logging.getLogger("")
+-	access_log.setLevel(logging.DEBUG)
+-	app_log.setLevel(logging.DEBUG)
+-	gen_log.setLevel(logging.DEBUG)
+-	logger.setLevel(logging.DEBUG)
+-
+-	consoleHandler = logging.StreamHandler(sys.stdout)
+-	consoleFormatter = logging.Formatter('%(name)s %(levelname)s %(funcName)s:%(lineno)d: %(message)s')
+-	consoleHandler.formatter = consoleFormatter
+-
+-	syslogHandler = logging.handlers.SysLogHandler('/dev/log')
+-	syslogFormatter = logging.Formatter('%(name)s %(levelname)s %(funcName)s:%(lineno)d: %(message)s')
+-	syslogHandler.formatter = syslogFormatter
+-
+-	logger.addHandler(syslogHandler)
+-	access_log.addHandler(syslogHandler)
+-	app_log.addHandler(syslogHandler)
+-	gen_log.addHandler(syslogHandler)
+-
+-	logger.addHandler(consoleHandler)
+-	access_log.addHandler(consoleHandler)
+-	app_log.addHandler(consoleHandler)
+-	gen_log.addHandler(consoleHandler)
+-
+-	logger.info("Logging to syslog and console is ready.")
+-	return
++        access_log = logging.getLogger("tornado.access")
++        app_log = logging.getLogger("tornado.application")
++        gen_log = logging.getLogger("tornado.general")
++        logger = logging.getLogger("")
++        access_log.setLevel(logging.DEBUG)
++        app_log.setLevel(logging.DEBUG)
++        gen_log.setLevel(logging.DEBUG)
++        logger.setLevel(logging.DEBUG)
++
++        consoleHandler = logging.StreamHandler(sys.stdout)
++        consoleFormatter = logging.Formatter('%(name)s %(levelname)s %(funcName)s:%(lineno)d: %(message)s')
++        consoleHandler.formatter = consoleFormatter
++
++        syslogHandler = logging.handlers.SysLogHandler('/dev/log')
++        syslogFormatter = logging.Formatter('%(name)s %(levelname)s %(funcName)s:%(lineno)d: %(message)s')
++        syslogHandler.formatter = syslogFormatter
++
++        logger.addHandler(syslogHandler)
++        access_log.addHandler(syslogHandler)
++        app_log.addHandler(syslogHandler)
++        gen_log.addHandler(syslogHandler)
++
++        logger.addHandler(consoleHandler)
++        access_log.addHandler(consoleHandler)
++        app_log.addHandler(consoleHandler)
++        gen_log.addHandler(consoleHandler)
++
++        logger.info("Logging to syslog and console is ready.")
++        return
+ 
+ 
+ @gen.coroutine
