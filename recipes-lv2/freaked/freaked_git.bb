@@ -15,19 +15,18 @@ inherit pkgconfig
 
 DEPENDS += "lv2"
 
-EXTRA_OEMAKE = "NOOPT=true"
-INSANE_SKIP_${PN} = "already-stripped"
+EXTRA_OEMAKE = "NOOPT=true DESTDIR=${D} PREFIX=/usr STRIP=echo LINK_OPTS= "
 
 do_configure () {
 }
 
 do_compile () {
 	export GUI_LDFLAGS="${LDFLAGS}"
-	oe_runmake STRIP=echo
+	oe_runmake
 }
 
 do_install () {
-	oe_runmake DESTDIR=${D} PREFIX=/usr LINK_OPTS= install
+	oe_runmake install ${EXTRA_OEMAKE}
 }
 
 FILES_${PN} += "${libdir}/lv2"
