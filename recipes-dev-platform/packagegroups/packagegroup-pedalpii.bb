@@ -74,5 +74,6 @@ RDEPENDS_${PN} += "\
 	deteriorate-lv2 \
 	fontconfig \
 	liberation-fonts \
+	freaked \
 	"
 
