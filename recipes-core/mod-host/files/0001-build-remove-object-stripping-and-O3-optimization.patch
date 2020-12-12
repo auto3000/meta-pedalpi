@@ -1,26 +1,17 @@
-From 866cae4fc52d35c7086bc34ad883e2c5487d75cb Mon Sep 17 00:00:00 2001
+From c635984339a7ecad083e6349b140c1aa8e2254d0 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Thu, 15 Jun 2017 21:48:36 +0200
-Subject: [PATCH 1/7] build: remove object stripping and O3 optimization
+Subject: [PATCH] build: remove object stripping and O3 optimization
 
 ---
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 80833d9..16fa35c 100644
+index 543ca46..d0d182d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -17,7 +17,7 @@ SHAREDIR = $(PREFIX)/share
- MANDIR = $(SHAREDIR)/man/man1/
- 
- # default compiler and linker flags
--CFLAGS += -O3 -Wall -Wextra -c -std=gnu99 -fPIC -D_GNU_SOURCE
-+CFLAGS += -Wall -Wextra -c -std=gnu99 -fPIC -D_GNU_SOURCE
- LDFLAGS += -Wl,--no-undefined
- 
- # debug mode compiler and linker flags
-@@ -26,7 +26,7 @@ ifeq ($(DEBUG), 1)
+@@ -28,7 +28,7 @@ ifeq ($(DEBUG), 1)
     LDFLAGS +=
  else
     CFLAGS += -fvisibility=hidden
@@ -29,6 +20,3 @@ index 80833d9..16fa35c 100644
  endif
  
  ifeq ($(TESTBUILD), 1)
--- 
-1.9.1
-

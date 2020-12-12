@@ -1,25 +1,25 @@
-From 28831638aa9471677f312940aa8c4f8d88159a32 Mon Sep 17 00:00:00 2001
+From 06c4709df339ba508a334fff73e4179aed0db123 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Tue, 17 Oct 2017 20:13:14 +0200
-Subject: [PATCH 5/7] jack: add retry mechanism to connect JACK
+Subject: [PATCH] jack: add retry mechanism to connect JACK
 
 ---
  src/effects.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++-----
  1 file changed, 46 insertions(+), 5 deletions(-)
 
 diff --git a/src/effects.c b/src/effects.c
-index f4b5bcd..88e1be4 100644
+index 88c14fa..997dee5 100644
 --- a/src/effects.c
 +++ b/src/effects.c
-@@ -31,6 +31,7 @@
- #include <limits.h>
+@@ -36,6 +36,7 @@
  #include <math.h>
  #include <pthread.h>
+ #include <sys/stat.h>
 +#include <time.h>
  
  /* Jack */
  #include <jack/jack.h>
-@@ -90,7 +91,9 @@
+@@ -117,7 +118,9 @@ typedef struct {
  // custom jack flag used for cv
  // needed because we prefer jack2 which doesn't have metadata yet
  #define JackPortIsControlVoltage 0x100
@@ -30,7 +30,7 @@ index f4b5bcd..88e1be4 100644
  /* Local */
  #include "effects.h"
  #include "monitor.h"
-@@ -559,6 +562,14 @@ static uint32_t GetHyliaOutputLatency(void);
+@@ -712,6 +715,14 @@ static uint32_t GetHyliaOutputLatency(void);
  *           LOCAL FUNCTIONS
  ************************************************************************************************************************
  */
@@ -43,9 +43,9 @@ index f4b5bcd..88e1be4 100644
 +  }
 +}
  
+ 
  static void InstanceDelete(int effect_id)
- {
-@@ -2065,7 +2076,22 @@ int effects_init(void* client)
+@@ -3138,7 +3149,22 @@ int effects_init(void* client)
      }
      else
      {
@@ -69,7 +69,7 @@ index f4b5bcd..88e1be4 100644
      }
  
      if (g_jack_global_client == NULL)
-@@ -2463,9 +2489,10 @@ int effects_add(const char *uid, int instance)
+@@ -3565,10 +3591,11 @@ int effects_add(const char *uri, int instance)
      port_name[MAX_CHAR_BUF_SIZE] = '\0';
  
      /* Jack */
@@ -77,11 +77,12 @@ index f4b5bcd..88e1be4 100644
 +    jack_client_t *jack_client = NULL;
      jack_status_t jack_status;
      unsigned long jack_flags = 0;
+     jack_port_t *raw_midi_port = NULL;
 +    struct timespec t_now;
  
      /* Lilv */
      const LilvPlugin *plugin;
-@@ -2525,14 +2552,28 @@ int effects_add(const char *uid, int instance)
+@@ -3639,14 +3666,28 @@ int effects_add(const char *uri, int instance)
  
      /* Create a client to Jack */
      snprintf(effect_name, 31, "effect_%i", instance);
@@ -112,6 +113,3 @@ index f4b5bcd..88e1be4 100644
      effect->jack_client = jack_client;
  
      /* Get the plugin */
--- 
-1.9.1
-

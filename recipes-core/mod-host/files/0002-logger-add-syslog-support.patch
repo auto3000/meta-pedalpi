@@ -1,34 +1,33 @@
-From dc87e787201a3a97a0051df37ed3392294dd6b6a Mon Sep 17 00:00:00 2001
+From aea8947435d835537765dfe0182e242f0e5600c8 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Sat, 16 Sep 2017 18:50:18 +0200
-Subject: [PATCH 2/7] logger: add syslog support
+Subject: [PATCH] logger: add syslog support
 
 ---
- src/completer.c | 10 +++++-----
- src/effects.c   | 32 ++++++++++++++++----------------
+ src/completer.c |  9 +++++----
+ src/effects.c   | 31 ++++++++++++++++---------------
  src/logger.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
  src/logger.h    | 27 +++++++++++++++++++++++++++
  src/mod-host.c  | 25 ++++++++++---------------
  src/protocol.c  | 10 +++++-----
  src/worker.c    |  3 ++-
- 7 files changed, 107 insertions(+), 42 deletions(-)
+ 7 files changed, 107 insertions(+), 40 deletions(-)
  create mode 100644 src/logger.c
  create mode 100644 src/logger.h
 
 diff --git a/src/completer.c b/src/completer.c
-index 42b2bb4..6d08068 100644
+index 2b9ecb3..2ab98bf 100644
 --- a/src/completer.c
 +++ b/src/completer.c
-@@ -31,7 +31,7 @@
- #include "completer.h"
- #include "effects.h"
- #include "utils.h"
--
+@@ -39,6 +39,7 @@
+ 
+ // entire code on this file can be disabled with this macro
+ #ifndef SKIP_READLINE
 +#include "logger.h"
  
  /*
  ************************************************************************************************************************
-@@ -141,7 +141,7 @@ static char *dupstr(const char *s)
+@@ -199,7 +200,7 @@ static char *dupstr(const char *s)
  
      if (!r)
      {
@@ -37,7 +36,7 @@ index 42b2bb4..6d08068 100644
          exit(EXIT_FAILURE);
      }
  
-@@ -325,16 +325,16 @@ static char **completion(const char *text, int start, int end)
+@@ -481,16 +482,16 @@ static char **completion(const char *text, int start, int end)
              {
                  effects_get_parameter_info(atoi(cmd[1]), cmd[2], g_param_range, g_scale_points);
  
@@ -58,19 +57,18 @@ index 42b2bb4..6d08068 100644
                  }
  
 diff --git a/src/effects.c b/src/effects.c
-index d27992f..6c14968 100644
+index c962944..1d66731 100644
 --- a/src/effects.c
 +++ b/src/effects.c
-@@ -102,7 +102,7 @@
- #include "sha1/sha1.h"
+@@ -131,6 +131,7 @@ typedef struct {
  #include "rtmempool/list.h"
  #include "rtmempool/rtmempool.h"
--
+ #include "filter.h"
 +#include "logger.h"
  
  /*
  ************************************************************************************************************************
-@@ -992,7 +992,7 @@ static int ProcessPlugin(jack_nframes_t nframes, void *arg)
+@@ -1495,7 +1496,7 @@ static int ProcessPlugin(jack_nframes_t nframes, void *arg)
                  jack_midi_event_get(&ev, buf, j);
                  if (!lv2_evbuf_write(&iter, ev.time, 0, g_urids.midi_MidiEvent, ev.size, ev.buffer))
                  {
@@ -79,7 +77,7 @@ index d27992f..6c14968 100644
                  }
              }
  
-@@ -1800,7 +1800,7 @@ static void SetParameterFromState(const char* symbol, void* user_data,
+@@ -2667,7 +2668,7 @@ static void SetParameterFromState(const char* symbol, void* user_data,
      }
      else
      {
@@ -88,7 +86,7 @@ index d27992f..6c14968 100644
          return;
      }
  
-@@ -2078,7 +2078,7 @@ int effects_init(void* client)
+@@ -3153,7 +3154,7 @@ int effects_init(void* client)
      if (!rtsafe_memory_pool_create(&g_rtsafe_mem_pool, "mod-host", sizeof(postponed_event_list_data),
                                     MAX_POSTPONED_EVENTS))
      {
@@ -97,7 +95,7 @@ index d27992f..6c14968 100644
          if (client == NULL)
              jack_client_close(g_jack_global_client);
          return ERR_MEMORY_ALLOCATION;
-@@ -2222,7 +2222,7 @@ int effects_init(void* client)
+@@ -3305,7 +3306,7 @@ int effects_init(void* client)
  
      if (! g_midi_in_port)
      {
@@ -106,7 +104,7 @@ index d27992f..6c14968 100644
          if (client == NULL)
              jack_client_close(g_jack_global_client);
          return ERR_JACK_PORT_REGISTER;
-@@ -2364,7 +2364,7 @@ int effects_init(void* client)
+@@ -3471,7 +3472,7 @@ int effects_init(void* client)
      /* Try activate the jack global client */
      if (jack_activate(g_jack_global_client) != 0)
      {
@@ -115,7 +113,7 @@ index d27992f..6c14968 100644
          if (client == NULL)
              jack_client_close(g_jack_global_client);
          return ERR_JACK_CLIENT_ACTIVATION;
-@@ -2531,7 +2531,7 @@ int effects_add(const char *uid, int instance)
+@@ -3644,7 +3645,7 @@ int effects_add(const char *uri, int instance)
  
      if (!jack_client)
      {
@@ -124,7 +122,7 @@ index d27992f..6c14968 100644
          error = ERR_JACK_CLIENT_CREATION;
          goto error;
      }
-@@ -2559,7 +2559,7 @@ int effects_add(const char *uid, int instance)
+@@ -3669,7 +3670,7 @@ int effects_add(const char *uri, int instance)
          if (!plugin)
  #endif
          {
@@ -133,7 +131,7 @@ index d27992f..6c14968 100644
              error = ERR_LV2_INVALID_URI;
              goto error;
          }
-@@ -2575,7 +2575,7 @@ int effects_add(const char *uid, int instance)
+@@ -3691,7 +3692,7 @@ int effects_add(const char *uri, int instance)
  
      if (!lilv_instance)
      {
@@ -142,7 +140,7 @@ index d27992f..6c14968 100644
          error = ERR_LV2_INSTANTIATION;
          goto error;
      }
-@@ -2699,7 +2699,7 @@ int effects_add(const char *uid, int instance)
+@@ -3854,7 +3855,7 @@ int effects_add(const char *uri, int instance)
              audio_buffer = (float *) calloc(g_sample_rate, sizeof(float));
              if (!audio_buffer)
              {
@@ -151,7 +149,7 @@ index d27992f..6c14968 100644
                  error = ERR_MEMORY_ALLOCATION;
                  goto error;
              }
-@@ -2712,7 +2712,7 @@ int effects_add(const char *uid, int instance)
+@@ -3867,7 +3868,7 @@ int effects_add(const char *uri, int instance)
              jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
              if (jack_port == NULL)
              {
@@ -160,7 +158,7 @@ index d27992f..6c14968 100644
                  error = ERR_JACK_PORT_REGISTER;
                  goto error;
              }
-@@ -2730,7 +2730,7 @@ int effects_add(const char *uid, int instance)
+@@ -3885,7 +3886,7 @@ int effects_add(const char *uri, int instance)
              control_buffer = (float *) malloc(sizeof(float));
              if (!control_buffer)
              {
@@ -169,7 +167,7 @@ index d27992f..6c14968 100644
                  error = ERR_MEMORY_ALLOCATION;
                  goto error;
              }
-@@ -2834,7 +2834,7 @@ int effects_add(const char *uid, int instance)
+@@ -4003,7 +4004,7 @@ int effects_add(const char *uri, int instance)
              cv_buffer = (float *) calloc(g_sample_rate, sizeof(float));
              if (!cv_buffer)
              {
@@ -178,7 +176,7 @@ index d27992f..6c14968 100644
                  error = ERR_MEMORY_ALLOCATION;
                  goto error;
              }
-@@ -2848,7 +2848,7 @@ int effects_add(const char *uid, int instance)
+@@ -4020,7 +4021,7 @@ int effects_add(const char *uri, int instance)
              jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
              if (jack_port == NULL)
              {
@@ -187,7 +185,7 @@ index d27992f..6c14968 100644
                  error = ERR_JACK_PORT_REGISTER;
                  goto error;
              }
-@@ -2875,7 +2875,7 @@ int effects_add(const char *uid, int instance)
+@@ -4123,7 +4124,7 @@ int effects_add(const char *uri, int instance)
              jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_MIDI_TYPE, jack_flags, 0);
              if (jack_port == NULL)
              {
@@ -196,7 +194,7 @@ index d27992f..6c14968 100644
                  error = ERR_JACK_PORT_REGISTER;
                  goto error;
              }
-@@ -3219,7 +3219,7 @@ int effects_add(const char *uid, int instance)
+@@ -4510,7 +4511,7 @@ int effects_add(const char *uri, int instance)
      /* Try activate the Jack client */
      if (jack_activate(jack_client) != 0)
      {
@@ -287,10 +285,10 @@ index 0000000..07c32a4
 +#endif // LOGGER_H
 +
 diff --git a/src/mod-host.c b/src/mod-host.c
-index 9c81395..60bab83 100644
+index 5ce6376..25fd331 100644
 --- a/src/mod-host.c
 +++ b/src/mod-host.c
-@@ -61,7 +61,7 @@
+@@ -64,7 +64,7 @@
  #include "completer.h"
  #include "monitor.h"
  #include "info.h"
@@ -299,7 +297,7 @@ index 9c81395..60bab83 100644
  
  /*
  ************************************************************************************************************************
-@@ -420,7 +420,7 @@ static void load_cb(proto_t *proto)
+@@ -434,7 +434,7 @@ static void load_cb(proto_t *proto)
  
          while (fgets(line, sizeof(line), fp))
          {
@@ -308,7 +306,7 @@ index 9c81395..60bab83 100644
  
              /* removes the \n at end of line */
              line[strlen(line)-1] = 0;
-@@ -429,8 +429,6 @@ static void load_cb(proto_t *proto)
+@@ -443,8 +443,6 @@ static void load_cb(proto_t *proto)
              msg.data = line;
              msg.data_size = strlen(line);
              protocol_parse(&msg);
@@ -317,7 +315,7 @@ index 9c81395..60bab83 100644
          }
  
          fclose(fp);
-@@ -502,11 +500,8 @@ static void output_data_ready(proto_t *proto)
+@@ -540,11 +538,8 @@ static void output_data_ready(proto_t *proto)
  static void help_cb(proto_t *proto)
  {
      proto->response = 0;
@@ -331,7 +329,7 @@ index 9c81395..60bab83 100644
  }
  
  static void quit_cb(proto_t *proto)
-@@ -544,7 +539,6 @@ static void interactive_mode(void)
+@@ -583,7 +578,6 @@ static void interactive_mode(void)
                  msg.data = input;
                  msg.data_size = strlen(input);
                  protocol_parse(&msg);
@@ -339,7 +337,7 @@ index 9c81395..60bab83 100644
  
                  free(input);
                  input = NULL;
-@@ -711,23 +705,25 @@ int main(int argc, char **argv)
+@@ -766,23 +760,25 @@ int main(int argc, char **argv)
          }
      }
  
@@ -368,7 +366,7 @@ index 9c81395..60bab83 100644
                  fclose(fd);
              }
              exit(EXIT_SUCCESS);
-@@ -762,8 +758,7 @@ int main(int argc, char **argv)
+@@ -819,8 +815,7 @@ int main(int argc, char **argv)
      protocol_verbose(verbose);
  
      /* Report ready */
@@ -379,7 +377,7 @@ index 9c81395..60bab83 100644
      running = 1;
      while (running) socket_run(interactive);
 diff --git a/src/protocol.c b/src/protocol.c
-index 7e2852c..b604b56 100644
+index 2e24cba..2ea1c60 100644
 --- a/src/protocol.c
 +++ b/src/protocol.c
 @@ -27,7 +27,7 @@
@@ -428,7 +426,7 @@ index 7e2852c..b604b56 100644
      }
  
 diff --git a/src/worker.c b/src/worker.c
-index a038565..ac07d26 100644
+index 49803df..47e99cd 100644
 --- a/src/worker.c
 +++ b/src/worker.c
 @@ -17,6 +17,7 @@
@@ -448,6 +446,3 @@ index a038565..ac07d26 100644
              free(buf);
              return NULL;
          }
--- 
-1.9.1
-

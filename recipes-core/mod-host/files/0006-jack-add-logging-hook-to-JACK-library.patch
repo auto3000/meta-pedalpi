@@ -1,7 +1,7 @@
-From 371d20a8e1e98e267e3878f2602fc0c0ec7bde49 Mon Sep 17 00:00:00 2001
+From cd4691390ebca30dd9fdb8bf76f5c0d6945ac14f Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Tue, 17 Oct 2017 20:14:57 +0200
-Subject: [PATCH 6/7] jack: add logging hook to JACK library
+Subject: [PATCH] jack: add logging hook to JACK library
 
 ---
  src/logger.c   | 20 ++++++++++++++++++++
@@ -57,10 +57,10 @@ index 07c32a4..2a4e0ca 100644
  #endif // LOGGER_H
 -
 diff --git a/src/mod-host.c b/src/mod-host.c
-index 60bab83..388320b 100644
+index 25fd331..1971910 100644
 --- a/src/mod-host.c
 +++ b/src/mod-host.c
-@@ -707,6 +707,7 @@ int main(int argc, char **argv)
+@@ -762,6 +762,7 @@ int main(int argc, char **argv)
  
      openlog("mod-host", LOG_NDELAY | LOG_PID, LOG_DAEMON);
      logger(LOG_INFO, "logging is started.");
@@ -68,6 +68,3 @@ index 60bab83..388320b 100644
  
      if (! nofork)
      {
--- 
-1.9.1
-

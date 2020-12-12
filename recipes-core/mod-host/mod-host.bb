@@ -9,11 +9,10 @@ DEPENDS_armv7 = " jack lilv readline fftwf ne10 "
 DEPENDS_aarch64 = " jack lilv readline fftwf ne10 "
 RDEPENDS_${PN} = " jack-utils lilv "
 
-SRCREV = "1726ad06b11323da7e1aaed690ff8aef91f702b5"
+SRCREV = "520b7fc15579aa3ff836449385ebde6eeb1449b6"
 SRC_URI = "git://github.com/moddevices/mod-host.git \
 	file://0001-build-remove-object-stripping-and-O3-optimization.patch \
 	file://0002-logger-add-syslog-support.patch \
-	file://0003-buffer-valgrind-detects-unitialized-buffer-in-effect.patch \
 	file://0004-mutex-disable-build-flags-inheritance-protocol.patch \
 	file://0005-jack-add-retry-mechanism-to-connect-JACK.patch \
 	file://0006-jack-add-logging-hook-to-JACK-library.patch \
