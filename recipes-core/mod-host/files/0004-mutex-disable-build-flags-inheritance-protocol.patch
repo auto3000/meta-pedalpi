@@ -1,27 +1,37 @@
-From c8a7e2844008e72c895e9b7277c02f44178398f8 Mon Sep 17 00:00:00 2001
+From bf57b4af9a7571364f8299070467a13e6cc0b2ff Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Sun, 15 Oct 2017 23:13:11 +0200
-Subject: [PATCH 4/7] mutex: disable build flags inheritance protocol
+Subject: [PATCH] mutex: disable build flags inheritance protocol
 
 ---
- src/effects.c             | 2 --
+ src/effects.c             | 4 ----
  src/rtmempool/rtmempool.c | 2 --
- 2 files changed, 4 deletions(-)
+ 2 files changed, 6 deletions(-)
 
 diff --git a/src/effects.c b/src/effects.c
-index ae2aa17..f4b5bcd 100644
+index 1d66731..88c14fa 100644
 --- a/src/effects.c
 +++ b/src/effects.c
-@@ -2086,9 +2086,7 @@ int effects_init(void* client)
+@@ -3162,9 +3162,7 @@ int effects_init(void* client)
  
-     pthread_mutexattr_t atts;
-     pthread_mutexattr_init(&atts);
+     pthread_mutexattr_t mutex_atts;
+     pthread_mutexattr_init(&mutex_atts);
 -#ifdef __MOD_DEVICES__
-     pthread_mutexattr_setprotocol(&atts, PTHREAD_PRIO_INHERIT);
+     pthread_mutexattr_setprotocol(&mutex_atts, PTHREAD_PRIO_INHERIT);
 -#endif
  
-     pthread_mutex_init(&g_rtsafe_mutex, &atts);
-     pthread_mutex_init(&g_midi_learning_mutex, &atts);
+     pthread_mutex_init(&g_rtsafe_mutex, &mutex_atts);
+     pthread_mutex_init(&g_raw_midi_port_mutex, &mutex_atts);
+@@ -3683,9 +3681,7 @@ int effects_add(const char *uri, int instance)
+ 
+     pthread_mutexattr_t mutex_atts;
+     pthread_mutexattr_init(&mutex_atts);
+-#ifdef __MOD_DEVICES__
+     pthread_mutexattr_setprotocol(&mutex_atts, PTHREAD_PRIO_INHERIT);
+-#endif
+ 
+     /* Create and activate the plugin instance */
+     lilv_instance = lilv_plugin_instantiate(plugin, g_sample_rate, effect->features);
 diff --git a/src/rtmempool/rtmempool.c b/src/rtmempool/rtmempool.c
 index aef9b70..f7215e0 100644
 --- a/src/rtmempool/rtmempool.c
@@ -36,6 +46,3 @@ index aef9b70..f7215e0 100644
      pthread_mutex_init(&poolPtr->mutex, &atts);
      pthread_mutexattr_destroy(&atts);
  
--- 
-1.9.1
-

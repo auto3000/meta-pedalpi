@@ -1,45 +1,63 @@
-From 2682592a6abee1c6678723e7b67a1fcc52bb60c6 Mon Sep 17 00:00:00 2001
+From 458e7c723a20f9ad0199e2628067d5331426adcd Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Tue, 17 Oct 2017 20:17:05 +0200
-Subject: [PATCH 7/7] logging: redirect printf to logger
+Subject: [PATCH] logging: redirect printf to logger
 
 ---
- src/effects.c | 21 +++++++++++----------
+ src/effects.c | 25 +++++++++++++------------
  src/socket.c  | 25 +++++++++++++------------
- 2 files changed, 24 insertions(+), 22 deletions(-)
+ 2 files changed, 26 insertions(+), 24 deletions(-)
 
 diff --git a/src/effects.c b/src/effects.c
-index 88e1be4..8c5df79 100644
+index 997dee5..bd18c00 100644
 --- a/src/effects.c
 +++ b/src/effects.c
-@@ -2598,7 +2598,7 @@ int effects_add(const char *uid, int instance)
+@@ -3671,7 +3671,7 @@ int effects_add(const char *uri, int instance)
+     {
+       if ( (jack_client = jack_client_open(effect_name, JackNoStartServer, &jack_status)) == NULL )
+       {
+-          logger(LOG_INFO, "%s: can't get jack client uid=%s retry=%d", effect_name, uid, i);
++          logger(LOG_INFO, "%s: can't get jack client uri=%s retry=%d", effect_name, uri, i);
+           timespec_add(&t_now, DELAY_BETWEEN_RETRY_REGISTER_IN_NS);
+           clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t_now, NULL);
+       }
+@@ -3683,7 +3683,7 @@ int effects_add(const char *uri, int instance)
+ 
+     if (!jack_client)
+     {
+-        logger(LOG_ERR, "%s: can't get jack client uid=%s", effect_name, uid);
++        logger(LOG_ERR, "%s: can't get jack client uri=%s", effect_name, uri);
+         error = ERR_JACK_CLIENT_CREATION;
+         goto error;
+     }
+@@ -3709,7 +3709,7 @@ int effects_add(const char *uri, int instance)
          if (!plugin)
  #endif
          {
 -            logger(LOG_ERR, "can't get plugin");
-+            logger(LOG_ERR, "%s: can't get plugin uid=%s", effect_name, uid);
++            logger(LOG_ERR, "%s: can't get plugin uri=%s", effect_name, uri);
              error = ERR_LV2_INVALID_URI;
              goto error;
          }
-@@ -2614,7 +2614,7 @@ int effects_add(const char *uid, int instance)
+@@ -3729,7 +3729,7 @@ int effects_add(const char *uri, int instance)
  
      if (!lilv_instance)
      {
 -        logger(LOG_ERR, "can't get lilv instance");
-+        logger(LOG_ERR, "%s: can't get lilv instance uid=%s", effect_name, uid);
++        logger(LOG_ERR, "%s: can't get lilv instance uri=%s", effect_name, uri);
          error = ERR_LV2_INSTANTIATION;
          goto error;
      }
-@@ -2738,7 +2738,7 @@ int effects_add(const char *uid, int instance)
+@@ -3892,7 +3892,7 @@ int effects_add(const char *uri, int instance)
              audio_buffer = (float *) calloc(g_sample_rate, sizeof(float));
              if (!audio_buffer)
              {
 -                logger(LOG_ERR, "can't get audio buffer");
-+                logger(LOG_ERR, "%s: can't get audio buffer uid=%s", effect_name, uid);
++                logger(LOG_ERR, "%s: can't get audio buffer uri=%s", effect_name, uri);
                  error = ERR_MEMORY_ALLOCATION;
                  goto error;
              }
-@@ -2749,9 +2749,10 @@ int effects_add(const char *uid, int instance)
+@@ -3903,9 +3903,10 @@ int effects_add(const char *uri, int instance)
  
              /* Jack port creation */
              jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
@@ -48,57 +66,57 @@ index 88e1be4..8c5df79 100644
 +            if (((long int) jack_port) <= 0)
              {
 -                logger(LOG_ERR, "can't get jack port");
-+                logger(LOG_ERR, "%s: can't get jack port name=%s uid=%s", effect_name, port_name, uid);
++                logger(LOG_ERR, "%s: can't get jack port name=%s uri=%s", effect_name, port_name, uri);
                  error = ERR_JACK_PORT_REGISTER;
                  goto error;
              }
-@@ -2769,7 +2770,7 @@ int effects_add(const char *uid, int instance)
+@@ -3923,7 +3924,7 @@ int effects_add(const char *uri, int instance)
              control_buffer = (float *) malloc(sizeof(float));
              if (!control_buffer)
              {
 -                logger(LOG_ERR, "can't get control buffer");
-+                logger(LOG_ERR, "%s: can't get control buffer uid=%s", effect_name, uid);
++                logger(LOG_ERR, "%s: can't get control buffer uri=%s", effect_name, uri);
                  error = ERR_MEMORY_ALLOCATION;
                  goto error;
              }
-@@ -2873,7 +2874,7 @@ int effects_add(const char *uid, int instance)
+@@ -4041,7 +4042,7 @@ int effects_add(const char *uri, int instance)
              cv_buffer = (float *) calloc(g_sample_rate, sizeof(float));
              if (!cv_buffer)
              {
 -                logger(LOG_ERR, "can't get cv buffer");
-+                logger(LOG_ERR, "%s: can't get cv buffer uid=%s", effect_name, uid);
++                logger(LOG_ERR, "%s: can't get cv buffer uri=%s", effect_name, uri);
                  error = ERR_MEMORY_ALLOCATION;
                  goto error;
              }
-@@ -2887,7 +2888,7 @@ int effects_add(const char *uid, int instance)
+@@ -4058,7 +4059,7 @@ int effects_add(const char *uri, int instance)
              jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, jack_flags, 0);
              if (jack_port == NULL)
              {
 -                logger(LOG_ERR, "can't get jack port");
-+                logger(LOG_ERR, "%s: can't get jack port name=%s with JackPortIsControlVoltage flag uid=%s", effect_name, port_name, uid);
++                logger(LOG_ERR, "%s: can't get jack port name=%s with JackPortIsControlVoltage flag uri=%s", effect_name, port_name, uri);
                  error = ERR_JACK_PORT_REGISTER;
                  goto error;
              }
-@@ -2914,7 +2915,7 @@ int effects_add(const char *uid, int instance)
+@@ -4161,7 +4162,7 @@ int effects_add(const char *uri, int instance)
              jack_port = jack_port_register(jack_client, port_name, JACK_DEFAULT_MIDI_TYPE, jack_flags, 0);
              if (jack_port == NULL)
              {
 -                logger(LOG_ERR, "can't get jack port");
-+                logger(LOG_ERR, "%s: can't get jack MIDI port name=%s uid=%s", effect_name, port_name, uid);
++                logger(LOG_ERR, "%s: can't get jack MIDI port name=%s uri=%s", effect_name, port_name, uri);
                  error = ERR_JACK_PORT_REGISTER;
                  goto error;
              }
-@@ -3258,7 +3259,7 @@ int effects_add(const char *uid, int instance)
+@@ -4548,7 +4549,7 @@ int effects_add(const char *uri, int instance)
      /* Try activate the Jack client */
      if (jack_activate(jack_client) != 0)
      {
 -        logger(LOG_ERR, "can't activate jack_client");
-+        logger(LOG_ERR, "%s: can't activate jack_client uid=%s", effect_name, uid);
++        logger(LOG_ERR, "%s: can't activate jack_client uri=%s", effect_name, uri);
          error = ERR_JACK_CLIENT_ACTIVATION;
          goto error;
      }
 diff --git a/src/socket.c b/src/socket.c
-index 5b5d7f1..b4aca09 100644
+index f6b27cc..dd3ca0b 100644
 --- a/src/socket.c
 +++ b/src/socket.c
 @@ -28,9 +28,10 @@
@@ -113,7 +131,7 @@ index 5b5d7f1..b4aca09 100644
  
  /*
  ************************************************************************************************************************
-@@ -118,7 +119,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+@@ -109,7 +110,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
  
      if (g_serverfd < 0)
      {
@@ -122,7 +140,7 @@ index 5b5d7f1..b4aca09 100644
          return -1;
      }
  
-@@ -128,7 +129,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+@@ -119,7 +120,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
  
          if (g_fbserverfd < 0)
          {
@@ -131,7 +149,7 @@ index 5b5d7f1..b4aca09 100644
              return -1;
          }
      }
-@@ -163,7 +164,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+@@ -154,7 +155,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
      serv_addr.sin_port = htons(socket_port);
      if (bind(g_serverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
      {
@@ -140,7 +158,7 @@ index 5b5d7f1..b4aca09 100644
          return -1;
      }
  
-@@ -173,7 +174,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+@@ -164,7 +165,7 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
          serv_addr.sin_port = htons(feedback_port);
          if (bind(g_fbserverfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
          {
@@ -149,7 +167,7 @@ index 5b5d7f1..b4aca09 100644
              return -1;
          }
      }
-@@ -181,13 +182,13 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
+@@ -172,13 +173,13 @@ int socket_start(int socket_port, int feedback_port, int buffer_size)
      /* Start listen the sockets */
      if (listen(g_serverfd, MOD_SOCKET_BACKLOG) < 0)
      {
@@ -165,7 +183,7 @@ index 5b5d7f1..b4aca09 100644
          return -1;
      }
  
-@@ -238,7 +239,7 @@ int socket_send(int destination, const char *buffer, int size)
+@@ -229,7 +230,7 @@ int socket_send(int destination, const char *buffer, int size)
      ret = write(destination, buffer, size);
      if (ret < 0)
      {
@@ -174,7 +192,7 @@ index 5b5d7f1..b4aca09 100644
      }
  
      return ret;
-@@ -268,7 +269,7 @@ void socket_run(int exit_on_failure)
+@@ -259,7 +260,7 @@ void socket_run(int exit_on_failure)
          if (! exit_on_failure)
              return;
  
@@ -183,7 +201,7 @@ index 5b5d7f1..b4aca09 100644
          exit(EXIT_FAILURE);
      }
  
-@@ -282,7 +283,7 @@ void socket_run(int exit_on_failure)
+@@ -273,7 +274,7 @@ void socket_run(int exit_on_failure)
          if (! exit_on_failure)
              return;
  
@@ -192,7 +210,7 @@ index 5b5d7f1..b4aca09 100644
          exit(EXIT_FAILURE);
      }
  
-@@ -297,7 +298,7 @@ void socket_run(int exit_on_failure)
+@@ -288,7 +289,7 @@ void socket_run(int exit_on_failure)
              if (! exit_on_failure)
                  return;
  
@@ -201,7 +219,7 @@ index 5b5d7f1..b4aca09 100644
              exit(EXIT_FAILURE);
          }
      }
-@@ -326,7 +327,7 @@ void socket_run(int exit_on_failure)
+@@ -317,7 +318,7 @@ void socket_run(int exit_on_failure)
              if (! exit_on_failure)
                  break;
  
@@ -210,6 +228,3 @@ index 5b5d7f1..b4aca09 100644
              exit(EXIT_FAILURE);
          }
          else /* Client disconnected */
--- 
-1.9.1
-
