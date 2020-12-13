@@ -1,29 +1,17 @@
-From e4d3b94648d66aefd0fe5eec9fb621af2f71f0a6 Mon Sep 17 00:00:00 2001
+From bee732817b8a109487883a305ec9f07fb998f735 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Mon, 22 May 2017 19:11:12 +0000
 Subject: [PATCH 05/16] rpiclient: add internal statemachine
 
 requirements.txt is updated to include tornado.locks
----
- requirements.txt |   2 +-
- rpiclient.py     | 143 ++++++++++++++++++++++++++++++++++++++++++++++---------
- 2 files changed, 122 insertions(+), 23 deletions(-)
 
-diff --git a/requirements.txt b/requirements.txt
-index 4ca2fa3..b85492b 100644
---- a/requirements.txt
-+++ b/requirements.txt
-@@ -1,7 +1,7 @@
- Pillow==2.8.1
- pyserial==2.7
- pystache==0.5.4
--tornado==4.1
-+tornado==4.2
- http://github.com/dlitz/pycrypto/tarball/v2.7a1#egg=pycrypto-2.7a1
- aggdraw==1.2.1
- RPi.GPIO==0.6.3
+%% original patch: 0005-rpiclient-add-internal-statemachine.patch
+---
+ rpiclient.py | 143 +++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 121 insertions(+), 22 deletions(-)
+
 diff --git a/rpiclient.py b/rpiclient.py
-index 642a01e..7e2cfbf 100644
+index 642a01ef..7e2cfbf1 100644
 --- a/rpiclient.py
 +++ b/rpiclient.py
 @@ -10,7 +10,8 @@ from tornado.iostream import PipeIOStream
@@ -268,5 +256,5 @@ index 642a01e..7e2cfbf 100644
  	except:
  		print("Exception triggered - Tornado Server stopped.")
 -- 
-2.7.4
+2.17.1
 

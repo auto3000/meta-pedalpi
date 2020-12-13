@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=b5abed640d912caca185601d2312815e"
 RDEPENDS_${PN} = "python3-json python3-setuptools python3-pyserial pystache python3-pillow python3-tornado"
 DEPENDS = "lilv jack alsa-lib"
 
-SRCREV = "03ede9bbfac9d42010f010e59dacf66ac54fa8b3"
+SRCREV = "5634a7fad7d96eccdc20bd750134f8e263775c9a"
 SRC_URI = "git://github.com/moddevices/mod-ui.git;branch=master \
            file://0001-logging-add-logging-message-for-host-config.patch \
            file://0002-hmi_socket-file-creation.patch \

@@ -1,14 +1,15 @@
-From ce0a6132017f093f98145b1b29790b617a552af8 Mon Sep 17 00:00:00 2001
+From 00644160d98a137bbded15c080347e29e7308ea4 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Sat, 16 Sep 2017 19:25:32 +0200
 Subject: [PATCH 12/16] build: add clean rule
 
+%% original patch: 0012-build-add-clean-rule.patch
 ---
  setup.py | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/setup.py b/setup.py
-index 75c6243..ac4f6fc 100644
+index 9535b84c..70f7508f 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -11,6 +11,7 @@ import os
@@ -20,5 +21,5 @@ index 75c6243..ac4f6fc 100644
  
  class mod_utils_installer(install):
 -- 
-2.7.4
+2.17.1
 

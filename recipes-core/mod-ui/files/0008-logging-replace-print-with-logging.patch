@@ -1,32 +1,33 @@
-From bd1a08d3809e8ae65ab3004ff35dcd0126c0b451 Mon Sep 17 00:00:00 2001
+From 853e17b7c73d0a525595a93d8c618fb6ff88d5d5 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Wed, 28 Jun 2017 16:24:03 +0200
 Subject: [PATCH 08/16] logging: replace print with logging
 
+%% original patch: 0008-logging-replace-print-with-logging.patch
 ---
- mod/development.py |  4 ++--
- mod/hmi.py         | 22 +++++++++---------
- mod/hmisocket.py   | 27 ++++------------------
- mod/host.py        | 68 +++++++++++++++++++++++++++---------------------------
+ mod/development.py |  4 +--
+ mod/hmi.py         | 16 ++++++------
+ mod/hmisocket.py   | 27 +++-----------------
+ mod/host.py        | 62 +++++++++++++++++++++++-----------------------
  mod/session.py     | 10 ++++----
  mod/webserver.py   |  5 ++--
  modtools/utils.py  |  2 +-
- 7 files changed, 60 insertions(+), 78 deletions(-)
+ 7 files changed, 53 insertions(+), 73 deletions(-)
 
 diff --git a/mod/development.py b/mod/development.py
-index bbbe318..f47fa9f 100644
+index bba632b7..0797e9f5 100644
 --- a/mod/development.py
 +++ b/mod/development.py
-@@ -34,7 +34,7 @@ class FakeHMI(HMI):
-     #    pass
+@@ -31,7 +31,7 @@ class FakeHMI(HMI):
+         IOLoop.instance().add_callback(callback)
  
-     def send(self, msg, callback=None, datatype=None):
--        logging.info('[JFD] fake send msg='+msg)
+     def send(self, msg, callback=None, datatype='int'):
+-        logging.info('FakeHMI send msg='+msg)
 +        logging.info('fake send msg='+msg)
          if callback is None:
              return
          if datatype == 'boolean':
-@@ -76,7 +76,7 @@ class FakeHost(Host):
+@@ -73,7 +73,7 @@ class FakeHost(Host):
  
      # send data to host, set modified flag to true
      def send_modified(self, msg, callback=None, datatype='int'):
@@ -36,10 +37,10 @@ index bbbe318..f47fa9f 100644
          if callback is not None:
              callback(True)
 diff --git a/mod/hmi.py b/mod/hmi.py
-index b789aa0..4076175 100644
+index 7f577142..ff447a0d 100644
 --- a/mod/hmi.py
 +++ b/mod/hmi.py
-@@ -54,7 +54,7 @@ class SerialIOStream(BaseIOStream):
+@@ -89,7 +89,7 @@ class SerialIOStream(BaseIOStream):
              else:
                  r = self.sp.read_bytes(self.read_chunk_size)
          except Exception as inst:
@@ -48,7 +49,7 @@ index b789aa0..4076175 100644
              return None
          if r == '':
              return None
-@@ -78,7 +78,7 @@ class HMI(object):
+@@ -130,7 +130,7 @@ class HMI(object):
              sp.flushInput()
              sp.flushOutput()
          except Exception as e:
@@ -57,18 +58,18 @@ index b789aa0..4076175 100644
              return
  
          self.sp = SerialIOStream(sp)
-@@ -97,7 +97,7 @@ class HMI(object):
-         self.checker()
+@@ -168,7 +168,7 @@ class HMI(object):
  
-     def checker(self, data=None):
--        logging.error("[JFD] enter checker ")
-+        logging.info("[hmi] enter checker ")
-         if data is not None:
-             logging.info('[hmi] received <- %s' % repr(data))
+         if data is not None and data != b'\0':
+             self.last_write_time = 0
+-            logging.debug('[hmi] received <- %s', data)
++            logging.info('[hmi] received <- %s' % repr(data))
              try:
-@@ -125,20 +125,20 @@ class HMI(object):
-                             self.send("resp %d %s" % (0 if resp else -1, resp_args))
-                     msg.run_cmd(_callback)
+                 msg = Protocol(data.decode("utf-8", errors="ignore"))
+             except ProtocolError as e:
+@@ -218,9 +218,9 @@ class HMI(object):
+             self.flush_io = ioloop.call_later(self.timeout/2, self.flush)
+ 
          try:
 -            logging.error("[JFD] wait read_until ")
 +            logging.debug("wait read_until ")
@@ -76,9 +77,10 @@ index b789aa0..4076175 100644
 -            logging.error("[JFD] continue read_until ")
 +            logging.debug("continue read_until ")
          except serial.SerialException as e:
-             logging.error("[hmi] error while reading %s" % e)
-+        except:
-+            logging.error("[hmi] error while reading", exc_info=True)
+             logging.error("[hmi] error while reading %s", e)
+ 
+@@ -255,13 +255,11 @@ class HMI(object):
+         #os.system("touch /tmp/reset-hmi; kill -9 {}".format(os.getpid()))
  
      def process_queue(self):
 -        logging.info("[hmi] process_queue: JFD entry")
@@ -91,16 +93,16 @@ index b789aa0..4076175 100644
              pass
  
          try:
-@@ -156,7 +156,7 @@ class HMI(object):
-         self.send("resp -1")
+@@ -286,7 +284,7 @@ class HMI(object):
+         self.send("{} -1".format(CMD_RESPONSE), None)
  
-     def send(self, msg, callback=None, datatype='int'):
+     def send(self, msg, callback, datatype='int'):
 -        logging.error('[JFD] send msg=' + msg)
 +        logging.info('send msg=' + msg)
          if self.sp is None:
              return
  
-@@ -168,7 +168,7 @@ class HMI(object):
+@@ -315,7 +313,7 @@ class HMI(object):
              return
  
          def no_callback2():
@@ -109,26 +111,8 @@ index b789aa0..4076175 100644
              pass
  
          # is resp, just send
-@@ -188,7 +188,7 @@ class HMI(object):
-             dataLen = len(data)
- 
-             if numBytesFree-dataLen-2 < 0:
--                print("ERROR: Controller out of memory when sending initial state (stopped at %i)" % num)
-+                logging.error("Controller out of memory when sending initial state (stopped at %i)" % num)
-                 if pedalboard_id >= num:
-                     pedalboard_id = 0
-                 break
-@@ -237,7 +237,7 @@ class HMI(object):
-                 dataLen = len(data)
- 
-                 if numBytesFree-dataLen-2 < 0:
--                    print("ERROR: Controller out of memory when sending options (stopped at %i)" % currentNum)
-+                    logging.error("Controller out of memory when sending options (stopped at %i)" % currentNum)
-                     if value >= currentNum:
-                         value = 0.0
-                     rmax = currentNum
 diff --git a/mod/hmisocket.py b/mod/hmisocket.py
-index 82f71d1..8e77339 100644
+index 82f71d1c..8e773396 100644
 --- a/mod/hmisocket.py
 +++ b/mod/hmisocket.py
 @@ -40,8 +40,6 @@ class EchoServer(TCPServer):
@@ -189,10 +173,10 @@ index 82f71d1..8e77339 100644
 -        #self.sp = FakeHMI().sp
 +
 diff --git a/mod/host.py b/mod/host.py
-index 3589356..6a68dde 100644
+index c647b093..3670e4ad 100644
 --- a/mod/host.py
 +++ b/mod/host.py
-@@ -405,7 +405,7 @@ class Host(object):
+@@ -635,7 +635,7 @@ class Host(object):
                      optdataLen = len(optdata)
  
                      if numBytesFree-optdataLen-2 < 0:
@@ -201,25 +185,25 @@ index 3589356..6a68dde 100644
                          if rvalue >= currentNum:
                              rvalue = 0.0
                          rmaximum = currentNum
-@@ -439,7 +439,7 @@ class Host(object):
-                                                                          data['maximum'],
-                                                                          ), callback, datatype='boolean')
+@@ -689,7 +689,7 @@ class Host(object):
+                                                                 ), callback, datatype='boolean')
+             return
  
 -        print("ERROR: Invalid addressing requested for", actuator)
 +        logging.error("Invalid addressing requested for", actuator)
          callback(False)
          return
  
-@@ -454,7 +454,7 @@ class Host(object):
-         if atype == Addressings.ADDRESSING_TYPE_MIDI:
-             return self.send_modified("midi_unmap %d %s" % (instance_id, portsymbol), callback, datatype='boolean')
+@@ -721,7 +721,7 @@ class Host(object):
+                 callback(True)
+             return
  
 -        print("ERROR: Invalid unaddressing requested")
 +        logging.error("Invalid unaddressing requested")
          callback(False)
          return
  
-@@ -491,9 +491,9 @@ class Host(object):
+@@ -803,9 +803,9 @@ class Host(object):
                  return 0.0
              return float(pluginData['mapPresets'].index(pluginData['preset']))
  
@@ -232,34 +216,34 @@ index 3589356..6a68dde 100644
          return pluginData['ports'][portsymbol]
  
      def addr_task_store_address_data(self, instance_id, portsymbol, data):
-@@ -645,7 +645,7 @@ class Host(object):
-                 self._idle = True
- 
+@@ -1036,7 +1036,7 @@ class Host(object):
          self._idle = False
+         self._queue = []
+ 
 -        print ( "JFD Main socket, used for sending messages ")
 +        logging.info( "Main socket, used for sending messages ")
          # Main socket, used for sending messages
          self.writesock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
          self.writesock.set_close_callback(self.writer_connection_closed)
-@@ -797,7 +797,7 @@ class Host(object):
+@@ -1328,7 +1328,7 @@ class Host(object):
                      pluginData['bypassed'] = bool(value)
  
                  elif portsymbol == ":presets":
 -                    print("presets changed by backend", value)
 +                    logging.info("presets changed by backend", value)
+                     abort_catcher = self.abort_previous_loading_progress("process_read_message_body")
                      value = int(value)
                      if value < 0 or value >= len(pluginData['mapPresets']):
-                         return
-@@ -1023,7 +1023,7 @@ class Host(object):
+@@ -1620,7 +1620,7 @@ class Host(object):
  
      # send data to host, set modified flag to true
      def send_modified(self, msg, callback=None, datatype='int'):
 -        print("JFD send_modified %s" % msg )
 +        logging.info("send_modified msg=%s" % msg )
          self.pedalboard_modified = True
-         self._queue.append((msg, callback, datatype))
-         if self._idle:
-@@ -1210,7 +1210,7 @@ class Host(object):
+ 
+         if self.crashed:
+@@ -1876,7 +1876,7 @@ class Host(object):
  
      def add_bundle(self, bundlepath, callback):
          if is_bundle_loaded(bundlepath):
@@ -268,7 +252,7 @@ index 3589356..6a68dde 100644
              callback((False, "Bundle already loaded"))
              return
  
-@@ -1222,7 +1222,7 @@ class Host(object):
+@@ -1888,7 +1888,7 @@ class Host(object):
  
      def remove_bundle(self, bundlepath, isPluginBundle, callback):
          if not is_bundle_loaded(bundlepath):
@@ -277,25 +261,16 @@ index 3589356..6a68dde 100644
              callback((False, "Bundle not loaded"))
              return
  
-@@ -1438,7 +1438,7 @@ class Host(object):
+@@ -2289,7 +2289,7 @@ class Host(object):
          pluginData  = self.plugins[instance_id]
  
          if symbol in pluginData['designations']:
 -            print("ERROR: Trying to modify a specially designated port '%s', stop!" % symbol)
 +            logging.error("Trying to modify a specially designated port '%s', stop!" % symbol)
-             return
- 
-         pluginData['ports'][symbol] = value
-@@ -1701,7 +1701,7 @@ class Host(object):
-         pedalpreset = self.pedalboard_presets[idx]
- 
-         if pedalpreset is None:
--            print("ERROR: Asked to load an invalid pedalboard preset, number", idx)
-+            logging.error("Asked to load an invalid pedalboard preset, number", idx)
              callback(False)
              return
  
-@@ -1792,9 +1792,9 @@ class Host(object):
+@@ -2858,9 +2858,9 @@ class Host(object):
          return "effect_%d:%s" % (instance_id, portsymbol)
  
      def connect(self, port_from, port_to, callback):
@@ -307,7 +282,7 @@ index 3589356..6a68dde 100644
              callback(True)
              return
  
-@@ -1804,7 +1804,7 @@ class Host(object):
+@@ -2870,7 +2870,7 @@ class Host(object):
                  self.connections.append((port_from, port_to))
                  self.msg_callback("connect %s %s" % (port_from, port_to))
              else:
@@ -316,7 +291,7 @@ index 3589356..6a68dde 100644
  
          self.send_modified("connect %s %s" % (self._fix_host_connection_port(port_from),
                                                self._fix_host_connection_port(port_to)),
-@@ -1817,14 +1817,14 @@ class Host(object):
+@@ -2883,14 +2883,14 @@ class Host(object):
              self.msg_callback("disconnect %s %s" % (port_from, port_to))
  
              if not ok:
@@ -333,7 +308,7 @@ index 3589356..6a68dde 100644
  
          if len(self.connections) == 0:
              return host_callback(False)
-@@ -1833,13 +1833,13 @@ class Host(object):
+@@ -2899,13 +2899,13 @@ class Host(object):
          try:
              port_from_2 = self._fix_host_connection_port(port_from)
          except:
@@ -349,8 +324,8 @@ index 3589356..6a68dde 100644
              return host_callback(True)
  
          host_callback(disconnect_jack_ports(port_from_2, port_to_2))
-@@ -2050,7 +2050,7 @@ class Host(object):
-             pdata = init_pedal_preset.get(p['instance'], None)
+@@ -3170,7 +3170,7 @@ class Host(object):
+             pdata = initial_snapshot.get(p['instance'], None)
  
              if pdata is None:
 -                print("WARNING: Pedalboard preset missing data for instance name '%s'" % p['instance'])
@@ -358,8 +333,8 @@ index 3589356..6a68dde 100644
                  continue
  
              p['bypassed'] = pdata['bypassed']
-@@ -2818,7 +2818,7 @@ _:b%i
-         pluginData  = self.plugins.get(instance_id, None)
+@@ -4236,7 +4236,7 @@ _:b%i
+         operational_mode = extras.get('operational_mode', '=')
  
          if pluginData is None:
 -            print("ERROR: Trying to address non-existing plugin instance %i: '%s'" % (instance_id, instance))
@@ -367,35 +342,17 @@ index 3589356..6a68dde 100644
              callback(False)
              return
  
-@@ -2880,7 +2880,7 @@ _:b%i
-             return
+@@ -4338,7 +4338,7 @@ _:b%i
+         is_hmi_actuator = self.addressings.is_hmi_actuator(actuator_uri)
  
-         if self.addressings.is_hmi_actuator(actuator_uri) and not self.hmi.initialized:
+         if is_hmi_actuator and not self.hmi.initialized:
 -            print("WARNING: Cannot address to HMI at this point")
 +            logging.info("WARNING: Cannot address to HMI at this point")
              callback(False)
              return
  
-@@ -2944,7 +2944,7 @@ _:b%i
-         logging.info("hmi list bank pedalboards")
- 
-         if bank_id < 0 or bank_id > len(self.banks):
--            print("ERROR: Trying to list pedalboards using out of bounds bank id %i" % (bank_id))
-+            logging.error("Trying to list pedalboards using out of bounds bank id %i" % (bank_id))
-             callback(False, "")
-             return
- 
-@@ -2966,7 +2966,7 @@ _:b%i
-             dataLen = len(data)
- 
-             if numBytesFree-dataLen-2 < 0:
--                print("ERROR: Controller out of memory when listing pedalboards (stopping at %i)" % num)
-+                logging.error("Controller out of memory when listing pedalboards (stopping at %i)" % num)
-                 break
- 
-             num += 1
-@@ -2988,19 +2988,19 @@ _:b%i
-         logging.info("hmi load bank pedalboard")
+@@ -4619,19 +4619,19 @@ _:b%i
+         logging.debug("hmi load bank pedalboard")
  
          if bank_id < 0 or bank_id > len(self.banks):
 -            print("ERROR: Trying to load pedalboard using out of bounds bank id %i" % (bank_id))
@@ -411,14 +368,14 @@ index 3589356..6a68dde 100644
              callback(False)
              return
  
-         if self.next_hmi_pedalboard is not None:
+         if self.next_hmi_pedalboard_to_load is not None:
 -            print("NOTE: Delaying loading of %i:%i" % (bank_id, pedalboard_id))
 +            logging.info("NOTE: Delaying loading of %i:%i" % (bank_id, pedalboard_id))
-             self.next_hmi_pedalboard = (bank_id, pedalboard_id)
-             callback(False)
+             self.next_hmi_pedalboard_to_load = (bank_id, pedalboard_id)
+             callback(True)
              return
-@@ -3020,7 +3020,7 @@ _:b%i
-                 navigateChannel = 15
+@@ -4643,7 +4643,7 @@ _:b%i
+             pedalboards = bank['pedalboards']
  
          if pedalboard_id < 0 or pedalboard_id >= len(pedalboards):
 -            print("ERROR: Trying to load pedalboard using out of bounds pedalboard id %i" % (pedalboard_id))
@@ -426,29 +383,37 @@ index 3589356..6a68dde 100644
              callback(False)
              return
  
-@@ -3031,15 +3031,15 @@ _:b%i
- 
-         def loaded2_callback(ok):
-             if self.next_hmi_pedalboard is None:
--                print("ERROR: Delayed loading is in corrupted state")
-+                logging.error("Delayed loading is in corrupted state")
+@@ -4658,9 +4658,9 @@ _:b%i
+             if self.next_hmi_pedalboard_to_load is None:
                  return
              if ok:
--                print("NOTE: Delayed loading of %i:%i has started" % self.next_hmi_pedalboard)
-+                logging.info("NOTE: Delayed loading of %i:%i has started" % self.next_hmi_pedalboard)
+-                print("NOTE: Delayed loading of %i:%i has started" % self.next_hmi_pedalboard_to_load)
++                logging.info("Delayed loading of %i:%i has started" % self.next_hmi_pedalboard_to_load)
              else:
--                print("ERROR: Delayed loading of %i:%i failed!" % self.next_hmi_pedalboard)
-+                logging.error("Delayed loading of %i:%i failed!" % self.next_hmi_pedalboard)
+-                print("ERROR: Delayed loading of %i:%i failed!" % self.next_hmi_pedalboard_to_load)
++                logging.error("Delayed loading of %i:%i failed!" % self.next_hmi_pedalboard_to_load)
  
-         def loaded_callback(ok):
+         def load_finish_callback(_):
+             self.processing_pending_flag = False
+@@ -4671,13 +4671,13 @@ _:b%i
+             self.hmi.set_snapshot_name(name, load_finish_callback)
+ 
+         def pb_host_loaded_callback(_):
 -            print("NOTE: Loading of %i:%i finished" % (bank_id, pedalboard_id))
-+            logging.info("NOTE: Loading of %i:%i finished" % (bank_id, pedalboard_id))
++            logging.info("Loading of %i:%i finished" % (bank_id, pedalboard_id))
+ 
+             next_pedalboard = self.next_hmi_pedalboard_to_load
+             self.next_hmi_pedalboard_to_load = None
+ 
+             if next_pedalboard is None:
+-                logging.error("ERROR: Inconsistent state detected when loading next pedalboard (will not activate audio)")
++                logging.error("Inconsistent state detected when loading next pedalboard (will not activate audio)")
+                 return
  
              # Check if there's a pending pedalboard to be loaded
-             next_pedalboard = self.next_hmi_pedalboard
-@@ -3119,7 +3119,7 @@ _:b%i
-                 rolling = bool(value > 0.5)
-                 self.set_transport_rolling(rolling, True, callback)
+@@ -4849,7 +4849,7 @@ _:b%i
+                     rolling = bool(value > 0.5)
+                     self.set_transport_rolling(rolling, True, False, True)
              else:
 -                print("ERROR: Trying to set value for the wrong pedalboard port:", portsymbol)
 +                logging.error("Trying to set value for the wrong pedalboard port:", portsymbol)
@@ -456,11 +421,11 @@ index 3589356..6a68dde 100644
                  return
  
 diff --git a/mod/session.py b/mod/session.py
-index 1c0d3fb..7f36fc9 100644
+index 1ee978b7..97f24ddc 100644
 --- a/mod/session.py
 +++ b/mod/session.py
-@@ -38,9 +38,9 @@ elif HOST_CARLA:
-     from mod.host_carla import CarlaHost as Host
+@@ -38,9 +38,9 @@ if DEV_HOST:
+     Host = FakeHost
  else:
      from mod.host import Host
 -    print("JFD start Host session.py");
@@ -471,16 +436,16 @@ index 1c0d3fb..7f36fc9 100644
  
  class UserPreferences(object):
      def __init__(self):
-@@ -82,7 +82,7 @@ class Session(object):
+@@ -93,7 +93,7 @@ class Session(object):
              self.hmi  = HMISocket(HMI_SOCKET_PORT, self.hmi_initialized_cb)
              hmiOpened = True #self.hmi.sp is not None
  
--        print("Using HMI =>", hmiOpened)
+-        #print("Using HMI =>", hmiOpened)
 +        logging.info("Using HMI =>" + str(hmiOpened))
  
          if not hmiOpened:
-             self.hmi = FakeHMI()
-@@ -155,12 +155,12 @@ class Session(object):
+             self.hmi = FakeHMI(self.hmi_initialized_cb)
+@@ -192,12 +192,12 @@ class Session(object):
  
      # Connect 2 ports
      def web_connect(self, port_from, port_to, callback):
@@ -496,19 +461,19 @@ index 1c0d3fb..7f36fc9 100644
  
      # Save the current pedalboard
 diff --git a/mod/webserver.py b/mod/webserver.py
-index e886750..7feeeaf 100644
+index ea14a68b..462dda02 100644
 --- a/mod/webserver.py
 +++ b/mod/webserver.py
-@@ -30,6 +30,8 @@ from tornado.ioloop import IOLoop
+@@ -32,6 +32,8 @@ from tornado.ioloop import IOLoop
  from tornado.template import Loader
  from tornado.util import unicode_type
  from uuid import uuid4
 +import logging
 +
  
- from mod.settings import (APP, LOG,
-                           HTML_DIR, DOWNLOAD_TMP_DIR, DEVICE_KEY, DEVICE_WEBSERVER_PORT,
-@@ -1880,7 +1882,6 @@ def prepare(isModApp = False):
+ from mod.profile import Profile
+ from mod.settings import (APP, LOG, DEV_API,
+@@ -2313,7 +2315,6 @@ def prepare(isModApp = False):
      if LOG:
          from tornado.log import enable_pretty_logging
          enable_pretty_logging()
@@ -516,7 +481,7 @@ index e886750..7feeeaf 100644
  
      def checkhost():
          if SESSION.host.readsock is None or SESSION.host.writesock is None:
-@@ -1895,7 +1896,7 @@ def prepare(isModApp = False):
+@@ -2336,7 +2337,7 @@ def prepare(isModApp = False):
      ioinstance.add_callback(checkhost)
  
  def start():
@@ -526,10 +491,10 @@ index e886750..7feeeaf 100644
  
  def stop():
 diff --git a/modtools/utils.py b/modtools/utils.py
-index b4482e8..b1e3987 100644
+index 14f5b10e..ab899d45 100644
 --- a/modtools/utils.py
 +++ b/modtools/utils.py
-@@ -712,7 +712,7 @@ def get_jack_hardware_ports(isAudio, isOutput):
+@@ -860,7 +860,7 @@ def get_jack_hardware_ports(isAudio, isOutput):
      return charPtrPtrToStringList(utils.get_jack_hardware_ports(isAudio, isOutput))
  
  def connect_jack_ports(port1, port2):
@@ -537,7 +502,7 @@ index b4482e8..b1e3987 100644
 +    logging.info("Connect JACK ");
      return bool(utils.connect_jack_ports(port1.encode("utf-8"), port2.encode("utf-8")))
  
- def disconnect_jack_ports(port1, port2):
+ def connect_jack_midi_output_ports(port):
 -- 
-2.7.4
+2.17.1
 

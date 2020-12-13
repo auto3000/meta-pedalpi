@@ -1,18 +1,19 @@
-From 16d668b079283406ebf00210bd3c6d4c1878aff7 Mon Sep 17 00:00:00 2001
+From 8c6b508962cf13e480558a6b695cb828ea632427 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Sun, 24 Jun 2018 17:43:22 +0200
 Subject: [PATCH 16/16] logging: add some traces in utils and webserver
 
+%% original patch: 0016-logging-add-some-traces-in-utils-and-webserver.patch
 ---
  mod/webserver.py  | 3 ++-
  modtools/utils.py | 6 ++++++
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/mod/webserver.py b/mod/webserver.py
-index 18d61c0..c1ff632 100644
+index 866b3abf..45a8d11f 100644
 --- a/mod/webserver.py
 +++ b/mod/webserver.py
-@@ -1111,15 +1111,16 @@ class PedalboardLoadBundle(JsonRequestHandler):
+@@ -1368,15 +1368,16 @@ class PedalboardLoadBundle(JsonRequestHandler):
      @gen.engine
      def post(self):
          bundlepath = os.path.abspath(self.get_argument("bundlepath"))
@@ -31,10 +32,10 @@ index 18d61c0..c1ff632 100644
  
          self.write({
 diff --git a/modtools/utils.py b/modtools/utils.py
-index b1e3987..038dfd3 100644
+index ab899d45..54b85717 100644
 --- a/modtools/utils.py
 +++ b/modtools/utils.py
-@@ -582,6 +582,7 @@ def get_all_plugins():
+@@ -683,6 +683,7 @@ def get_all_plugins():
  def get_plugin_info(uri):
      info = utils.get_plugin_info(uri.encode("utf-8"))
      if not info:
@@ -42,7 +43,7 @@ index b1e3987..038dfd3 100644
          raise Exception
      return structToDict(info.contents)
  
-@@ -590,6 +591,7 @@ def get_plugin_info(uri):
+@@ -699,6 +700,7 @@ def get_non_cached_plugin_info(uri):
  def get_plugin_gui(uri):
      info = utils.get_plugin_gui(uri.encode("utf-8"))
      if not info:
@@ -50,7 +51,7 @@ index b1e3987..038dfd3 100644
          raise Exception
      return structToDict(info.contents)
  
-@@ -598,6 +600,7 @@ def get_plugin_gui(uri):
+@@ -707,6 +709,7 @@ def get_plugin_gui(uri):
  def get_plugin_gui_mini(uri):
      info = utils.get_plugin_gui_mini(uri.encode("utf-8"))
      if not info:
@@ -58,15 +59,15 @@ index b1e3987..038dfd3 100644
          raise Exception
      return structToDict(info.contents)
  
-@@ -605,6 +608,7 @@ def get_plugin_gui_mini(uri):
- def get_plugin_control_inputs_and_monitored_outputs(uri):
-     info = utils.get_plugin_control_inputs_and_monitored_outputs(uri.encode("utf-8"))
+@@ -717,6 +720,7 @@ def get_plugin_control_inputs(uri):
+ def get_plugin_info_essentials(uri):
+     info = utils.get_plugin_info_essentials(uri.encode("utf-8"))
      if not info:
 +        logging.error("utils.get_plugin_control_inputs_and_monitored_outputs %s returns NULL" % (uri.encode("utf-8")));
-         return {'inputs':[],'monitoredOutputs':[],'error':True}
-     return structToDict(info.contents)
- 
-@@ -627,6 +631,7 @@ def get_broken_pedalboards():
+         return {
+             'error': True,
+             'controlInputs': [],
+@@ -766,6 +770,7 @@ def get_broken_pedalboards():
  def get_pedalboard_info(bundle):
      info = utils.get_pedalboard_info(bundle.encode("utf-8"))
      if not info:
@@ -74,7 +75,7 @@ index b1e3987..038dfd3 100644
          raise Exception
      return structToDict(info.contents)
  
-@@ -636,6 +641,7 @@ def get_pedalboard_info(bundle):
+@@ -775,6 +780,7 @@ def get_pedalboard_info(bundle):
  def get_pedalboard_size(bundle):
      size = utils.get_pedalboard_size(bundle.encode("utf-8"))
      if not size:
@@ -83,5 +84,5 @@ index b1e3987..038dfd3 100644
      width  = int(size[0])
      height = int(size[1])
 -- 
-2.7.4
+2.17.1
 
