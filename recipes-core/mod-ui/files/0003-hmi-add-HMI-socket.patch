@@ -1,44 +1,21 @@
-From dbed336c4e11b90b0bb4327bfcd0d77f39f52d9c Mon Sep 17 00:00:00 2001
+From 8e8561e00ae278212c062e03c9f0a238a3e03bfe Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Fri, 31 Mar 2017 18:19:34 +0000
 Subject: [PATCH 03/16] hmi: add HMI socket
 
+%% original patch: 0003-hmi-add-HMI-socket.patch
 ---
- mod/development.py |  9 ++++++
- mod/hmi_socket.py  | 65 ---------------------------------------
- mod/hmisocket.py   | 90 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- mod/session.py     |  9 ++++--
- mod/settings.py    |  1 +
- 5 files changed, 107 insertions(+), 67 deletions(-)
+ mod/hmi_socket.py | 65 ----------------------------------
+ mod/hmisocket.py  | 90 +++++++++++++++++++++++++++++++++++++++++++++++
+ mod/session.py    |  7 +++-
+ mod/settings.py   |  1 +
+ 4 files changed, 97 insertions(+), 66 deletions(-)
  delete mode 100644 mod/hmi_socket.py
  create mode 100644 mod/hmisocket.py
 
-diff --git a/mod/development.py b/mod/development.py
-index 3f0acc1..d014983 100644
---- a/mod/development.py
-+++ b/mod/development.py
-@@ -21,9 +21,18 @@ from mod.hmi import HMI
- from mod.host import Host
- 
- class FakeHMI(HMI):
-+    def __init__(self):
-+        self.sp = None
-+        self.queue = []
-+        self.queue_idle = True
-+        self.initialized = False
-+
-     def init(self, callback):
-         pass
- 
-+    #def read_until(delimiter, callback=None, max_bytes=None):
-+    #    pass
-+
-     def send(self, msg, callback=None, datatype=None):
-         logging.info(msg)
-         if callback is None:
 diff --git a/mod/hmi_socket.py b/mod/hmi_socket.py
 deleted file mode 100644
-index 1a64538..0000000
+index 1a645384..00000000
 --- a/mod/hmi_socket.py
 +++ /dev/null
 @@ -1,65 +0,0 @@
@@ -109,7 +86,7 @@ index 1a64538..0000000
 -        self.checker()
 diff --git a/mod/hmisocket.py b/mod/hmisocket.py
 new file mode 100644
-index 0000000..7c508ce
+index 00000000..7c508ce1
 --- /dev/null
 +++ b/mod/hmisocket.py
 @@ -0,0 +1,90 @@
@@ -204,51 +181,45 @@ index 0000000..7c508ce
 +        self.clear(self.clear_callback)
 +        self.checker()
 diff --git a/mod/session.py b/mod/session.py
-index c628a0f..c547df8 100644
+index c268fcb0..8410ef99 100644
 --- a/mod/session.py
 +++ b/mod/session.py
-@@ -28,7 +28,9 @@ from mod.recorder import Recorder, Player
- from mod.screenshot import ScreenshotGenerator
- from mod.settings import (DEV_ENVIRONMENT, DEV_HMI, DEV_HOST,
-                           HMI_SERIAL_PORT, HMI_BAUD_RATE, HOST_CARLA,
+@@ -30,7 +30,9 @@ from mod.screenshot import ScreenshotGenerator
+ from mod.settings import (LOG,
+                           DEV_ENVIRONMENT, DEV_HMI, DEV_HOST,
+                           HMI_SERIAL_PORT, HMI_BAUD_RATE, HMI_TIMEOUT,
 +                          HMI_SOCKET_PORT,
-                           PREFERENCES_JSON_FILE)
+                           PREFERENCES_JSON_FILE, UNTITLED_PEDALBOARD_NAME)
 +from mod.hmisocket import HMISocket
  
  if DEV_HOST:
-     from mod.development import FakeHost as Host
-@@ -73,14 +75,17 @@ class Session(object):
+     Host = FakeHost
+@@ -84,9 +86,12 @@ class Session(object):
          # Try to open real HMI
          hmiOpened = False
  
 -        if not DEV_HMI:
 +        if DEV_HMI:
-             self.hmi  = HMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, self.hmi_initialized_cb)
+             self.hmi  = HMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, HMI_TIMEOUT, self.hmi_initialized_cb, self.hmi_reinit_cb)
              hmiOpened = self.hmi.sp is not None
 +        else:
 +            self.hmi  = HMISocket(HMI_SOCKET_PORT, self.hmi_initialized_cb)
 +            hmiOpened = self.hmi.sp is not None
  
-         print("Using HMI =>", hmiOpened)
- 
-         if not hmiOpened:
--            self.hmi = FakeHMI(HMI_SERIAL_PORT, HMI_BAUD_RATE, self.hmi_initialized_cb)
-+            self.hmi = FakeHMI()
- 
-         self.host = Host(self.hmi, self.prefs, self.msg_callback)
+         #print("Using HMI =>", hmiOpened)
  
 diff --git a/mod/settings.py b/mod/settings.py
-index 06102a8..7bda0ea 100644
+index d8fbfda8..08173939 100644
 --- a/mod/settings.py
 +++ b/mod/settings.py
-@@ -56,6 +56,7 @@ LV2_PEDALBOARDS_DIR = os.path.expanduser("~/.pedalboards/")
- 
+@@ -66,6 +66,7 @@ LV2_PEDALBOARDS_DIR = os.path.expanduser("~/.pedalboards/")
  HMI_BAUD_RATE = os.environ.get('MOD_HMI_BAUD_RATE', 10000000)
  HMI_SERIAL_PORT = os.environ.get('MOD_HMI_SERIAL_PORT', "/dev/ttyUSB0")
+ HMI_TIMEOUT = int(os.environ.get('MOD_HMI_TIMEOUT', 0))
 +HMI_SOCKET_PORT = os.environ.get('MOD_HMI_SOCKET_PORT', 9999)
  
- DEVICE_WEBSERVER_PORT = int(os.environ.get('MOD_DEVICE_WEBSERVER_PORT', 80))
- 
+ MODEL_CPU = os.environ.get('MOD_MODEL_CPU', None)
+ MODEL_TYPE = os.environ.get('MOD_MODEL_TYPE', None)
 -- 
-2.7.4
+2.17.1
 

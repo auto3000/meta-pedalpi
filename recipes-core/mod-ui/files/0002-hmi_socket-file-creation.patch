@@ -1,16 +1,17 @@
-From f89061f7ca616025b27404b037a897d8edf3e787 Mon Sep 17 00:00:00 2001
+From 2b067b874336a81f1fbe10f761eea7ce3c88cf94 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Mon, 27 Mar 2017 19:15:30 +0200
 Subject: [PATCH 02/16] hmi_socket: file creation
 
+%% original patch: 0002-hmi_socket-file-creation.patch
 ---
- mod/hmi_socket.py | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ mod/hmi_socket.py | 65 +++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 65 insertions(+)
  create mode 100644 mod/hmi_socket.py
 
 diff --git a/mod/hmi_socket.py b/mod/hmi_socket.py
 new file mode 100644
-index 0000000..1a64538
+index 00000000..1a645384
 --- /dev/null
 +++ b/mod/hmi_socket.py
 @@ -0,0 +1,65 @@
@@ -80,5 +81,5 @@ index 0000000..1a64538
 +        self.ping(ping_callback)
 +        self.checker()
 -- 
-2.7.4
+2.17.1
 

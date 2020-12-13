@@ -1,27 +1,27 @@
-From f2fd1a71dc4aec8dcd7990dd0fe0925f88252314 Mon Sep 17 00:00:00 2001
+From 175d3c2355f116adf114c5308b10459c4494e577 Mon Sep 17 00:00:00 2001
 From: auto3000 <auto3000@users.noreply.github.com>
 Date: Sat, 21 Oct 2017 16:15:25 +0200
 Subject: [PATCH 15/16] host: add retry mechanism to connect mod-host socket
 
+%% original patch: 0015-host-add-retry-mechanism-to-connect-mod-host-socket.patch
 ---
- mod/host.py      | 71 +++++++++++++++++++++++++++++++++++---------------------
- mod/webserver.py |  8 ++++---
- 2 files changed, 50 insertions(+), 29 deletions(-)
+ mod/host.py      | 27 ++++++++++++++++++++++-----
+ mod/webserver.py | 10 ++++++----
+ 2 files changed, 28 insertions(+), 9 deletions(-)
 
 diff --git a/mod/host.py b/mod/host.py
-index 6a68dde..2b7161e 100644
+index 3670e4ad..8140aa01 100644
 --- a/mod/host.py
 +++ b/mod/host.py
-@@ -80,7 +80,7 @@ def get_all_good_pedalboards():
-     for pb in allpedals:
-         if not pb['broken']:
-             goodpedals.append(pb)
--
+@@ -221,6 +221,7 @@ def get_all_good_and_bad_pedalboards():
+             "version": 0,
+         })
+ 
 +    logging.info("get_all_good_pedalboards returns %i good pedalboards in a total of %i pedalboards." % (len(allpedals), len(goodpedals)) )
-     return goodpedals
+     return goodpedals, badbundles
  
  # class to map between numeric ids and string instances
-@@ -531,7 +531,7 @@ class Host(object):
+@@ -903,7 +904,7 @@ class Host(object):
      @gen.coroutine
      def init_host(self):
          self.init_jack()
@@ -30,7 +30,7 @@ index 6a68dde..2b7161e 100644
  
          # Disable plugin processing while initializing
          yield gen.Task(self.send_notmodified, "feature_enable processing 0", datatype='boolean')
-@@ -627,6 +627,12 @@ class Host(object):
+@@ -1016,6 +1017,12 @@ class Host(object):
              self.report_current_state(websocket)
              return
  
@@ -43,46 +43,7 @@ index 6a68dde..2b7161e 100644
          def reader_check_response():
              self.process_read_queue()
  
-@@ -644,32 +650,38 @@ class Host(object):
-             else:
-                 self._idle = True
- 
--        self._idle = False
--        logging.info( "Main socket, used for sending messages ")
--        # Main socket, used for sending messages
--        self.writesock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
--        self.writesock.set_close_callback(self.writer_connection_closed)
--        self.writesock.set_nodelay(True)
--        self.writesock.connect(self.addr, writer_check_response)
--
--        # Extra socket, used for receiving messages
--        self.readsock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
--        self.readsock.set_close_callback(self.reader_connection_closed)
--        self.readsock.set_nodelay(True)
--        self.readsock.connect((self.addr[0], self.addr[1]+1), reader_check_response)
-+        if self.writesock is None:
-+            try:
-+                # Main socket, used for sending messages
-+                logging.info( "Main socket, used for sending messages to address: " + str(self.addr))
-+                self.writesock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
-+                self.writesock.set_close_callback(self.writer_connection_closed)
-+                self.writesock.set_nodelay(True)
-+                self.writesock.connect(self.addr, writer_check_response)
-+            except Exception as error:
-+                logging.exception(error)
-+                self.writer_connection_closed()
-+
-+        if self.readsock is None:
-+            try:
-+                # Extra socket, used for receiving messages
-+                logging.info( "Extra socket, used for receiving messages from address: " + str(self.addr))
-+                self.readsock = iostream.IOStream(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
-+                self.readsock.set_close_callback(self.reader_connection_closed)
-+                self.readsock.set_nodelay(True)
-+                self.readsock.connect((self.addr[0], self.addr[1]), reader_check_response)
-+            except Exception as error:
-+                logging.exception(error)
-+                self.reader_connection_closed()
+@@ -1051,6 +1058,8 @@ class Host(object):
  
      def reader_connection_closed(self):
          self.readsock = None
@@ -91,19 +52,16 @@ index 6a68dde..2b7161e 100644
  
      def writer_connection_closed(self):
          self.writesock = None
--        self.crashed = True
--        self.statstimer.stop()
--
--        if self.memtimer is not None:
--            self.memtimer.stop()
--
--        self.msg_callback("stop")
+@@ -1062,6 +1071,7 @@ class Host(object):
+             self.memtimer.stop()
+ 
+         self.msg_callback("stop")
 +        logging.error("Writer connection is closed to address: " + str(self.addr));
  
-     # -----------------------------------------------------------------------------------------------------------------
- 
-@@ -1018,8 +1030,15 @@ class Host(object):
-         logging.info("[host] sending -> %s" % msg)
+         while True:
+             try:
+@@ -1615,8 +1625,15 @@ class Host(object):
+         logging.debug("[host] sending -> %s", msg)
  
          encmsg = "%s\0" % str(msg)
 -        self.writesock.write(encmsg.encode("utf-8"))
@@ -120,8 +78,8 @@ index 6a68dde..2b7161e 100644
  
      # send data to host, set modified flag to true
      def send_modified(self, msg, callback=None, datatype='int'):
-@@ -2988,7 +3007,7 @@ _:b%i
-         logging.info("hmi load bank pedalboard")
+@@ -4619,7 +4636,7 @@ _:b%i
+         logging.debug("hmi load bank pedalboard")
  
          if bank_id < 0 or bank_id > len(self.banks):
 -            logging.error("Trying to load pedalboard using out of bounds bank id %i" % (bank_id))
@@ -129,8 +87,8 @@ index 6a68dde..2b7161e 100644
              callback(False)
              return
  
-@@ -3020,7 +3039,7 @@ _:b%i
-                 navigateChannel = 15
+@@ -4643,7 +4660,7 @@ _:b%i
+             pedalboards = bank['pedalboards']
  
          if pedalboard_id < 0 or pedalboard_id >= len(pedalboards):
 -            logging.error("Trying to load pedalboard using out of bounds pedalboard id %i" % (pedalboard_id))
@@ -139,24 +97,26 @@ index 6a68dde..2b7161e 100644
              return
  
 diff --git a/mod/webserver.py b/mod/webserver.py
-index e74e157..18d61c0 100644
+index a7d9b999..866b3abf 100644
 --- a/mod/webserver.py
 +++ b/mod/webserver.py
-@@ -1917,9 +1917,11 @@ def prepare(isModApp = False):
+@@ -2357,10 +2357,12 @@ def prepare(isModApp = False):
+             if SESSION.host.writesock is None:
+                 logging.info("Writesock none")
  
-     def checkhost():
-         if SESSION.host.readsock is None or SESSION.host.writesock is None:
 -            logging.error("Host failed to initialize, is the backend running?")
 -            SESSION.host.close_jack()
--            sys.exit(1)
+-            if not isModApp:
+-                sys.exit(1)
 +            logging.error("Host failed to initialize, is the backend running? Retry...")
 +            SESSION.host.open_connection_if_needed(None)
 +            ioinstance.call_later(3.0, checkhost)
-+            # SESSION.host.close_jack()
-+            # sys.exit(1)
++            #SESSION.host.close_jack()
++            #if not isModApp:
++            #    sys.exit(1)
  
          elif not SESSION.host.connected:
              ioinstance.call_later(0.2, checkhost)
 -- 
-2.7.4
+2.17.1
 
