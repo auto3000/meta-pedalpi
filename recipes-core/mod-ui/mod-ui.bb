@@ -25,6 +25,7 @@ SRC_URI = "git://github.com/moddevices/mod-ui.git;branch=master \
            file://0014-desktop-differentiate-two-similar-logging-messages.patch \
            file://0015-host-add-retry-mechanism-to-connect-mod-host-socket.patch \
            file://0016-logging-add-some-traces-in-utils-and-webserver.patch \
+           file://0014-logging-move-logging-facility-to-init__.patch \
            "
 
 S = "${WORKDIR}/git"
