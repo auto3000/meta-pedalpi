@@ -47,6 +47,7 @@ case "$1" in
         stop)
                 echo "Stopping jackd audio server:" "jackd"
                 if start-stop-daemon -K -o -p $PIDFILE ; then
+                        killall jackd
                         rm -f $PIDFILE
                         success
                 else
@@ -60,6 +61,7 @@ case "$1" in
                         failure
                         exit 1
                 fi
+                killall jackd
                 sleep $DELAY_BEFORE_START
                 rm -f $PIDFILE || true
                 if start-stop-daemon -b -S -o -m -p $PIDFILE -x /bin/sh -- -c "exec $DAEMON $OPTIONS 2>&1 | logger -t jackd "; then
