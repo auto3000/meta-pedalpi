@@ -10,7 +10,7 @@ SRC_URI = "git://github.com/moddevices/mod-factory-user-data.git \
 
 S = "${WORKDIR}/git"
 
-FILES_${PN} = "/home/root"
+FILES_${PN} = "${ROOT_HOME}"
 
 inherit allarch
 
@@ -18,9 +18,10 @@ do_compile() {
 }
 
 do_install() {
-	install -d ${D}/home/root/.pedalboards
-	install -d ${D}/home/root/data
-	cp -R ${S}/modduo/.pedalboards/* ${D}/home/root/.pedalboards/
-	cp -R ${S}/modduo/data/* ${D}/home/root/data/
+	install -d ${D}/${ROOT_HOME}/.pedalboards
+	install -d ${D}/${ROOT_HOME}/data
+	cp -R ${S}/modduo/.pedalboards/* ${D}/${ROOT_HOME}/.pedalboards/
+	cp -R ${S}/modduo/data/* ${D}/${ROOT_HOME}/data/
+	sed -e "s:/root/:${ROOT_HOME}/:g" -i ${D}/${ROOT_HOME}/.pedalboards/*/* ${D}/${ROOT_HOME}/data/*
 }
 
