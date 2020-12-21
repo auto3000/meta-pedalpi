@@ -21,6 +21,7 @@ RDEPENDS_${PN} += "\
 	lsof \
 	mod-ui \
 	mod-host \
+	sndfile-tools \
 	rakarrack-lv2 \
 	caps-lv2 \
 	balance-lv2 \
