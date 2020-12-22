@@ -9,6 +9,8 @@ DEPENDS = "lilv jack alsa-lib"
 
 SRCREV = "5634a7fad7d96eccdc20bd750134f8e263775c9a"
 SRC_URI = "git://github.com/moddevices/mod-ui.git;branch=master \
+           file://0002-host-discard-socket-close.patch \
+           file://0007-build-disable-strip-of-.so-library-in-utils.patch \
            "
 
 S = "${WORKDIR}/git"

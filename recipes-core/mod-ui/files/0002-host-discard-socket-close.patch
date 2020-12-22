@@ -1,0 +1,60 @@
+From 546fb79f5f2db43a5ea7fee99430ff4e2f657769 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Sat, 26 Dec 2020 23:51:26 +0100
+Subject: [PATCH] host: discard socket close
+
+---
+ mod/host.py      | 3 ++-
+ mod/webserver.py | 9 +++++----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/mod/host.py b/mod/host.py
+index eeb2ede1..6ab84638 100644
+--- a/mod/host.py
++++ b/mod/host.py
+@@ -1045,9 +1045,10 @@ class Host(object):
+         self.readsock.connect((self.addr[0], self.addr[1]+1), reader_check_response)
+ 
+     def reader_connection_closed(self):
+-        self.readsock = None
++        print("[host] reader_connection_closed: reset readsock")
+ 
+     def writer_connection_closed(self):
++        print("[host] writer_connection_closed: reset writesock")
+         self.writesock = None
+         self.crashed = True
+         self.connected = False
+diff --git a/mod/webserver.py b/mod/webserver.py
+index e07797fd..6a9e3a53 100644
+--- a/mod/webserver.py
++++ b/mod/webserver.py
+@@ -2287,7 +2287,7 @@ def signal_recv(sig, _=0):
+ 
+     IOLoop.instance().add_callback_from_signal(func)
+ 
+-def prepare(isModApp = False):
++def prepare():
+     check_environment()
+     lv2_init()
+ 
+@@ -2304,7 +2304,7 @@ def prepare(isModApp = False):
+         get_all_plugins()
+         print("Done!")
+ 
+-    if not isModApp:
++    if not APP:
+         signal(SIGUSR1, signal_recv)
+         signal(SIGUSR2, signal_recv)
+         set_process_name("mod-ui")
+@@ -2321,8 +2321,9 @@ def prepare(isModApp = False):
+                 print("Writesock none")
+ 
+             print("Host failed to initialize, is the backend running?")
+-            SESSION.host.close_jack()
+-            if not isModApp:
++
++            if APP:
++                SESSION.host.close_jack()
+                 sys.exit(1)
+ 
+         elif not SESSION.host.connected:
