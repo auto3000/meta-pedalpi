@@ -17,10 +17,12 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/bin/mod-ui
 OPTIONS=""
 START_DAEMON=yes
-export MOD_DATA_DIR=/home/root/data
-export MOD_APP=1
+export MOD_DATA_DIR=$(cd ~/data && pwd)
+export MOD_APP=0
 export MOD_LIVE_ISO=1
 export MOD_DEV_ENVIRONMENT=0
+export MOD_DEV_HMI=1
+export MOD_DEV_HOST=0
 export MOD_LOG=1
 export MOD_DEVICE_WEBSERVER_PORT=80
 DELAY_BEFORE_START=0
@@ -39,9 +41,12 @@ test -f $DAEMON || exit 0
 
 case "$1" in
         start)
+                echo "Waiting jackd server by mod-ui"
+                jack_wait -w -t $DELAY_BEFORE_START | logger -t jack_wait
+                jack_load mod-monitor | logger -t jack_load
+
                 echo "Starting mod-ui server:" "mod-ui"
-                sleep $DELAY_BEFORE_START
-                if start-stop-daemon -b -S -o -m -p $PIDFILE -x $DAEMON -- $OPTIONS; then
+                if start-stop-daemon -b -S -o -m -p $PIDFILE -x /bin/sh -- -c "exec $DAEMON $OPTIONS 2>&1 | logger -t mod-ui "; then
                         success
                 else
                         failure
