@@ -6,7 +6,6 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=67b604758dd265c185ce36fcf76a889d"
 inherit autotools pkgconfig gtk-icon-cache gettext pack_audio_plugins
 
 DEPENDS += " \
-    gtk+ \
     intltool-native \
 "
 
@@ -15,8 +14,9 @@ SRCREV = "4d980f3421f61cc8ea53e92eba5e43e823af7c02"
 PV = "1.12.2"
 S = "${WORKDIR}/git"
 
-PACKAGECONFIG ??= "alsa jack lv2 nsm"
+PACKAGECONFIG ??= "gui alsa jack lv2 nsm"
 
+PACKAGECONFIG[gui] = "--with-gui,--without-gui,gtk+"
 PACKAGECONFIG[oss] = "--with-oss,--without-oss"
 PACKAGECONFIG[alsa] = "--with-alsa,--without-alsa,alsa-lib"
 PACKAGECONFIG[dssi] = "--with-dssi,--without-dssi,dssi liblo"
@@ -24,7 +24,12 @@ PACKAGECONFIG[jack] = "--with-jack,--without-jack,jack"
 PACKAGECONFIG[lv2] = "--with-lv2,--without-lv2,lv2"
 PACKAGECONFIG[nsm] = "--with-nsm,--without-nsm,liblo,new-session-manager"
 
-PACKAGES =+ "${PN}-standalone"
+PACKAGES =+ "${PN}-standalone ${PN_LV2}-ttl "
+
+FILES_${PN_LV2}-ttl += " \
+	${libdir}/lv2/amsynth.lv2/*.ttl \
+"
+
 FILES_${PN}-standalone += " \
     ${datadir}/appdata/amsynth.appdata.xml \
     ${datadir}/applications \
@@ -46,5 +51,9 @@ FILES_${PN_VST} += " \
 
 RDEPENDS_${PN}-standalone += "${PN}"
 RDEPENDS_${PN_DSSI} += "${PN}"
-RDEPENDS_${PN_LV2} += "${PN}"
+RDEPENDS_${PN_LV2} += "${PN} ${PN_LV2}-ttl-files "
 RDEPENDS_${PN_VST} += "${PN}"
+RDEPENDS_gui += "${PN}"
+
+RPROVIDES_${PN_LV2}-ttl += " ${PN_LV2}-ttl-files "
+
