@@ -4,10 +4,10 @@ SECTION = "multimedia"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=2c1c00f9d3ed9e24fa69b932b7e7aff2"
 
-SRC_URI = "git://github.com/pjotrompet/Freaked;protocol=https"
+SRC_URI = "git://github.com/BlokasLabs/Freaked;protocol=https;branch=modep"
 
 PV = "1.0+git${SRCPV}"
-SRCREV = "0e013fd1261cbdb409bc8abe78dc4c7a825cb9ef"
+SRCREV = "b98185d2e2ffcbb0ac785cfe29b47c2c406be884"
 
 S = "${WORKDIR}/git"
 
