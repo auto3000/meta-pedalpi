@@ -49,6 +49,7 @@ RDEPENDS_${PN} += "\
 	gxvoxtb \
 	xfade-lv2 \
 	fomp \
+	amsynth-lv2 \
 	dpf-plugins \
 	kxstudio-lv2-extensions \
 	invada-studio-plugins-lv2 \
