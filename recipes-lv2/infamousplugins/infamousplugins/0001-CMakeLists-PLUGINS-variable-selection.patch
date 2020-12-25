@@ -1,0 +1,24 @@
+From 6fb75b972a5bbde278237395996f3754d4ba34d5 Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Mon, 28 Dec 2020 17:45:48 +0100
+Subject: [PATCH] CMakeLists: PLUGINS variable selection
+
+---
+ CMakeLists.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b8d2a29..85fba5e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -4,7 +4,9 @@ project(infamous-plugins)
+ 
+ set(LIBDIR lib CACHE STRING "Specifies the name of the library path")
+ 
+-foreach(plug casynth envfollower hip2b powerup powercut cheapdist stuck ewham lushlife bentdelay mindi octolo)
++set( PLUGINS "casynth;envfollower;hip2b;powerup;powercut;cheapdist;stuck;ewham;lushlife;bentdelay;mindi;octolo" CACHE STRING "List of plugins to build")
++
++foreach( plug ${PLUGINS} )
+     add_subdirectory(src/${plug})
+ endforeach(plug)
+ 
