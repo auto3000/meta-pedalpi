@@ -55,6 +55,7 @@ RDEPENDS_${PN} += "\
 	invada-studio-plugins-lv2 \
 	calf-studio-gear \
 	mod-lv2-data \
+	modgui \
 	convo-lv2 \
 	lv2 \
 	lv2-plugins \
@@ -76,4 +77,6 @@ RDEPENDS_${PN} += "\
 	liberation-fonts \
 	freaked \
 	"
+
+PREFERRED_RPROVIDER_amsynth-lv2-ttl-files = "modgui"
 
