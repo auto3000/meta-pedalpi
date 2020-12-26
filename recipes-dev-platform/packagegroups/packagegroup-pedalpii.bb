@@ -36,6 +36,7 @@ RDEPENDS_${PN} += "\
 	midifilter-lv2 \ 
 	mtc-lv2 \
 	vocproc \
+	infamousplugins \
 	onsettrigger-lv2 \
 	stereoroute-lv2 \
 	tuna-lv2 \
