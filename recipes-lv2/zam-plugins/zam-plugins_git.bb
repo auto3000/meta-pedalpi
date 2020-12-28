@@ -4,18 +4,15 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 DEPENDS += " \
-    virtual/libx11 \
-    virtual/libgl \
     liblo \
     jack \
-    ladspa-sdk \
     rubberband \
     libsamplerate0 \
     libsndfile1 \
     fftw \
 "
 
-inherit pkgconfig lv2-turtle-helper features_check pack_audio_plugins
+inherit pkgconfig lv2-turtle-helper pack_audio_plugins
 
 REQUIRED_DISTRO_FEATURES = "x11"
 
@@ -25,13 +22,19 @@ S = "${WORKDIR}/git"
 PV = "3.14"
 
 EXTRA_OEMAKE += " \
+    SKIP_STRIPPING=true \
     NOOPT=true \
     SKIP_STRIPPING=true \
+    HAVE_GL=false \
+    UNIX=false \
+    HAVE_DGL=false \
+    HAVE_JACK=false \
 "
 
 do_install() {
     ${MAKE} DESTDIR=${D} PREFIX= LIBDIR=${libdir} BINDIR=${bindir} install
+    rm -R ${D}${bindir}
+    rm -R ${D}${libdir}/vst
+    rm -R ${D}${libdir}/ladspa
 }
 
-PACKAGES =+ "${PN}-standalone"
-FILES_${PN}-standalone = "${bindir}"
