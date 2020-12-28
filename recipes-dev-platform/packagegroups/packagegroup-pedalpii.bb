@@ -30,6 +30,7 @@ RDEPENDS_${PN} += "\
 	stepseq-lv2 \
 	modspectre-lv2 \
 	fil4-lv2 \
+	zam-plugins-lv2 \
 	modmeter-lv2 \
 	tinyamp-lv2 \
 	midigen-lv2 \
