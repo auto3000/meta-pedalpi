@@ -1,0 +1,24 @@
+From c9bf01679899cc4e9864d0a0318983ce6cc55d9d Mon Sep 17 00:00:00 2001
+From: auto3000 <auto3000@users.noreply.github.com>
+Date: Mon, 28 Dec 2020 09:31:43 +0100
+Subject: [PATCH] amsynth: change control to midi portname
+
+---
+ amsynth.lv2/amsynth.ttl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/amsynth.lv2/amsynth.ttl b/amsynth.lv2/amsynth.ttl
+index f3e7035..9041e20 100644
+--- a/amsynth.lv2/amsynth.ttl
++++ b/amsynth.lv2/amsynth.ttl
+@@ -102,8 +102,8 @@
+             patch:Message ;
+         lv2:designation lv2:control ;
+         lv2:index 0 ;
+-        lv2:symbol "control" ;
+-        lv2:name "Control"
++        lv2:symbol "midi" ;
++        lv2:name "Input"
+     ] , [
+         a lv2:OutputPort ,
+             atom:AtomPort ;
