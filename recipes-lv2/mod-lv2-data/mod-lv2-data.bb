@@ -57,6 +57,11 @@ do_install() {
  	cp -R ${S}/plugins-fixed/Red_Zeppelin_4.lv2/modgui      ${D}/${libdir}/lv2/Red_Zeppelin_4.lv2/
  	cp -R ${S}/plugins-fixed/Red_Zeppelin_5.lv2/modgui      ${D}/${libdir}/lv2/Red_Zeppelin_5.lv2/
 
+	for i in ZamAutoSat.lv2 ZaMaximX2.lv2 ZamComp.lv2 ZamCompX2.lv2 ZamDelay.lv2 ZamEQ2.lv2 ZamGate.lv2 ZamGateX2.lv2 ZamGEQ31.lv2 ZamHeadX2.lv2 ZamTube.lv2 ZaMultiComp.lv2 ZaMultiCompX2.lv2; do
+		install -d ${D}${libdir}/lv2/${i}
+		cp -R ${S}/plugins-fixed/${i}/modgui ${S}/plugins-fixed/${i}/modgui.ttl ${D}/${libdir}/lv2/${i}/
+	done
+
 	install -d ${D}${libdir}/lv2/Larynx.lv2
 	install -d ${D}${libdir}/lv2/Modulay.lv2
 	install -d ${D}${libdir}/lv2/Pitchotto.lv2

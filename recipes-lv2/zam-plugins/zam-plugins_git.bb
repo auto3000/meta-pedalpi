@@ -36,5 +36,10 @@ do_install() {
     rm -R ${D}${bindir}
     rm -R ${D}${libdir}/vst
     rm -R ${D}${libdir}/ladspa
+
+    # MODGUI patching
+    for i in ZamAutoSat.lv2 ZaMaximX2.lv2 ZamComp.lv2 ZamCompX2.lv2 ZamDelay.lv2 ZamEQ2.lv2 ZamGate.lv2 ZamGateX2.lv2 ZamGEQ31.lv2 ZamHeadX2.lv2 ZamTube.lv2 ZaMultiComp.lv2 ZaMultiCompX2.lv2 ; do
+        sed -i 's#_dsp.ttl> .#_dsp.ttl> , <modgui.ttl> .#' ${D}${libdir}/lv2/${i}/manifest.ttl 
+    done
 }
 
