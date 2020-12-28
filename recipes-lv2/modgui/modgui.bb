@@ -5,7 +5,9 @@ LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293b95dea7b07891"
 
 SRCREV = "cb53b5468cb2b589fa0f095bf80d86fcd54ab45a"
-SRC_URI = "git://github.com/popololo46/modgui.git;nobranch=1"
+SRC_URI = "git://github.com/popololo46/modgui.git;nobranch=1 \
+           file://0001-amsynth-change-control-to-midi-portname.patch \
+           "
 
 S = "${WORKDIR}/git"
 
