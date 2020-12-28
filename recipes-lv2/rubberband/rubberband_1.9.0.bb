@@ -8,8 +8,6 @@ inherit autotools-brokensep pkgconfig
 DEPENDS += " \
     fftw \
     libsamplerate0 \
-    vamp-plugin-sdk \
-    ladspa-sdk \
 "
 
 # fftwf is neon accelerated -> force SINGLE precision
@@ -20,6 +18,12 @@ SRC_URI = " \
     ${SINGLEPATCH} \
 "
 SRC_URI[sha256sum] = "4f5b9509364ea876b4052fc390c079a3ad4ab63a2683aad09662fb905c2dc026"
+
+EXTRA_OECONF += " \
+    --disable-programs \
+    --disable-vamp \
+    --disable-ladspa \
+"
 
 EXTRA_OEMAKE += " \
     INSTALL_LIBDIR=${libdir} \
