@@ -1,6 +1,6 @@
 SUMMARY = "pedalpi complete image."
 
-IMAGE_INSTALL = "packagegroup-core-boot \
+IMAGE_INSTALL_append = "packagegroup-core-boot \
 	${CORE_IMAGE_EXTRA_INSTALL} \
 	packagegroup-pedalpii"
 
