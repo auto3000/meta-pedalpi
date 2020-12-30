@@ -21,7 +21,18 @@ SRCREV = "e7077fcc0b7f60daa7471eae42015ffc9cba73d9"
 S = "${WORKDIR}/git"
 PV = "3.14"
 
+# Workaround on ARM 32bits, ZamHeadX2 and ZamVerb are failing due to improper lpthread linking
+PLUGINS ?= "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamHeadX2 ZamTube ZaMultiComp ZaMultiCompX2"
+PLUGINS_armv7ve = "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamTube ZaMultiComp ZaMultiCompX2"
+PLUGINS_armv7a = "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamTube ZaMultiComp ZaMultiCompX2"
+
+
 EXTRA_OEMAKE += " \
+    VERBOSE=true \
+    PLUGINS="${PLUGINS}" \
+    BUILD_C_FLAGS="-fPIC ${CFLAGS} -I. " \
+    BUILD_CXX_FLAGS=" -fPIC ${CXXFLAGS} -I. -I../../dpf/distrho -I../../dpf/dgl -I../../distrho -I../../dgl" \
+    LINK_FLAGS="-fPIC ${LDFLAGS} " \
     SKIP_STRIPPING=true \
     NOOPT=true \
     SKIP_STRIPPING=true \
@@ -32,14 +43,16 @@ EXTRA_OEMAKE += " \
 "
 
 do_install() {
-    ${MAKE} DESTDIR=${D} PREFIX= LIBDIR=${libdir} BINDIR=${bindir} install
+    touch bin/empty-ladspa.so
+    touch bin/empty-vst.so
+    ${MAKE} DESTDIR=${D} PREFIX= LIBDIR=${libdir} BINDIR=${bindir} install ${EXTRA_OEMAKE}
     rm -R ${D}${bindir}
     rm -R ${D}${libdir}/vst
     rm -R ${D}${libdir}/ladspa
 
     # MODGUI patching
-    for i in ZamAutoSat.lv2 ZaMaximX2.lv2 ZamComp.lv2 ZamCompX2.lv2 ZamDelay.lv2 ZamEQ2.lv2 ZamGate.lv2 ZamGateX2.lv2 ZamGEQ31.lv2 ZamHeadX2.lv2 ZamTube.lv2 ZaMultiComp.lv2 ZaMultiCompX2.lv2 ; do
-        sed -i 's#_dsp.ttl> .#_dsp.ttl> , <modgui.ttl> .#' ${D}${libdir}/lv2/${i}/manifest.ttl 
+    for i in ${PLUGINS} ; do
+        sed -i 's#_dsp.ttl> .#_dsp.ttl> , <modgui.ttl> .#' ${D}${libdir}/lv2/${i}.lv2/manifest.ttl
     done
 }
 
