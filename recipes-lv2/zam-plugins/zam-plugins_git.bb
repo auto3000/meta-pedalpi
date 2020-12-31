@@ -22,7 +22,7 @@ S = "${WORKDIR}/git"
 PV = "3.14"
 
 # Workaround on ARM 32bits, ZamHeadX2 and ZamVerb are failing due to improper lpthread linking
-PLUGINS ?= "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamHeadX2 ZamTube ZaMultiComp ZaMultiCompX2"
+PLUGINS ?= "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamTube ZaMultiComp ZaMultiCompX2"
 PLUGINS_armv7ve = "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamTube ZaMultiComp ZaMultiCompX2"
 PLUGINS_armv7a = "ZamAutoSat ZaMaximX2 ZamComp ZamCompX2 ZamDelay ZamEQ2 ZamGate ZamGateX2 ZamGEQ31 ZamTube ZaMultiComp ZaMultiCompX2"
 
