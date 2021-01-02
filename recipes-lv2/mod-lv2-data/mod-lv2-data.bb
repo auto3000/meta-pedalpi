@@ -36,7 +36,6 @@ do_install() {
 	install -d ${D}${libdir}/lv2/Black_Pearl_5.lv2/modgui
 	install -d ${D}${libdir}/lv2/Red_Zeppelin_4.lv2/modgui
 	install -d ${D}${libdir}/lv2/Red_Zeppelin_5.lv2/modgui
-	install -d ${D}${libdir}/lv2/rkr.lv2
 	cp ${S}/plugins-fixed/Kars.lv2/manifest.ttl ${S}/plugins-fixed/Kars.lv2/Kars_dsp.ttl ${S}/plugins-fixed/Kars.lv2/default-preset.ttl ${D}/${libdir}/lv2/Kars.lv2
 	cp ${S}/plugins-fixed/MVerb.lv2/manifest.ttl ${S}/plugins-fixed/MVerb.lv2/MVerb_dsp.ttl ${S}/plugins-fixed/MVerb.lv2/default-preset.ttl ${S}/plugins-fixed/MVerb.lv2/presets.ttl ${D}/${libdir}/lv2/MVerb.lv2
 	cp ${S}/plugins-fixed/Nekobi.lv2/manifest.ttl ${S}/plugins-fixed/Nekobi.lv2/Nekobi_dsp.ttl ${S}/plugins-fixed/Nekobi.lv2/default-preset.ttl ${D}/${libdir}/lv2/Nekobi.lv2
@@ -94,4 +93,7 @@ do_install() {
 	cp ${S}/plugins-fixed/gx_muff.lv2/modgui.ttl ${S}/plugins-fixed/gx_muff.lv2/manifest.ttl  ${D}/${libdir}/lv2/gx_muff.lv2
 	cp -R ${S}/plugins-fixed/gx_muff.lv2/modgui   ${D}/${libdir}/lv2/gx_muff.lv2/
 
+	install -d ${D}${libdir}/lv2/rkr.lv2
+	cp -R ${S}/plugins-fixed/rkr.lv2/*  ${D}/${libdir}/lv2/rkr.lv2/
 }
+
