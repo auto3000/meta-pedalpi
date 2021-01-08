@@ -34,6 +34,7 @@ RDEPENDS_${PN} += "\
 	zam-plugins-lv2 \
 	modmeter-lv2 \
 	tinyamp-lv2 \
+	abgate \
 	midigen-lv2 \
 	midifilter-lv2 \ 
 	mtc-lv2 \
