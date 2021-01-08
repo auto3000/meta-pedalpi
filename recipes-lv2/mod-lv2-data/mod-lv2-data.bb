@@ -49,6 +49,10 @@ do_install() {
         cp ${S}/plugins/AmplitudeImposer.lv2/manifest.ttl ${S}/plugins/AmplitudeImposer.lv2/AmplitudeImposer_dsp.ttl ${S}/plugins/AmplitudeImposer.lv2/default-preset.ttl ${S}/plugins/AmplitudeImposer.lv2/presets.ttl ${D}/${libdir}/lv2/AmplitudeImposer.lv2
         cp ${S}/plugins/3BandEQ.lv2/manifest.ttl ${S}/plugins/3BandEQ.lv2/3BandEQ_dsp.ttl ${S}/plugins/3BandEQ.lv2/default-preset.ttl ${S}/plugins/3BandEQ.lv2/presets.ttl ${D}/${libdir}/lv2/3BandEQ.lv2
         cp ${S}/plugins/MaFreeverb.lv2/manifest.ttl ${S}/plugins/MaFreeverb.lv2/MaFreeverb_dsp.ttl ${S}/plugins/MaFreeverb.lv2/default-preset.ttl ${D}/${libdir}/lv2/MaFreeverb.lv2
+
+	install -d ${D}${libdir}/lv2/abGate.lv2
+	cp -R ${S}/plugins/abGate.lv2/*  ${D}/${libdir}/lv2/abGate.lv2/
+
  	cp -R ${S}/plugins-fixed/AVL_Drumkits_Perc.lv2/modgui   ${D}/${libdir}/lv2/AVL_Drumkits_Perc.lv2/
  	cp -R ${S}/plugins-fixed/Black_Pearl_4A.lv2/modgui      ${D}/${libdir}/lv2/Black_Pearl_4A.lv2/
  	cp -R ${S}/plugins-fixed/Black_Pearl_4B.lv2/modgui      ${D}/${libdir}/lv2/Black_Pearl_4B.lv2/
