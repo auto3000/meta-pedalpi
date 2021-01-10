@@ -23,5 +23,8 @@ do_install() {
 	cp -R ${S}/modduo/.pedalboards/* ${D}/${ROOT_HOME}/.pedalboards/
 	cp -R ${S}/modduo/data/* ${D}/${ROOT_HOME}/data/
 	sed -e "s:/root/:${ROOT_HOME}/:g" -i ${D}/${ROOT_HOME}/.pedalboards/*/* ${D}/${ROOT_HOME}/data/*
+
+	echo "Remove Rig_* pedalboard because these are including non-distributed onyx and cabinet-vintage plugins"
+	rm -Rf ${D}/${ROOT_HOME}/.pedalboards/Rig*
 }
 
