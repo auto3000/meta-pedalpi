@@ -7,9 +7,8 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
 DEPENDS = " lv2 "
 
 PV="1.2.0"
-SRCREV = "45b4762ef163b3880a840b1d90afacfa3e2c691f"
+SRCREV = "c416c29d66c09da610dc632605adad14781ede8d"
 SRC_URI = "git://github.com/antanasbruzas/abGate.git;branch=master \
-           file://0001-Makefile-add-TARGET-option.patch \
            "
 S = "${WORKDIR}/git"
 
