@@ -2,7 +2,7 @@ DESCRIPTION = "Collection of programs (written in C) to do interesting things wi
 LICENSE = "GPLv3"
 SRC_URI = "git://github.com/libsndfile/sndfile-tools.git;protocol=http \
 	"
-SRCREV = "5a28b11e165937332f4e118fe895f75d36a6564a"
+SRCREV = "6bc73450de421739169642641ad1cc23b10dcf92"
 
 DEPENDS = " cairo jack libsndfile1 libsamplerate0 fftwf"
 
