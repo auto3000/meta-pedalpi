@@ -4,10 +4,10 @@ SECTION = "multimedia"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
-DEPENDS = "jack lilv readline fftwf "
-DEPENDS_armv7 = " jack lilv readline fftwf ne10 "
-DEPENDS_aarch64 = " jack lilv readline fftwf ne10 "
-RDEPENDS_${PN} = " jack-utils lilv "
+DEPENDS = "jack lilv readline fftwf cc-master "
+DEPENDS_armv7 = " jack lilv readline fftwf cc-master ne10 "
+DEPENDS_aarch64 = " jack lilv readline fftwf cc-master ne10 "
+RDEPENDS_${PN} = " jack-utils lilv cc-master "
 
 SRCREV = "520b7fc15579aa3ff836449385ebde6eeb1449b6"
 SRC_URI = "git://github.com/moddevices/mod-host.git \
