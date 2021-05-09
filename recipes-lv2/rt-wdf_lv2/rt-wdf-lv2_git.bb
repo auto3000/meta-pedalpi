@@ -23,7 +23,7 @@ DEPENDS = "lv2 rt-wdf"
 FILES_${PN} = "${libdir}/lv2/"
 
 do_compile () {
-	${CXX} ${CXXFLAGS} ${LDFLAGS} -I. -ffast-math -fPIC -shared -Wl,--no-undefined -lrt-wdf -o JTM45.o JTM45/src/JTM45.cpp
+	${CXX} ${CXXFLAGS} ${LDFLAGS} -I. -c -ffast-math -fPIC -shared -Wl,--no-undefined -o JTM45.so JTM45/src/JTM45.cpp
 	#${CXX} ${LDFLAGS} -shared -Wl,--no-undefined -o JTM45.so JTM45.o
 	#${CXX} ${LDFLAGS} -std=gnu++0x -O3 -ffast-math -fPIC -DPIC -Wall $(shell pkg-config --cflags rt-wdf) -I. -shared -Wl,-O1 -Wl,--as-needed -Wl,--no-undefined -Wl,--strip-all $(shell pkg-config --libs rt-wdf) -lrt-wdf -lm -o ToneStack.so ToneStack/src/ToneStack.cpp 
 }
